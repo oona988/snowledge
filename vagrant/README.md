@@ -7,7 +7,7 @@ Web application for showing snow information. The application is produced in Sof
 3. After the virtual machine has booted, log in with the command "vagrant ssh"
 4. Navigate to the shared folder, which is the vagrant folder two folder levels above the entry
 5. Navigate to the src folder under the vagrant folder on virtual machine
-6. Install the packages with the command "npm install --no-bin-links" on virtual machine
+6. Install the packages with the command "npm install" on virtual machine
 
 (RECOMMENDATION: Install following npm packages on your own machine by doing steps 7-8 on another console without connecting to a virtual machine. This may work better.) 
 
