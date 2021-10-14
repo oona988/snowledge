@@ -1,13 +1,25 @@
 Vagrant.configure("2") do |config|
-  #Lisätään /src jaettuihin kansioihin
+
+  # Keep shared folder up to date
+  config.trigger.after :up do |trigger|
+    trigger.info = "rsync auto"
+    trigger.run = {inline: "bash -c 'vagrant rsync-auto &'"}
+  end
+  
+  # Add /src to shared folder
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder "../src", "/vagrant/src", type: "rsync", :mount_options => ["dmode=777", "fmode=666"], rsync__exclude: ['node_modules/', 'map-app/node_modules/']
-  #Käteetään yksinkertaista virtuaalilaatikkoa
+
+  # Use simple virtualbox
 	config.vm.box = "ubuntu/bionic64"
-  #Luetaan tarvittavat lisät seuraavasta tiedostosta
+
+  # Read needed configuration from bootstrap.sh
 	config.vm.provision :shell, path: "bootstrap.sh"
-  #Serverin portti
+
+  # Server's port number
 	config.vm.network :forwarded_port, guest: 3000, host: 3000
-  config.vm.network "forwarded_port", guest: 3306, host: 3306#Mysql
+
+  # MySQL port number
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
   
 end
