@@ -94,6 +94,48 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+function getRelativeTimestamp(current, previous) {
+  var msPerMinute = 60 * 1000;
+  var msPerHour = msPerMinute * 60;
+  var msPerDay = msPerHour * 24;
+  var msPerMonth = msPerDay * 30;
+  var msPerYear = msPerDay * 365;
+
+  var elapsed = current - previous;
+
+  if (elapsed < msPerMinute) {
+    if (Math.round(elapsed/1000) == 1) {
+      return "1 sekunti sitten";
+    }
+    return `${Math.round(elapsed/1000)} sekuntia sitten`;
+  } else if (elapsed < msPerHour) {
+    if (Math.round(elapsed/msPerMinute) == 1) {
+      return "1 minuutti sitten";
+    }
+    return `${Math.round(elapsed/msPerMinute)} minuuttia sitten`;
+  } else if (elapsed < msPerDay ) {
+    if (Math.round(elapsed/msPerHour) == 1) {
+      return "1 tunti sitten";
+    }
+    return `${Math.round(elapsed/msPerHour)} tuntia sitten`;
+  } else if (elapsed < msPerMonth) {
+    if (Math.round(elapsed/msPerDay) == 1) {
+      return "1 päivä sitten";
+    }
+    return `noin ${Math.round(elapsed/msPerDay)} päivää sitten`;
+  } else if (elapsed < msPerYear) {
+    if (Math.round(elapsed/msPerMonth) == 1) {
+      return "1 kuukausi sitten";
+    }
+    return `noin ${Math.round(elapsed/msPerMonth)} kuukautta sitten`;
+  } else {
+    if (Math.round(elapsed/msPerYear) == 1) {
+      return "1 vuosi sitten";
+    }
+    return `noin ${Math.round(elapsed/msPerYear)} vuotta sitten`;
+  }
+}
+
 function Info(props) {
 
   const [loginOpen, setLoginOpen] = React.useState(false);
@@ -102,21 +144,14 @@ function Info(props) {
   
   const classes = useStyles();
 
-  var updateDate;
-  var updateTime;
+  var updateInfo = "";
 
   // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
   if (props.segmentdata.update !== null && props.segmentdata.update !== undefined) {
-    
-    // Datasta aika tulee muodossa: yyyy-mm-ddThh:mm:ss.000Z
-    let timedata = props.segmentdata.update.Aika;
-    let timeString = timedata.split("T");
-    
-    // Päivämäärä taulukoksi muotoon [vuosi, kuukausi, päivä]
-    updateDate = timeString[0].split("-");
-
-    // Kellonaika muodossa hh:mm:ss
-    updateTime = timeString[1].split(".")[0];
+    // Datasta saadaan viimeisin päivitysaika
+    let latestUpdateTime = new Date(props.segmentdata.update.Aika);
+    let currentTime = new Date();
+    updateInfo = "Viimeksi päivitetty: " + getRelativeTimestamp(currentTime, latestUpdateTime);
   }
 
   var dangerimage;
@@ -285,7 +320,7 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
             </Typography>
             <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateDate[2]}.${updateDate[1]}.${updateDate[0]} ${updateTime}`}
+              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateInfo}`}
             </Typography>
           </Box>
 
@@ -387,7 +422,7 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
             </Typography>
             <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateDate[2]}.${updateDate[1]}.${updateDate[0]} ${updateTime}`}
+              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateInfo}`}
             </Typography>
           </Box>
           
