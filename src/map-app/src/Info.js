@@ -151,7 +151,7 @@ function Info(props) {
     // Datasta saadaan viimeisin päivitysaika
     let latestUpdateTime = new Date(props.segmentdata.update.Aika);
     let currentTime = new Date();
-    updateInfo = "Viimeksi päivitetty: " + getRelativeTimestamp(currentTime, latestUpdateTime);
+    updateInfo = `Viimeksi päivitetty: ${getRelativeTimestamp(currentTime, latestUpdateTime)}`;
   }
 
   var dangerimage;
@@ -320,7 +320,7 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
             </Typography>
             <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateInfo}`}
+              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : updateInfo}
             </Typography>
           </Box>
 
@@ -422,7 +422,7 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
             </Typography>
             <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateInfo}`}
+              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : updateInfo}
             </Typography>
           </Box>
           
