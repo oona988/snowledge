@@ -58,6 +58,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import TextField from '@material-ui/core/TextField';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -91,6 +97,29 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
+  },
+  snowRecordEBox: {
+    padding: "7px",
+  },
+  snowRecordEHeaders: {
+    fontSize: 15,
+    padding: "3px",
+  },
+  snowRecordEButtons: {
+    paddingLeft: 66,
+    paddingRight: 56,
+    position: "relative",
+/*
+    "& .MuiButton-sizeSmall": {
+      paddingLeft: 48,
+      paddingRight: 32,
+      position: "absolute",
+      left: 16
+    },*/
+    "& .MuiButton-endIcon": {
+      position: "absolute",
+      right: 16
+    }
   }
 }));
 
@@ -99,6 +128,7 @@ function Info(props) {
   const [loginOpen, setLoginOpen] = React.useState(false);
   const [snowtype, setSnowtype] = React.useState(0);
   const [text, setText] = React.useState("Ei tietoa");
+  const [entryHidden, setEntryHidden] = React.useState("flex");
   
   const classes = useStyles();
 
@@ -150,6 +180,7 @@ function Info(props) {
     setLoginOpen(false);
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Teksti : "Ei kuvausta");
     setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
+    setEntryHidden("flex");
   };
 
   // Lumitilanteen kuvaustekstin päivittäminen
@@ -165,6 +196,17 @@ function Info(props) {
   // Nollataan valittu segmentti sulkiessa
   function closeShownSegment() {
     props.onClose(null);
+  }
+
+  // Hides unnecessary information on snow record entry view, if checkbox is checked.
+  const updateEntryHidden = (event) => {
+    // updates display of the box, none makes contents hidden
+    if (!event.target.checked){
+      setEntryHidden("flex");
+    }
+    else if (event.target.checked){
+      setEntryHidden("none");
+    }
   }
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
@@ -297,58 +339,74 @@ function Info(props) {
             <Typography variant="button">Päivitä</Typography>
           </IconButton>
           
-          {/* Segmentin päivitysdialogi */}
+          {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
           <Dialog 
             onClose={closeUpdate} 
             open={loginOpen}
           >
             <DialogTitle id="update-segment">Päivitä segmenttiä</DialogTitle>
-              
-            {/* Avustetekstit, esim segmentin nimi */}
+            {/*<Box className={snowRecordEBox}>
+             Avustetekstit, esim segmentin nimi */}
             <Box className={classes.helpers}>
-              <Typography>{props.segmentdata.Nimi}</Typography>
-              <Typography variant="caption" >Vihje: jos haluat päivittää vain aikaleiman, päivitä muuttamatta lumityyppiä ja jätä kuvaus tyhjäksi</Typography>
+              <Typography variant="h5" className={classes.snowRecordEHeaders}>{props.segmentdata.Nimi}</Typography>
             </Box>
-              
-            {/* Lumityypin valinta */}
-            <InputLabel id="snowtype" className={classes.inputs}>Lumityyppi</InputLabel>
-            <Select
-              labelId="snowtype"
-              id="snowtype"
-              value={snowtype}
-              onChange={updateSnowtype}
-              displayEmpty
-              className={classes.inputs}
-            >
-              <MenuItem value={0}>Ei tietoa</MenuItem>
-              <MenuItem value={1}>Pehmeä lumi</MenuItem>
-              <MenuItem value={2}>Tuulen pieksämä aaltoileva lumi</MenuItem>
-              <MenuItem value={3}>Korppu</MenuItem>
-              <MenuItem value={4}>Sohjo</MenuItem>
-              <MenuItem value={5}>Jää</MenuItem>
-            </Select>
-            {snowtype === 0 ? <FormHelperText className={classes.inputs}>Muuta lumityyppiä päivittääksesi</FormHelperText> : <div />}
+            {/* Checkboxi pelkän aikaleiman päivitykselle*/ }
+            <Box>
+              <FormControlLabel control={<Checkbox onChange={updateEntryHidden}/>} label="Päivitä vain aikaleima" />
+            </Box>
 
-            {/* Kuvausteksti */}
-            <FormControl className={classes.inputs}>
-              <InputLabel htmlFor="text" >Kuvaus</InputLabel>
-              <Input
-                id="text"
-                type='text'
-                multiline={true}
-                rows={5}
-                placeholder={text}
-                onChange={updateText}              
-              />
-            </FormControl>
-            
-            {/* Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) */}
+            {/*THIS BOX CONTAINS ITEMS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
+            <Box display={entryHidden} flexDirection="column">
+              {/* Lumityypin valinta 
+              <InputLabel id="snowtype" className={classes.inputs}>Lumityypit {"\u0026"} esteet</InputLabel> */}
+              <Typography variant="h5" className={classes.snowRecordEHeaders}>Lumityypit {"\u0026"} esteet</Typography>
+              {/*<Select
+                labelId="snowtype"
+                id="snowtype"
+                value={snowtype}
+                onChange={updateSnowtype}
+                displayEmpty
+                className={classes.inputs}
+              >
+                <MenuItem value={0}>Ei tietoa</MenuItem>
+                <MenuItem value={1}>Pehmeä lumi</MenuItem>
+                <MenuItem value={2}>Tuulen pieksämä aaltoileva lumi</MenuItem>
+                <MenuItem value={3}>Korppu</MenuItem>
+                <MenuItem value={4}>Sohjo</MenuItem>
+                <MenuItem value={5}>Jää</MenuItem>
+              </Select>
+              {snowtype === 0 ? <FormHelperText className={classes.inputs}>Muuta lumityyppiä päivittääksesi</FormHelperText> : <div />}*/}
+
+              <Button variant="contained" color="primary" endIcon={<SearchIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
+              <Divider variant="middle" />
+              {/* Kuvausteksti 
+              <FormControl className={classes.inputs}>
+                <InputLabel htmlFor="text" >Kuvaus</InputLabel>*/}
+                <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
+                <TextField id="standard-basic" label="Kirjoita..." variant="standard"/>
+              {/* <Input
+                  id="text"
+                  type='text'
+                  multiline={true}
+                  rows={5}
+                  placeholder={text}
+                  onChange={updateText}              
+              />*/}
+
+              <Divider variant="middle" />  
+
+              {/*</FormControl>*/}
+
+              {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
+              <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
+              <Button variant="contained" color="primary" endIcon={<AddIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
+            </Box>
+            {/*</Box>
+             Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) */}
             <DialogActions>
-              <Divider />
-              <Button id={"dialogClose"} onClick={closeUpdate}>Peruuta</Button>
+              <Button id={"dialogClose"} variant = 'contained' color="secondary" onClick={closeUpdate}>Peruuta</Button>
               <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={snowtype === 0}>Päivitä</Button>
             </DialogActions>
-          
           </Dialog>
         </div>
       );
