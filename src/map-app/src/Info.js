@@ -6,6 +6,10 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+18.10.2021 Juho Kumara
+Muokattu segmenttien päivitysikkunaa vastaamaan uutta UI-suunnitelmaa (Keskeneräinen versio ilman kaikkia tyylimuutoksia)
+Edited snow record entry view to look similar to new UI design (Work-in-progress version without proper styling)
+
 10.1.2021 Markku Nirkkonen
 Lumivyöryvaara näkyy, kun tarkastellaan segmenttiä, joka on lumivyöryaluetta
 
@@ -49,20 +53,22 @@ import Divider from "@material-ui/core/Divider";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+//import InputLabel from "@material-ui/core/InputLabel";
+//import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
-import FormControl from "@material-ui/core/FormControl";
+//import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+//import FormHelperText from "@material-ui/core/FormHelperText";
+import TextField from "@material-ui/core/TextField";
+import SearchIcon from "@material-ui/icons/Search";
+import AddIcon from "@material-ui/icons/Add";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 
 
@@ -109,13 +115,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 66,
     paddingRight: 56,
     position: "relative",
-/*
-    "& .MuiButton-sizeSmall": {
-      paddingLeft: 48,
-      paddingRight: 32,
-      position: "absolute",
-      left: 16
-    },*/
+
     "& .MuiButton-endIcon": {
       position: "absolute",
       right: 16
@@ -128,20 +128,32 @@ function Info(props) {
   const [loginOpen, setLoginOpen] = React.useState(false);
   const [snowtype, setSnowtype] = React.useState(0);
   const [text, setText] = React.useState("Ei tietoa");
-  const [entryHidden, setEntryHidden] = React.useState("flex");
-  
+  const [entryVisible, setEntryVisible] = React.useState(true);
+  const [addVisible, setAddVisible] = React.useState(true);
+  const [searchVisible, setSearchVisible] = React.useState(false);
+  const [snowRecordContent, setSnowRecordContent] = React.useState([]);
+
   const classes = useStyles();
+
+  // Delete after database is implemented
+  const testSnowTypes = [
+    { type: "Pehmeä lumi", value: 0 },
+    { type: "Tuulen pieksämä aaltoileva lumi", value: 1 },
+    { type: "Korppu", value: 2 },
+    { type: "Sohjo", value: 3 },
+    { type: "Jää", value: 4 },
+  ];
 
   var updateDate;
   var updateTime;
 
   // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
   if (props.segmentdata.update !== null && props.segmentdata.update !== undefined) {
-    
+
     // Datasta aika tulee muodossa: yyyy-mm-ddThh:mm:ss.000Z
     let timedata = props.segmentdata.update.Aika;
     let timeString = timedata.split("T");
-    
+
     // Päivämäärä taulukoksi muotoon [vuosi, kuukausi, päivä]
     updateDate = timeString[0].split("-");
 
@@ -156,7 +168,7 @@ function Info(props) {
   if (props.segmentdata !== null) {
     if (props.segmentdata.Lumivyöryvaara) {
       // Lumivyöryvaaran merkin tiedostonimi on !.png
-      dangerimage = <img src={process.env.PUBLIC_URL + "/lumilogot/!.png"} alt="lumivyöryvaaran logo"/>;
+      dangerimage = <img src={process.env.PUBLIC_URL + "/lumilogot/!.png"} alt="lumivyöryvaaran logo" />;
       dangertext = <Typography variant="subtitle1" color="error">Lumivyöryherkkä alue, tarkista lumivyörytilanne!</Typography>;
     } else {
       dangerimage = <div />;
@@ -167,9 +179,10 @@ function Info(props) {
   /*
    * Event handlers
    */
-  
+
   // Segmentin päivitysdialogin avaus
   const openUpdate = () => {
+    setEntryVisible(true);
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Teksti : "Ei kuvausta");
     setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
     setLoginOpen(true);
@@ -180,18 +193,17 @@ function Info(props) {
     setLoginOpen(false);
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Teksti : "Ei kuvausta");
     setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
-    setEntryHidden("flex");
   };
 
   // Lumitilanteen kuvaustekstin päivittäminen
-  const updateText = (event) => {
+  /*const updateText = (event) => {
     setText(event.target.value);
-  };
+  };*/
 
   // Lumitilanteen lumityypin päivittäminen
-  const updateSnowtype = (event) => {
+  /*const updateSnowtype = (event) => {
     setSnowtype(event.target.value);
-  };
+  };*/
 
   // Nollataan valittu segmentti sulkiessa
   function closeShownSegment() {
@@ -199,19 +211,37 @@ function Info(props) {
   }
 
   // Hides unnecessary information on snow record entry view, if checkbox is checked.
-  const updateEntryHidden = (event) => {
+  const updateEntryVisible = (event) => {
     // updates display of the box, none makes contents hidden
-    if (!event.target.checked){
-      setEntryHidden("flex");
+    if (!event.target.checked) {
+      setEntryVisible(true);
     }
-    else if (event.target.checked){
-      setEntryHidden("none");
+    else if (event.target.checked) {
+      setEntryVisible(false);
     }
-  }
+  };
+  // opens search
+  const handleSearchOpen = (/*event*/) => {
+    // updates display of the box, none makes contents hidden
+    setAddVisible(false);
+    setSearchVisible(true);
+  };
+  // closes search
+  const handleSearchClose = (event, value) => {
+    setSnowRecordContent(snowRecordContent.concat(value));
+    console.log(value);
+    /*console.log(event.target.textContent);*/
+    setAddVisible(true);
+    setSearchVisible(false);
+  };
+  // Removes snowtype in snow record entry view
+  /*const removeSnowtype = (event, value) => {
+      KESKEN
+  };*/
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
   const sendForm = () => {
-    
+
     // Tallennushetken lumilaatu, kuvausteksti. Lisäksi päivitettävän (valitun) segmentin ID
     const data = {
       Segmentti: props.segmentdata.ID,
@@ -234,7 +264,7 @@ function Info(props) {
       await response.json();
     };
     fetchUpdate();
-    
+
     // Haetaan ajantasaiset segmenttien tiedot heti päivittämisen jälkeen
     const fetchData = async () => {
       const snow = await fetch("api/lumilaadut");
@@ -243,31 +273,30 @@ function Info(props) {
       const updateData = await updates.json();
       const response = await fetch("api/segments");
       const data = await response.json();
-      
-      
+
+
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
-          if(snow.ID === update.Lumilaatu){
+          if (snow.ID === update.Lumilaatu) {
             update.Lumi = snow;
           }
         });
       });
-      
+
       data.forEach(segment => {
         segment.update = null;
         updateData.forEach(update => {
           if (update.Segmentti === segment.ID) {
-            segment.update = update;           
+            segment.update = update;
           }
           // päivitetään näytettävä segmentti
           if (segment.ID === props.segmentdata.ID) {
             props.onUpdate(segment);
           }
         });
-        if(segment.On_Alasegmentti != null)
-        {
+        if (segment.On_Alasegmentti != null) {
           data.forEach(mahd_yla_segmentti => {
-            if(mahd_yla_segmentti.ID === segment.On_Alasegmentti){
+            if (mahd_yla_segmentti.ID === segment.On_Alasegmentti) {
               segment.On_Alasegmentti = mahd_yla_segmentti.Nimi;
             }
           });
@@ -282,16 +311,16 @@ function Info(props) {
 
     };
     fetchData();
-    closeUpdate();  
+    closeUpdate();
   };
 
-  
+
 
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
   if (props.segmentdata !== undefined) {
-    
+
     if (props.token !== null && props.token !== undefined) {
-      
+
       // Nämä renderöidään, kun käyttäjä on kirjautunut (muokkaustoiminto lisänä)
       return (
         <div className="info">
@@ -316,7 +345,7 @@ function Info(props) {
 
             <Box className={classes.snowLogo}>
               {/* Segmentin logon tulee olla nimetty segmentin ID:n kanssa yhtenevästi */}
-              {props.segmentdata.update === null || props.segmentdata.update.Lumi === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo"/>}
+              {props.segmentdata.update === null || props.segmentdata.update.Lumi === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo" />}
               {/* Lumivyöryvaarasta ilmoitetaan logolla */}
               {props.segmendata === null ? null : dangerimage}
             </Box>
@@ -331,17 +360,17 @@ function Info(props) {
             </Typography>
           </Box>
 
-          <IconButton 
+          <IconButton
             className={classes.editButton}
             onClick={openUpdate}
           >
             <EditIcon />
             <Typography variant="button">Päivitä</Typography>
           </IconButton>
-          
+
           {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
-          <Dialog 
-            onClose={closeUpdate} 
+          <Dialog
+            onClose={closeUpdate}
             open={loginOpen}
           >
             <DialogTitle id="update-segment">Päivitä segmenttiä</DialogTitle>
@@ -350,41 +379,80 @@ function Info(props) {
             <Box className={classes.helpers}>
               <Typography variant="h5" className={classes.snowRecordEHeaders}>{props.segmentdata.Nimi}</Typography>
             </Box>
-            {/* Checkboxi pelkän aikaleiman päivitykselle*/ }
+            {/* Checkboxi pelkän aikaleiman päivitykselle*/}
             <Box>
-              <FormControlLabel control={<Checkbox onChange={updateEntryHidden}/>} label="Päivitä vain aikaleima" />
+              <FormControlLabel control={<Checkbox onChange={updateEntryVisible} />} label="Päivitä vain aikaleima" />
             </Box>
 
             {/*THIS BOX CONTAINS ITEMS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
-            <Box display={entryHidden} flexDirection="column">
-              {/* Lumityypin valinta 
-              <InputLabel id="snowtype" className={classes.inputs}>Lumityypit {"\u0026"} esteet</InputLabel> */}
-              <Typography variant="h5" className={classes.snowRecordEHeaders}>Lumityypit {"\u0026"} esteet</Typography>
-              {/*<Select
-                labelId="snowtype"
-                id="snowtype"
-                value={snowtype}
-                onChange={updateSnowtype}
-                displayEmpty
-                className={classes.inputs}
-              >
-                <MenuItem value={0}>Ei tietoa</MenuItem>
-                <MenuItem value={1}>Pehmeä lumi</MenuItem>
-                <MenuItem value={2}>Tuulen pieksämä aaltoileva lumi</MenuItem>
-                <MenuItem value={3}>Korppu</MenuItem>
-                <MenuItem value={4}>Sohjo</MenuItem>
-                <MenuItem value={5}>Jää</MenuItem>
-              </Select>
-              {snowtype === 0 ? <FormHelperText className={classes.inputs}>Muuta lumityyppiä päivittääksesi</FormHelperText> : <div />}*/}
+            {entryVisible && (
+              <Box display="flex" flexDirection="column">
+                {/* Lumityypin valinta 
+                <InputLabel id="snowtype" className={classes.inputs}>Lumityypit {"\u0026"} esteet</InputLabel> */}
+                <Typography variant="h5" className={classes.snowRecordEHeaders}>Lumityypit {"\u0026"} esteet</Typography>
+                {/* OLD ONES COMMENTED: <Select
+                  labelId="snowtype"
+                  id="snowtype"
+                  value={snowtype}
+                  onChange={updateSnowtype}
+                  displayEmpty
+                  className={classes.inputs}
+                >
+                  <MenuItem value={0}>Ei tietoa</MenuItem>
+                  <MenuItem value={1}>Pehmeä lumi</MenuItem>
+                  <MenuItem value={2}>Tuulen pieksämä aaltoileva lumi</MenuItem>
+                  <MenuItem value={3}>Korppu</MenuItem>
+                  <MenuItem value={4}>Sohjo</MenuItem>
+                  <MenuItem value={5}>Jää</MenuItem>
+                </Select>
+                {snowtype === 0 ? <FormHelperText className={classes.inputs}>Muuta lumityyppiä päivittääksesi</FormHelperText> : <div />}*/}
 
-              <Button variant="contained" color="primary" endIcon={<SearchIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
-              <Divider variant="middle" />
-              {/* Kuvausteksti 
+                {addVisible && (<Button variant="contained" onClick={handleSearchOpen} color="primary" endIcon={<SearchIcon />} className={classes.snowRecordEButtons}>Lisää</Button>)}
+                {/*Add options from database to autocomplete: (Remove placeholders)*/}
+                {searchVisible && (<Box>
+                  <Autocomplete
+                    id="snowRecordSearch"
+                    onChange={(event, value) => { handleSearchClose(event, value); }}
+                    open={true}
+                    autoComplete={true}
+                    options={testSnowTypes}
+                    noOptionsText={"Ei tuloksia"}
+                    popupIcon={""}
+                    getOptionLabel={(option) => option.type}
+                    renderInput={(params) => (<TextField {...params} autoFocus={true} label="Etsi" variant="outlined"
+                    />)}
+                  />
+                </Box>)}
+
+                {snowRecordContent.map(item => (<Box display="flex" key={item.value} flexDirection="column" boxShadow={4}>
+
+                  <Box>
+                    <Select
+                      value={item.value}
+                      displayEmpty
+                      className={classes.inputs}
+                    >
+                      <MenuItem value={0}>Pehmeä lumi</MenuItem>
+                      <MenuItem value={1}>Tuulen pieksämä aaltoileva lumi</MenuItem>
+                      <MenuItem value={2}>Korppu</MenuItem>
+                      <MenuItem value={3}>Sohjo</MenuItem>
+                      <MenuItem value={4}>Jää</MenuItem>
+                    </Select>
+                    <IconButton>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                  <Button variant="contained" color="primary">Lisää alatyyppi</Button>
+
+                </Box>))}
+
+                <Divider variant="middle" />
+                {/* Kuvausteksti 
               <FormControl className={classes.inputs}>
                 <InputLabel htmlFor="text" >Kuvaus</InputLabel>*/}
                 <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
-                <TextField id="standard-basic" label="Kirjoita..." variant="standard"/>
-              {/* <Input
+                <TextField id="standard-basic" label="Kirjoita..." variant="standard" />
+                {/* <Input
                   id="text"
                   type='text'
                   multiline={true}
@@ -393,18 +461,18 @@ function Info(props) {
                   onChange={updateText}              
               />*/}
 
-              <Divider variant="middle" />  
+                <Divider variant="middle" />
 
-              {/*</FormControl>*/}
+                {/*</FormControl>*/}
 
-              {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
-              <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
-              <Button variant="contained" color="primary" endIcon={<AddIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
-            </Box>
+                {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
+                <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
+                <Button variant="contained" color="primary" endIcon={<AddIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
+              </Box>)}
             {/*</Box>
              Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) */}
             <DialogActions>
-              <Button id={"dialogClose"} variant = 'contained' color="secondary" onClick={closeUpdate}>Peruuta</Button>
+              <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
               <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={snowtype === 0}>Päivitä</Button>
             </DialogActions>
           </Dialog>
@@ -435,7 +503,7 @@ function Info(props) {
 
             <Box className={classes.snowLogo}>
               {/* Segmentin logon tulee olla nimetty segmentin ID:n kanssa yhtenevästi */}
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo"/>}
+              {props.segmentdata.update === null || props.segmentdata.update === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo" />}
               {props.segmendata === null ? null : dangerimage}
             </Box>
             <Typography variant="body1" className={classes.snowInfoTexts} align="center" component="p">
@@ -448,14 +516,14 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateDate[2]}.${updateDate[1]}.${updateDate[0]} ${updateTime}`}
             </Typography>
           </Box>
-          
+
         </div>
       );
     }
-  // mikäli segmenttidataa ei ole saatavilla, ei yritetä renderöidä mitään näkyvää
+    // mikäli segmenttidataa ei ole saatavilla, ei yritetä renderöidä mitään näkyvää
   } else {
     return <div className="info" />;
   }
 }
- 
+
 export default Info;
