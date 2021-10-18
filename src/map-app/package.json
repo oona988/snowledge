@@ -22,10 +22,14 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "watch": "npm-watch",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js"
+  },
+  "watch": {
+    "build": "src/"
   },
   "proxy": "http://localhost:3000",
   "eslintConfig": {
@@ -49,6 +53,7 @@
   "devDependencies": {
     "chokidar": "^3.5.2",
     "eslint": "^7.32.0",
-    "eslint-plugin-react": "^7.26.1"
+    "eslint-plugin-react": "^7.26.1",
+    "npm-watch": "^0.11.0"
   }
 }
