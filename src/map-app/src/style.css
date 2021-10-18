@@ -47,16 +47,17 @@ body {
 }
 
 .info {
-  background-color: rgba(0,0,0,0.8);
-  max-width: calc(100vh - 50px);
+  background-color: rgb(255, 255, 255);
   min-width: 300px;
+  max-width: 750px;
+  border-radius: 10px;
   z-index: 1;
-  height: calc(100vh - 120px);
+  height: calc(66vh - 120px);
   overflow: auto;
   margin: auto;
   position: absolute;
   top: 120px;
-  right: 0px;
+  left: 0px;
 }
 
 /* .map {

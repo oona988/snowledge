@@ -58,28 +58,15 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import SnowRecordView from "./SnowRecordView";
 
 
 const useStyles = makeStyles((theme) => ({
-
   close: {
-    color: "white"
-  },
-  textBox: {
-    margin: "auto",
-    display: "block",
-  },
-  snowLogo: {
-    padding: theme.spacing(3),
-    textAlign: "center"
-  },
-  snowInfoTexts: {
-    maxWidth: 300,
-    color: "white",
-    padding: theme.spacing(3),
+    color: "black"
   },
   editButton: {
-    color: "white",
+    color: "black",
     display: "flex",
   },
   inputs: {
@@ -94,47 +81,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function getRelativeTimestamp(current, previous) {
-  var msPerMinute = 60 * 1000;
-  var msPerHour = msPerMinute * 60;
-  var msPerDay = msPerHour * 24;
-  var msPerMonth = msPerDay * 30;
-  var msPerYear = msPerDay * 365;
-
-  var elapsed = current - previous;
-
-  if (elapsed < msPerMinute) {
-    if (Math.round(elapsed/1000) == 1) {
-      return "1 sekunti sitten";
-    }
-    return `${Math.round(elapsed/1000)} sekuntia sitten`;
-  } else if (elapsed < msPerHour) {
-    if (Math.round(elapsed/msPerMinute) == 1) {
-      return "1 minuutti sitten";
-    }
-    return `${Math.round(elapsed/msPerMinute)} minuuttia sitten`;
-  } else if (elapsed < msPerDay ) {
-    if (Math.round(elapsed/msPerHour) == 1) {
-      return "1 tunti sitten";
-    }
-    return `${Math.round(elapsed/msPerHour)} tuntia sitten`;
-  } else if (elapsed < msPerMonth) {
-    if (Math.round(elapsed/msPerDay) == 1) {
-      return "1 päivä sitten";
-    }
-    return `noin ${Math.round(elapsed/msPerDay)} päivää sitten`;
-  } else if (elapsed < msPerYear) {
-    if (Math.round(elapsed/msPerMonth) == 1) {
-      return "1 kuukausi sitten";
-    }
-    return `noin ${Math.round(elapsed/msPerMonth)} kuukautta sitten`;
-  } else {
-    if (Math.round(elapsed/msPerYear) == 1) {
-      return "1 vuosi sitten";
-    }
-    return `noin ${Math.round(elapsed/msPerYear)} vuotta sitten`;
-  }
-}
 
 function Info(props) {
 
@@ -143,31 +89,6 @@ function Info(props) {
   const [text, setText] = React.useState("Ei tietoa");
   
   const classes = useStyles();
-
-  var updateInfo = "";
-
-  // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
-  if (props.segmentdata.update !== null && props.segmentdata.update !== undefined) {
-    // Datasta saadaan viimeisin päivitysaika
-    let latestUpdateTime = new Date(props.segmentdata.update.Aika);
-    let currentTime = new Date();
-    updateInfo = `Viimeksi päivitetty: ${getRelativeTimestamp(currentTime, latestUpdateTime)}`;
-  }
-
-  var dangerimage;
-  var dangertext;
-
-  // Alustetaan komponentit, mikäli valitulla segmentillä on lumivyöryvaara
-  if (props.segmentdata !== null) {
-    if (props.segmentdata.Lumivyöryvaara) {
-      // Lumivyöryvaaran merkin tiedostonimi on !.png
-      dangerimage = <img src={process.env.PUBLIC_URL + "/lumilogot/!.png"} alt="lumivyöryvaaran logo"/>;
-      dangertext = <Typography variant="subtitle1" color="error">Lumivyöryherkkä alue, tarkista lumivyörytilanne!</Typography>;
-    } else {
-      dangerimage = <div />;
-      dangertext = null;
-    }
-  }
 
   /*
    * Event handlers
@@ -292,38 +213,8 @@ function Info(props) {
             <CloseIcon />
           </IconButton>
 
-          <Box className={classes.textBox} >
-
-            {/* Segmentin nimi ja lumivyöryvaarasta kertova teksti, mikäli kyseessä lumivyöryherkkä segmentti */}
-            <Typography variant="h5" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata === null ? "Ei nimitietoa" : props.segmentdata.Nimi}
-              {props.segmentdata === null ? null : dangertext}
-            </Typography>
-
-            {/* Pohjamaasto, kommentoi näkyviin jos halutaan näyttää */}
-            {/* <Typography variant="subtitle1" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata === null ? "Ei tietoa pohjamaastosta" : props.segmentdata.Maasto}
-            </Typography> */}
-
-            {/* Segmentin logon tulee olla nimetty segmentin ID:n kanssa yhtenevästi */}
-
-            <Box className={classes.snowLogo}>
-              {/* Segmentin logon tulee olla nimetty segmentin ID:n kanssa yhtenevästi */}
-              {props.segmentdata.update === null || props.segmentdata.update.Lumi === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo"/>}
-              {/* Lumivyöryvaarasta ilmoitetaan logolla */}
-              {props.segmendata === null ? null : dangerimage}
-            </Box>
-            <Typography variant="body1" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update.Lumi === undefined ? "Ei tietoa" : props.segmentdata.update.Lumi.Nimi}
-            </Typography>
-            <Typography variant="body2" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
-            </Typography>
-            <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : updateInfo}
-            </Typography>
-          </Box>
-
+          <SnowRecordView segmentdata={props.segmentdata}></SnowRecordView>
+          
           <IconButton 
             className={classes.editButton}
             onClick={openUpdate}
@@ -396,36 +287,7 @@ function Info(props) {
             <CloseIcon />
           </IconButton>
 
-          <Box className={classes.textBox} >
-
-            {/* Segmentin nimi ja lumivyöryvaarasta kertova teksti, mikäli kyseessä lumivyöryherkkä segmentti */}
-            <Typography variant="h5" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata === null ? "Ei nimitietoa" : props.segmentdata.Nimi}
-              {/* Lumivyöryvaarasta ilmoitetaan logolla */}
-              {props.segmentdata === null ? null : dangertext}
-            </Typography>
-
-            {/* Pohjamaasto, kommentoi näkyviin jos halutaan näyttää */}
-            {/* <Typography variant="subtitle1" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata === null ? "Ei tietoa pohjamaastosta" : props.segmentdata.Maasto}
-            </Typography> */}
-
-            <Box className={classes.snowLogo}>
-              {/* Segmentin logon tulee olla nimetty segmentin ID:n kanssa yhtenevästi */}
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? <div /> : <img src={process.env.PUBLIC_URL + "/lumilogot/" + props.segmentdata.update.Lumi.ID + ".png"} alt="lumityypin logo"/>}
-              {props.segmendata === null ? null : dangerimage}
-            </Box>
-            <Typography variant="body1" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei tietoa" : props.segmentdata.update.Lumi.Nimi}
-            </Typography>
-            <Typography variant="body2" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "Ei kuvausta" : props.segmentdata.update.Teksti}
-            </Typography>
-            <Typography variant="caption" className={classes.snowInfoTexts} align="center" component="p">
-              {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : updateInfo}
-            </Typography>
-          </Box>
-          
+          <SnowRecordView segmentdata={props.segmentdata}></SnowRecordView>
         </div>
       );
     }
