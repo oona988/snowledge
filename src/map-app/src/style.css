@@ -48,12 +48,9 @@ body {
 
 .info {
   background-color: rgb(255, 255, 255);
-  min-width: 300px;
   max-width: 750px;
   border-radius: 10px;
   z-index: 1;
-  height: calc(66vh - 120px);
-  overflow: auto;
   margin: auto;
   position: absolute;
   top: 120px;
