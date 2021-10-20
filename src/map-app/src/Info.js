@@ -56,7 +56,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 //import InputLabel from "@material-ui/core/InputLabel";
 //import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
-//import FormControl from "@material-ui/core/FormControl";
+import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
@@ -69,8 +69,22 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+//import { DialogContent, Paper } from "@material-ui/core";
+//import { shadows } from '@material-ui/system';
+//import { borders } from '@material-ui/system';
 
-
+// Changes button color palette. Muuttaa nappien väripalettia.
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#42628C"
+    },
+    secondary: {
+      main: "#EEEEEE"
+    }
+  }
+});
 
 const useStyles = makeStyles((theme) => ({
 
@@ -106,10 +120,24 @@ const useStyles = makeStyles((theme) => ({
   },
   snowRecordEBox: {
     padding: "7px",
+    margin: "10px",
+  },
+  snowRecordEPart: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    marginBottom: "15px",
+    marginTop: "15px",
+  },
+  snowRecordEHeader: {
+    fontWeight: "bold",
+    fontSize: 20,
   },
   snowRecordEHeaders: {
     fontSize: 15,
     padding: "3px",
+    marginTop: "5px",
+    marginBottom: "5px",
   },
   snowRecordEButtons: {
     paddingLeft: 66,
@@ -120,7 +148,28 @@ const useStyles = makeStyles((theme) => ({
       position: "absolute",
       right: 16
     }
-  }
+  },
+  snowRecordEButtonsWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  snowRecordEItem: {
+    padding: "10px",
+    marginTop: "3px",
+    marginBottom: "3px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    boxShadow: "3",
+    borderRadius: "16",
+  },
+  snowRecordEItemContents: {
+    marginBottom: "5px",
+    marginTop: "2px",
+    display: "flex",
+    flexDirection: "row",
+  },
 }));
 
 function Info(props) {
@@ -369,28 +418,37 @@ function Info(props) {
           </IconButton>
 
           {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
+
           <Dialog
             onClose={closeUpdate}
             open={loginOpen}
           >
-            <DialogTitle id="update-segment">Päivitä segmenttiä</DialogTitle>
-            {/*<Box className={snowRecordEBox}>
-             Avustetekstit, esim segmentin nimi */}
-            <Box className={classes.helpers}>
-              <Typography variant="h5" className={classes.snowRecordEHeaders}>{props.segmentdata.Nimi}</Typography>
-            </Box>
-            {/* Checkboxi pelkän aikaleiman päivitykselle*/}
-            <Box>
-              <FormControlLabel control={<Checkbox onChange={updateEntryVisible} />} label="Päivitä vain aikaleima" />
-            </Box>
+            <MuiThemeProvider theme={theme}>
+              <DialogTitle id="update-segment">
+                {/*Otsikko */}
+                <Typography className={classes.snowRecordEHeader}>Päivitä segmenttiä</Typography>
+                {/*Avustetekstit, esim segmentin nimi */}
+                <Typography variant="h5" className={classes.snowRecordEHeaders}>{props.segmentdata.Nimi}</Typography>
+              </DialogTitle>
 
-            {/*THIS BOX CONTAINS ITEMS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
-            {entryVisible && (
-              <Box display="flex" flexDirection="column">
-                {/* Lumityypin valinta 
+              <Box className={classes.snowRecordEBox}>
+                <Box className={classes.snowRecordEPart}>
+                  {/* Checkboxi pelkän aikaleiman päivitykselle*/}
+                  <Box>
+                    <FormControlLabel color="#42628B" control={<Checkbox onChange={updateEntryVisible} />} label="Päivitä vain aikaleima" />
+                  </Box>
+                </Box>
+
+                <Divider variant="middle" />
+
+                {/*THIS BOX CONTAINS ITEMS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
+                {entryVisible && (
+                  <Box className={classes.snowRecordEPart}>
+                    <Box className={classes.snowRecordEPart}>
+                      {/* Lumityypin valinta 
                 <InputLabel id="snowtype" className={classes.inputs}>Lumityypit {"\u0026"} esteet</InputLabel> */}
-                <Typography variant="h5" className={classes.snowRecordEHeaders}>Lumityypit {"\u0026"} esteet</Typography>
-                {/* OLD ONES COMMENTED: <Select
+                      <Typography variant="h5" className={classes.snowRecordEHeaders}>Lumityypit {"\u0026"} esteet</Typography>
+                      {/* OLD ONES COMMENTED: <Select
                   labelId="snowtype"
                   id="snowtype"
                   value={snowtype}
@@ -407,52 +465,60 @@ function Info(props) {
                 </Select>
                 {snowtype === 0 ? <FormHelperText className={classes.inputs}>Muuta lumityyppiä päivittääksesi</FormHelperText> : <div />}*/}
 
-                {addVisible && (<Button variant="contained" onClick={handleSearchOpen} color="primary" endIcon={<SearchIcon />} className={classes.snowRecordEButtons}>Lisää</Button>)}
-                {/*Add options from database to autocomplete: (Remove placeholders)*/}
-                {searchVisible && (<Box>
-                  <Autocomplete
-                    id="snowRecordSearch"
-                    onChange={(event, value) => { handleSearchClose(event, value); }}
-                    open={true}
-                    autoComplete={true}
-                    options={testSnowTypes}
-                    noOptionsText={"Ei tuloksia"}
-                    popupIcon={""}
-                    getOptionLabel={(option) => option.type}
-                    renderInput={(params) => (<TextField {...params} autoFocus={true} label="Etsi" variant="outlined"
-                    />)}
-                  />
-                </Box>)}
+                      {addVisible && (<Box className={classes.snowRecordEButtonsWrapper}>
+                        <Button size="large" variant="contained" onClick={handleSearchOpen} color="primary" endIcon={<SearchIcon fontSize="large" />}
+                          className={classes.snowRecordEButtons}>Lisää</Button>
+                      </Box>)}
+                      {/*Add options from database to autocomplete: (Remove placeholders)*/}
+                      {searchVisible && (<Box>
+                        <Autocomplete
+                          id="snowRecordSearch"
+                          onChange={(event, value) => { handleSearchClose(event, value); }}
+                          open={true}
+                          autoComplete={true}
+                          options={testSnowTypes}
+                          noOptionsText={"Ei tuloksia"}
+                          popupIcon={""}
+                          getOptionLabel={(option) => option.type}
+                          renderInput={(params) => (<TextField {...params} label="Etsi" variant="outlined"
+                          />)}
+                        />
+                      </Box>)}
 
-                {snowRecordContent.map(item => (<Box display="flex" key={item.value} flexDirection="column" boxShadow={4}>
+                      {snowRecordContent.map(item => (<Box key={item.value}>
+                        <Box className={classes.snowRecordEItem} boxShadow={2} borderRadius={8}>
+                          <div className={classes.snowRecordEItemContents}>
+                            <FormControl variant="outlined" size="small" style={{ width: "80%" }}>
+                              <Select
+                                autoWidth={false}
+                                value={item.value}
+                                displayEmpty
+                              >
+                                <MenuItem value={0}>Pehmeä lumi</MenuItem>
+                                <MenuItem value={1}>Tuulen pieksämä aaltoileva lumi</MenuItem>
+                                <MenuItem value={2}>Korppu</MenuItem>
+                                <MenuItem value={3}>Sohjo</MenuItem>
+                                <MenuItem value={4}>Jää</MenuItem>
+                              </Select>
+                            </FormControl>
+                            <IconButton paddingLeft={"10px"}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
+                          <Button size="small" variant="contained" color="primary" style={{ width: "80%" }}>Lisää alatyyppi</Button>
+                        </Box>
+                      </Box>))}
+                    </Box>
 
-                  <Box>
-                    <Select
-                      value={item.value}
-                      displayEmpty
-                      className={classes.inputs}
-                    >
-                      <MenuItem value={0}>Pehmeä lumi</MenuItem>
-                      <MenuItem value={1}>Tuulen pieksämä aaltoileva lumi</MenuItem>
-                      <MenuItem value={2}>Korppu</MenuItem>
-                      <MenuItem value={3}>Sohjo</MenuItem>
-                      <MenuItem value={4}>Jää</MenuItem>
-                    </Select>
-                    <IconButton>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                  <Button variant="contained" color="primary">Lisää alatyyppi</Button>
-
-                </Box>))}
-
-                <Divider variant="middle" />
-                {/* Kuvausteksti 
+                    <Divider variant="middle" />
+                    {/* Kuvausteksti 
               <FormControl className={classes.inputs}>
                 <InputLabel htmlFor="text" >Kuvaus</InputLabel>*/}
-                <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
-                <TextField id="standard-basic" label="Kirjoita..." variant="standard" />
-                {/* <Input
+                    <Box className={classes.snowRecordEPart}>
+                      <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
+                      <TextField id="standard-basic" label="Kirjoita..." variant="standard" />
+                    </Box>
+                    {/* <Input
                   id="text"
                   type='text'
                   multiline={true}
@@ -460,21 +526,25 @@ function Info(props) {
                   placeholder={text}
                   onChange={updateText}              
               />*/}
+                    <Divider variant="middle" />
+                    {/*</FormControl>*/}
 
-                <Divider variant="middle" />
-
-                {/*</FormControl>*/}
-
-                {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
-                <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
-                <Button variant="contained" color="primary" endIcon={<AddIcon />} className={classes.snowRecordEButtons}>Lisää</Button>
-              </Box>)}
-            {/*</Box>
+                    {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
+                    <Box className={classes.snowRecordEPart}>
+                      <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
+                      <Box className={classes.snowRecordEButtonsWrapper}>
+                        <Button size="large" variant="contained" color="primary" endIcon={<AddIcon fontSize="large" />} className={classes.snowRecordEButtons}>Lisää</Button>
+                      </Box>
+                    </Box>
+                  </Box>)}
+                {/*</Box>
              Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) */}
-            <DialogActions>
-              <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
-              <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={snowtype === 0}>Päivitä</Button>
-            </DialogActions>
+                <DialogActions>
+                  <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
+                  <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={snowtype === 0}>Päivitä</Button>
+                </DialogActions>
+              </Box>
+            </MuiThemeProvider>
           </Dialog>
         </div>
       );
@@ -516,6 +586,7 @@ function Info(props) {
               {props.segmentdata.update === null || props.segmentdata.update === undefined ? "" : `${updateDate[2]}.${updateDate[1]}.${updateDate[0]} ${updateTime}`}
             </Typography>
           </Box>
+
 
         </div>
       );
