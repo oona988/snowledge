@@ -11,8 +11,8 @@ Siirretty Info.js tiedostosta erilliseen komponenttiin
 
 **/
 
-import clsx from "clsx";
 import * as React from "react";
+import { useMediaQuery } from "react-responsive";
 import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
-    padding: "10px",
+    padding: "15px",
   },
   dangerImage: {
     verticalAlign: "middle",
@@ -48,17 +48,14 @@ const useStyles = makeStyles(() => ({
   },
   icon: {
     verticalAlign: "middle",
-    maxWidth: "100%",
+    maxWidth: "8%",
   },
   cardImage: {
     maxHeight: "100px",
   },
-  media: {
-    width: "100%",
-  },
   skiabilityIcon: {
-    height: "50%",
-    width: "50%",
+    height: "45%",
+    width: "45%",
     display: "block",
     paddingTop: "2%"
   }
@@ -109,6 +106,11 @@ function getRelativeTimestamp(current, previous) {
 function SnowRecordView({segmentdata}) {
   const classes = useStyles();
 
+  // 0px  XS  600px  SM  900px  MD
+  const isXS = useMediaQuery({ query: "(max-width: 600px)" });
+  const isSM = useMediaQuery({ query: "(min-width: 600px) and (max-width: 900px)" });
+  //const isMD = useMediaQuery({ query: "(min-width: 900px)" });
+
   var updateInfo = "";
 
   // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
@@ -126,7 +128,7 @@ function SnowRecordView({segmentdata}) {
   if (segmentdata !== null) {
     if (segmentdata.Lumivyöryvaara) {
       // Lumivyöryvaaran merkin tiedostonimi on !.png
-      dangerimage = <img className={classes.icon} src={process.env.PUBLIC_URL + "/lumilogot/!.png"} alt="lumivyöryvaaran logo"/>;
+      dangerimage = <img className={classes.icon} src={process.env.PUBLIC_URL + "/icons/snow/avalanche.svg"} alt="lumivyöryvaaran logo"/>;
       dangertext = <Typography className={classes.normalText} variant="subtitle1" color="error" display="inline">Lumivyöryherkkä alue, tarkista lumivyörytilanne!</Typography>;
     } else {
       dangerimage = <div />;
@@ -168,8 +170,7 @@ function SnowRecordView({segmentdata}) {
           {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
             <CardMedia
               component={"img"}
-              className={clsx(classes.media)}
-              src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi_marka.svg"}
+              src={process.env.PUBLIC_URL + "/icons/snow/uusi_viti.svg"}
               alt="lumityypin logo"
             />
           }
@@ -182,8 +183,8 @@ function SnowRecordView({segmentdata}) {
           </Grid>
           <Grid item xs={12} sm={12} md={12}>
             <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-              Keskimääräinen hiihdettävyys
-              <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
+              Keskimääräinen hiihdettävyys:
+              <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/3.svg"} alt="skiability"/>
             </Typography>
           </Grid>
         </Grid>
@@ -192,8 +193,7 @@ function SnowRecordView({segmentdata}) {
           {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
             <CardMedia
               component={"img"}
-              className={clsx(classes.media)}
-              src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi_marka.svg"}
+              src={process.env.PUBLIC_URL + "/icons/snow/uusi_marka.svg"}
               alt="lumityypin logo"
             />
           }
@@ -201,30 +201,51 @@ function SnowRecordView({segmentdata}) {
         <Grid item container xs={8} sm={9} md={9} className={classes.snowInfo}>
           <Grid item xs={12} sm={12} md={12}>
             <Typography className={classes.boldedText} variant="body1" component="p">
-              {segmentdata.update === null || segmentdata.update === undefined ? "Ei tietoa" : segmentdata.update.Lumi.Nimi}
+              Korppu
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={12}>
             <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-              Keskimääräinen hiihdettävyys
-              <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
+              Keskimääräinen hiihdettävyys:
+              <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/3.svg"} alt="skiability"/>
             </Typography>
           </Grid>
         </Grid>
       </Grid>
 
-      <Grid item xs={12} sm={7} md={7} container>
-        <Grid item xs={3} sm={3} md={2}>
-          <Typography className={classes.boldedText} variant="subtitle1" component="p" display="inline" align="right">Alatyypit</Typography>
-        </Grid>
-        <Grid item xs={9} sm={9} md={10}>
+      {isXS &&
+        <Grid item xs={12} sm={12} md={12} container>
+          <Grid item xs={12} sm={5} md={5}>
+            <Typography className={classes.normalText} align="left" variant="body2" component="p">
+              {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
+            </Typography>
+          </Grid>
+        </Grid >
+      }
+      {isXS &&
+        <Grid item xs={12}>
           <CardMedia
             component={"img"}
-            className={clsx(classes.media)}
-            src={`${process.env.PUBLIC_URL}snow-divider.png`}
+            style={{height: 30, width: "100%"}}
+            src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
             alt="divider"
           />
         </Grid>
+      }
+
+      <Grid item xs={12} sm={7} md={7} container>
+        <Grid item xs={2} sm={2} md={2}>
+          <Typography className={classes.boldedText} variant="body1" component="p" display="inline" align="right">Alatyypit</Typography>
+        </Grid>
+        {!isXS &&
+          <Grid item xs={10} sm={10} md={10}>
+            <CardMedia
+              component={"img"}
+              style={isSM ? {height: 30, width: "100%", borderLeft: "100px", paddingLeft: "3%"} : {height: 30, width: "100%", paddingLeft: "2%"}}
+              src={`${process.env.PUBLIC_URL}/icons/dividers/right_up.svg`}
+              alt="divider"
+            />
+          </Grid>}
         {/* Alalumityypit */}
         {/* TODO: Add loop for sub snowtypes */}
         <Grid item xs={12} sm={6} md={6} container>
@@ -232,8 +253,7 @@ function SnowRecordView({segmentdata}) {
             {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
               <CardMedia
                 component={"img"}
-                className={clsx(classes.media)}
-                src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi.svg"}
+                src={process.env.PUBLIC_URL + "/icons/snow/uusi_viti.svg"}
                 alt="lumityypin logo"
               />
             }
@@ -246,8 +266,8 @@ function SnowRecordView({segmentdata}) {
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
               <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-                Hiihdettävyys
-                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
+                Hiihdettävyys:
+                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/4.svg"} alt="skiability"/>
               </Typography>
             </Grid>
           </Grid>
@@ -257,8 +277,7 @@ function SnowRecordView({segmentdata}) {
             {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
               <CardMedia
                 component={"img"}
-                className={clsx(classes.media)}
-                src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi.svg"}
+                src={process.env.PUBLIC_URL + "/icons/snow/uusi_marka.svg"}
                 alt="lumityypin logo"
               />
             }
@@ -266,13 +285,13 @@ function SnowRecordView({segmentdata}) {
           <Grid item container xs={9} sm={9} md={9} className={classes.snowInfo}>
             <Grid item xs={12} sm={12} md={12}>
               <Typography className={classes.boldedText} variant="body1" component="p">
-                {segmentdata.update === null || segmentdata.update === undefined ? "Ei tietoa" : segmentdata.update.Lumi.Nimi}
+                Kantava korppu
               </Typography>
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
               <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-                Hiihdettävyys
-                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
+                Hiihdettävyys:
+                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/2.svg"} alt="skiability"/>
               </Typography>
             </Grid>
           </Grid>
@@ -282,8 +301,7 @@ function SnowRecordView({segmentdata}) {
             {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
               <CardMedia
                 component={"img"}
-                className={clsx(classes.media)}
-                src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi.svg"}
+                src={process.env.PUBLIC_URL + "/icons/snow/uusi.svg"}
                 alt="lumityypin logo"
               />
             }
@@ -291,51 +309,33 @@ function SnowRecordView({segmentdata}) {
           <Grid item container xs={9} sm={9} md={9} className={classes.snowInfo}>
             <Grid item xs={12} sm={12} md={12}>
               <Typography className={classes.boldedText} variant="body1" component="p">
-                {segmentdata.update === null || segmentdata.update === undefined ? "Ei tietoa" : segmentdata.update.Lumi.Nimi}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={12} md={12}>
-              <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-                Hiihdettävyys
-                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} container>
-          <Grid item xs={3} sm={3} md={3}>
-            {segmentdata.update === null || segmentdata.update === undefined ? <div /> : 
-              <CardMedia
-                component={"img"}
-                className={clsx(classes.media)}
-                src={process.env.PUBLIC_URL + "/icons/snow/icon_uusi.svg"}
-                alt="lumityypin logo"
-              />
-            }
-          </Grid>
-          <Grid item container xs={9} sm={9} md={9} className={classes.snowInfo}>
-            <Grid item xs={12} sm={12} md={12}>
-              <Typography className={classes.boldedText} variant="body1" component="p">
-                {segmentdata.update === null || segmentdata.update === undefined ? "Ei tietoa" : segmentdata.update.Lumi.Nimi}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={12} md={12}>
-              <Typography xs={12} sm={12} md={12} className={classes.normalText} variant="body2" component="p">
-                Hiihdettävyys
-                <img className={classes.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/1.svg"} alt="skiability"/>
+                Kivinen
               </Typography>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
 
-      <Grid item xs={12} sm={12} md={12} container>
-        <Grid item xs={12} sm={5} md={5}>
-          <Typography className={classes.normalText} align="center" variant="body2" component="p">
-            {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
-          </Typography>
+      {isXS &&
+        <Grid item xs={12}>
+          <CardMedia
+            component={"img"}
+            style={{height: 30, width: "100%"}}
+            src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
+            alt="divider"
+          />
         </Grid>
-      </Grid >
+      }
+
+      {!isXS &&
+        <Grid item xs={12} sm={12} md={12} container>
+          <Grid item xs={12} sm={5} md={5}>
+            <Typography className={classes.normalText} align="center" variant="body2" component="p">
+              {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
+            </Typography>
+          </Grid>
+        </Grid >
+      }
     </Grid>
   );
 }
