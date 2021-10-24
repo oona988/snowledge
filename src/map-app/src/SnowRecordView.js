@@ -113,19 +113,6 @@ function SnowRecordView({segmentdata}) {
 
   const [ expanded, setExpanded ] = React.useState(isXS ? false : true);
 
-  const updateExpanded = () => {
-    if (isXS) {
-      setExpanded(false);
-    } else {
-      setExpanded(true);
-    }  
-  };
-
-  React.useEffect(() => {
-    window.addEventListener("resize", updateExpanded);
-    return () => window.removeEventListener("resize", updateExpanded);
-  });
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
