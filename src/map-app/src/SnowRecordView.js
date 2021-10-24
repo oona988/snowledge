@@ -48,14 +48,14 @@ const useStyles = makeStyles(() => ({
   normalText: {
     fontFamily: "Roboto",
     fontWeight: 300,
-    fontSize: useMediaQuery({ query: "(max-width: 599px)" }) ? "medium" : "small",
+    fontSize: "small",
   },
   dangerIcon: {
     verticalAlign: "middle",
     maxWidth: "8%",
   },
   skiabilityIcon: {
-    height: "45%",
+    height: "15px",
     width: "45%",
     display: "block",
     paddingTop: "2%"
@@ -335,7 +335,7 @@ function SnowRecordView({segmentdata}) {
             aria-expanded={expanded}
             aria-label="show more"
           >
-            <img src={`${process.env.PUBLIC_URL}/icons/expand.svg`} width="30%" alt="expand"></img>
+            <img src={`${process.env.PUBLIC_URL}/icons/expand.svg`} width="30%" height="14px" alt="expand"></img>
           </IconButton>
         </Grid>
       }
