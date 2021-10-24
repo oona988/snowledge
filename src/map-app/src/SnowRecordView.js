@@ -12,7 +12,7 @@ Moved here from Info.js
 
 23.10.2021 Oona Laitamäki
 Muokattu näkymän ulkoasua sekä lisätty suhteellinen aikaleima, hiihdettävyys-elementit ja alalumityypit
-Changed layout desig & added relative timestamp, skiability elements and sub snowtypes
+Changed layout design & added relative timestamp, skiability elements and sub snowtypes
 
 **/
 
