@@ -43,7 +43,7 @@ import Collapse from "@material-ui/core/Collapse";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 import pallasMap from "./pallas_map.json";
-import { Map as NewMap } from "react-maplibre-ui";
+import { Map as NewMap, MapLayer, MapSource } from "react-maplibre-ui";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
@@ -94,26 +94,21 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
-  mapContainer: {
-    height: "100vh",
-    width: "100vw",
-  }
 }));
 
 function Map(props) {
   
   // Use state hooks
-  // const [ selectedSegment, setSelectedSegment ] = React.useState({});
-  // const [ mouseover, setMouseover ] = React.useState({ID: null, name: null});
-  // eslint-disable-next-line no-unused-vars
-  // const [ center, setCenter ] = React.useState({ lat: 68.067334, lng: 24.062813 });
+  const [ selectedSegment, setSelectedSegment ] = React.useState({});
+  const [ mouseover, setMouseover ] = React.useState({ID: null, name: null});
   const [ subsOnly, setSubsOnly ] = React.useState(false);
   const [ expanded, setExpanded ] = React.useState(props.isMobile ? false : true);
-  // eslint-disable-next-line no-unused-vars
   const [ highlighted, setHighlighted] = React.useState(null);
 
+  const center = [24.05, 68.069];
+
   // zoom rippuu näytön koosta
-  const zoom = (props.isMobile ? 11 : 12);
+  const zoom = (props.isMobile ? 11 : 11.35);
 
   // Koordinaattipisteet segmenttejä ympäröiville metsämarkereille
   /*
@@ -124,18 +119,10 @@ function Map(props) {
   ];
   */
 
-  // kartan tyylit 
-  /*
-  const mapStyles = {        
-    height: "100%",
-    width: "100%"
-  };
-  */
-
   /*
    * Event handlers
    */
-  /*
+  
   // Päivittää tiedon kartalta valitusta segmentistä
   function updateChosen(segment) {
     setSelectedSegment(segment);
@@ -151,7 +138,7 @@ function Map(props) {
   function handleMouseout() {
     setMouseover({ID: null, name: null});
   }
-  */
+  
   // Päivitetään tieto siitä, näytetäänkö vain alasegmentit vai ei
   function updateSubsOnly() {
     setSubsOnly(!subsOnly);
@@ -253,12 +240,86 @@ function Map(props) {
       <NewMap
         mapStyle={pallasMap}
         style={{
-          height: "100vh",
+          height: "100%",
           width: "100%",
         }}
-        defaultCenter={[24.070172, 68.066208]}
+        defaultCenter={center}
         defaultZoom={zoom}
-      ></NewMap> 
+      >
+        {
+          props.segments.map(item => {
+            var drawColor = "#000000";
+            var snowID = 0;
+            var drawOpacity = 0.15;
+            if(item.update !== null) {
+              if(item.update.Lumi !== undefined) {
+                drawColor = item.update.Lumi.Vari;
+                snowID = item.update.Lumi.ID;
+              }
+            }
+            // Set opacity to be higher value when highlighted
+            if(mouseover.ID === item.ID || (selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) {
+              drawOpacity = 0.8;
+            }
+            // Create an array that includes arrays of a points coordinates in a segment
+            var segmentArray;
+            // In the case that only subsegments should be shown, add only subsegments to the array
+            if(subsOnly && item.On_Alasegmentti === null) {
+              segmentArray = [];
+            } else {
+              segmentArray = [];
+              item.Points.forEach(data => {
+                segmentArray.push([data.lng, data.lat]);
+              });
+            }
+          
+            // Piirretään segmentit monikulmioina
+            return (
+              <Box key={item.ID}>
+                <MapLayer
+                  id={"fill-area-" + item.ID}
+                  source={"fill-source-" + item.ID}
+                  type="fill"
+                  paint={{
+                    "fill-color": drawColor,
+                    "fill-opacity": drawOpacity,
+                  }}
+                  onClick={() => updateChosen(item)}
+                  onMouseOver={() => updateMouseover(item.ID, item.Nimi)}
+                  onMouseOut={() => handleMouseout()}
+                >
+                  <MapSource
+                    id={"fill-source-" + item.ID}
+                    type="geojson"
+                    data={{
+                      "type":"Polygon",
+                      "coordinates":[segmentArray, []]
+                    }}
+                  ></MapSource>
+                </MapLayer>
+                <MapLayer
+                  id={"line-area-" + item.ID}
+                  source={"line-source-" + item.ID}
+                  type="line"
+                  paint={{
+                    "line-color": drawColor,
+                    "line-width": 1.5,
+                  }}
+                >
+                  <MapSource
+                    id={"line-source-" + item.ID}
+                    type="geojson"
+                    data={{
+                      "type":"Polygon",
+                      "coordinates":[segmentArray]
+                    }}
+                  ></MapSource>
+                </MapLayer>
+              </Box>
+            );
+          })
+        }
+      </NewMap> 
     </div>
   );
 }
