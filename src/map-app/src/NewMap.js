@@ -26,9 +26,11 @@ Lisätty "Vain laskualueet" checkbox suodattamaan segmenttejä
 Arttu Lakkala 15.11.2020
 Lisätty päivitys värin valintaan
 
+Emil Calonius 18.10.2021
+Vaihdettiin sovelluksen käyttämä kartta Google Mapsista Maanmittauslaitoksen karttaan.
+
 **/
 
-import { GoogleMap, LoadScript, Polygon, Marker } from "@react-google-maps/api";
 import * as React from "react";
 import clsx from "clsx";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -40,6 +42,9 @@ import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
+import pallasMap from "./pallas_map.json";
+import { Map as NewMap, MapLayer, MapSource } from "react-maplibre-ui";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -96,27 +101,23 @@ function Map(props) {
   // Use state hooks
   const [ selectedSegment, setSelectedSegment ] = React.useState({});
   const [ mouseover, setMouseover ] = React.useState({ID: null, name: null});
-  // eslint-disable-next-line no-unused-vars
-  const [ center, setCenter ] = React.useState({ lat: 68.067334, lng: 24.062813 });
   const [ subsOnly, setSubsOnly ] = React.useState(false);
   const [ expanded, setExpanded ] = React.useState(props.isMobile ? false : true);
   const [ highlighted, setHighlighted] = React.useState(null);
 
+  const center = [24.05, 68.069];
+
   // zoom rippuu näytön koosta
-  const zoom = (props.isMobile ? 11 : 12);
+  const zoom = (props.isMobile ? 11 : 11.35);
 
   // Koordinaattipisteet segmenttejä ympäröiville metsämarkereille
+  /*
   const markerPoints = [
     {lat: 68.035073, lng: 24.044421},
     {lat: 68.085595, lng: 24.005129},
     {lat: 68.082975, lng: 24.116956}
   ];
-
-  // kartan tyylit 
-  const mapStyles = {        
-    height: "100%",
-    width: "100%"
-  };
+  */
 
   /*
    * Event handlers
@@ -137,7 +138,7 @@ function Map(props) {
   function handleMouseout() {
     setMouseover({ID: null, name: null});
   }
-
+  
   // Päivitetään tieto siitä, näytetäänkö vain alasegmentit vai ei
   function updateSubsOnly() {
     setSubsOnly(!subsOnly);
@@ -235,122 +236,90 @@ function Map(props) {
               <div />
           }
         </Collapse>
-      </Box>     
-      
-      {/* Tässä tarvitaan toimiva APIkey Googlelta */}
-      <LoadScript
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+      </Box>
+      <NewMap
+        mapStyle={pallasMap}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+        defaultCenter={center}
+        defaultZoom={zoom}
       >
-        <GoogleMap
-          mapContainerStyle={mapStyles}
-          zoom={zoom}
-          center={center}
-          mapTypeId="terrain"
-        >
-          {
-            props.segments.map(item => {
-           
-              var drawColor="#000000";
-              var snowID=0;
-              if(item.update !== null){
-                if (item.update.Lumi !== undefined) {
-                  drawColor = item.update.Lumi.Vari;
-                  snowID = item.update.Lumi.ID;
-                }
+        {
+          props.segments.map(item => {
+            var drawColor = "#000000";
+            var snowID = 0;
+            var drawOpacity = 0.15;
+            if(item.update !== null) {
+              if(item.update.Lumi !== undefined) {
+                drawColor = item.update.Lumi.Vari;
+                snowID = item.update.Lumi.ID;
               }
-
-              /* Piirretään segmentit monikulmioina
-               * 
-               * zIndex määrittää päällekkäisyysjärjestyksen sen perusteella, onko kyseessä alasegmentti vai ei
-               */
-              return (
-                <Polygon 
-                  key={item.ID}
-                  path={item.Points}
-                  options={
-                    {
-                      strokeColor: drawColor,
-                      strokeOpacity: 0.8,
-                      strokeWeight: 2,
-                      fillColor: drawColor,
-                      fillOpacity: 
-                        (mouseover.ID === item.ID || (selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) ? 0.8 : 0.15,
-                      polygonKey: item.ID,
-                      zIndex: item.On_Alasegmentti !== null ? 2 : 1,
-                      visible: subsOnly && item.On_Alasegmentti === null ? false : true
-                    }
-                  }
+            }
+            // Set opacity to be higher value when highlighted
+            if(mouseover.ID === item.ID || (selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) {
+              drawOpacity = 0.8;
+            }
+            // Create an array that includes arrays of a points coordinates in a segment
+            var segmentArray;
+            // In the case that only subsegments should be shown, add only subsegments to the array
+            if(subsOnly && item.On_Alasegmentti === null) {
+              segmentArray = [];
+            } else {
+              segmentArray = [];
+              item.Points.forEach(data => {
+                segmentArray.push([data.lng, data.lat]);
+              });
+            }
+          
+            // Piirretään segmentit monikulmioina
+            return (
+              <Box key={item.ID}>
+                <MapLayer
+                  id={"fill-area-" + item.ID}
+                  source={"fill-source-" + item.ID}
+                  type="fill"
+                  paint={{
+                    "fill-color": drawColor,
+                    "fill-opacity": drawOpacity,
+                  }}
                   onClick={() => updateChosen(item)}
                   onMouseOver={() => updateMouseover(item.ID, item.Nimi)}
                   onMouseOut={() => handleMouseout()}
-                />
-              );
-            })
-          }
-
-          {/* Jos segmentillä on lumivyöryvaara, siitä ilmoittava ikoni piirretään Google Maps Custom markerina
-          pisteeseen, joka on laskettu alueen rajojen pituus- ja leveyskoordinaattien keskiarvoista.
-          Markkeri reagoi kursoriin kuten segmentti - ei siis suurta ongelmaa, mikäli ikoni piirtyy hieman
-          alueen ulkopuolelle erikoistapauksissa */}
-          {
-            props.segments.map(item => {
-              var latmax;
-              var latmin;
-              var lngmax;
-              var lngmin;
-              var latpoint;
-              var lngpoint;
-
-              if (item.Lumivyöryvaara) {
-                var latArray = item.Points.map(item => {
-                  return item.lat;
-                });
-                var lngArray = item.Points.map(item => {
-                  return item.lng;
-                });
-                latmax = Math.max(...latArray);
-                latmin = Math.min(...latArray);
-                lngmax = Math.max(...lngArray);
-                lngmin = Math.min(...lngArray);
-                latpoint = (latmin + latmax)/2;
-                lngpoint = (lngmin + lngmax)/2;
-
-                return (
-                  <Marker 
-                    position={{lat: latpoint, lng: lngpoint}}
-                    icon={`${process.env.PUBLIC_URL}/pienetlogot/!.png`}
-                    onClick={() => updateChosen(item)}
-                    onMouseOver={() => updateMouseover(item.ID, item.Nimi)}
-                    onMouseOut={() => handleMouseout()}
-                  />
-                );
-              } else {
-                return null;
-              }           
-            })
-          }
-          
-          {/* Kun metsäsegmentti on tiedossa, piirretään markerit, joista metsäsegmentin voi myös valita (muuten ei piirretä) */}
-          { 
-            props.woodsSegment !== null ?
-              markerPoints.map((points, index) => {
-                return (
-                  <Marker
-                    key={index}
-                    position={points}
-                    icon={`${process.env.PUBLIC_URL}/pienetlogot/0.png`}
-                    onClick={() => updateChosen(props.woodsSegment)}
-                    onMouseOver={() => updateMouseover(props.woodsSegment.ID, props.woodsSegment.Nimi)}
-                    onMouseOut={() => handleMouseout()}
-                  />
-                );
-              
-              })
-              :
-              null
-          }
-        </GoogleMap>
-      </LoadScript>   
+                >
+                  <MapSource
+                    id={"fill-source-" + item.ID}
+                    type="geojson"
+                    data={{
+                      "type":"Polygon",
+                      "coordinates":[segmentArray, []]
+                    }}
+                  ></MapSource>
+                </MapLayer>
+                <MapLayer
+                  id={"line-area-" + item.ID}
+                  source={"line-source-" + item.ID}
+                  type="line"
+                  paint={{
+                    "line-color": drawColor,
+                    "line-width": 1.5,
+                  }}
+                >
+                  <MapSource
+                    id={"line-source-" + item.ID}
+                    type="geojson"
+                    data={{
+                      "type":"Polygon",
+                      "coordinates":[segmentArray]
+                    }}
+                  ></MapSource>
+                </MapLayer>
+              </Box>
+            );
+          })
+        }
+      </NewMap> 
     </div>
   );
 }
