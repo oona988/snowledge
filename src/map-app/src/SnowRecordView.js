@@ -111,7 +111,7 @@ function SnowRecordView({segmentdata}) {
 
   // 0px  XS  600px  SM  900px  MD
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
-  const isSM = useMediaQuery({ query: "(min-width: 600px) and (max-width: 900px)" });
+  //const isSM = useMediaQuery({ query: "(min-width: 600px) and (max-width: 900px)" });
 
   const [ expanded, setExpanded ] = React.useState(isXS ? false : true);
 
@@ -217,7 +217,7 @@ function SnowRecordView({segmentdata}) {
             <Grid item xs={12}>
               <CardMedia
                 component={"img"}
-                style={{height: 30, width: "100%"}}
+                style={{height: 32, width: "100%"}}
                 src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
                 alt="divider"
               />
@@ -233,15 +233,15 @@ function SnowRecordView({segmentdata}) {
           </Grid>}
           
           <Grid item xs={12} sm={12} container>
-            <Grid item xs={2} sm={2}>
-              <Typography className={classes.bigHeaders} variant="body1" component="p" display="inline" align="right">Alatyypit</Typography>
+            <Grid item xs={2} sm={3}>
+              <Typography className={classes.bigHeaders} style={{paddingLeft: "3px"}} variant="body1" component="p" display="inline">Alatyypit</Typography>
             </Grid>
             {!isXS &&
-              <Grid item sm={8}>
+              <Grid item sm={12}>
                 <CardMedia
                   component={"img"}
-                  style={isSM ? {height: 30, width: "100%", borderLeft: "100px", paddingLeft: "3%"} : {height: 30, width: "100%", paddingLeft: "2%"}}
-                  src={`${process.env.PUBLIC_URL}/icons/dividers/right_up.svg`}
+                  style={{height: 18, width: "85%", padding: 0}}
+                  src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
                   alt="divider"
                 />
               </Grid>}
