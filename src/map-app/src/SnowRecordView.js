@@ -24,6 +24,8 @@ import Collapse from "@material-ui/core/Collapse";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/500.css";
 
 
 const useStyles = makeStyles(() => ({
