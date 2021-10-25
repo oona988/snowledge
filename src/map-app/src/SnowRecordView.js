@@ -57,10 +57,9 @@ const useStyles = makeStyles(() => ({
     maxWidth: "8%",
   },
   skiabilityIcon: {
-    height: "15px",
-    width: "45%",
+    height: "16px",
+    width: "90px",
     display: "block",
-    paddingTop: "2%"
   },
 }));
 
@@ -218,7 +217,7 @@ function SnowRecordView({segmentdata}) {
               <CardMedia
                 component={"img"}
                 style={{height: 32, width: "100%"}}
-                src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
+                src={`${process.env.PUBLIC_URL}/icons/dividers/right_down_XS.svg`}
                 alt="divider"
               />
             </Grid>
@@ -241,7 +240,7 @@ function SnowRecordView({segmentdata}) {
                 <CardMedia
                   component={"img"}
                   style={{height: 18, width: "85%", padding: 0}}
-                  src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
+                  src={`${process.env.PUBLIC_URL}/icons/dividers/right_down_SM.svg`}
                   alt="divider"
                 />
               </Grid>}
@@ -297,7 +296,7 @@ function SnowRecordView({segmentdata}) {
               <CardMedia
                 component={"img"}
                 style={{height: 30, width: "100%"}}
-                src={`${process.env.PUBLIC_URL}/icons/dividers/right_down.svg`}
+                src={`${process.env.PUBLIC_URL}/icons/dividers/right_down_XS.svg`}
                 alt="divider"
               />
             </Grid>
