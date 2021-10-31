@@ -39,6 +39,25 @@ function getThreeDayStatistics(data) {
     threeDaysAverage: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
   };
 }
+/*
+function checkThawDays(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+}
+*/
+
+function getThreeDaysHighest(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  var highest = measurements[0].lastElementChild.innerHTML;
+  for (let i = 0; i < measurements.length; i++) {
+    if (highest < Number(measurements[i].lastElementChild.innerHTML)) {
+      highest = Number(measurements[i].lastElementChild.innerHTML);
+    }
+  }
+
+  return { threeDaysHighest: highest };
+}
 
  
 function WeatherTab() {
@@ -54,6 +73,7 @@ function WeatherTab() {
     var firstDayStartString = firstDayStart.toISOString();
     console.log(firstDayStartString);
 
+    /*
     var secondDayStart = new Date();
     secondDayStart.setDate(secondDayStart.getDate() - 1);
     secondDayStart.setUTCHours(0,0,0,0);
@@ -64,7 +84,8 @@ function WeatherTab() {
     thirdDayStart.setUTCHours(0,0,0,0);
     var thirdDayStartString = thirdDayStart.toISOString();
     console.log(thirdDayStartString);
-
+    */
+   
     // Fetch info from Muonio Laukokero station during past three days
     fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStartString}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
       .then((response) => response.text())
@@ -78,37 +99,54 @@ function WeatherTab() {
             
           // Average temperature
           case "obs-obs-1-1-TA_PT1H_AVG":
-            weather.temperature = {};
-            weather.temperature = getThreeDayStatistics(result);
-            console.log(weather.temperature);
+            weather.temperature = { ...weather.temperature, ...getThreeDayStatistics(result) };
+            break;
+
+          // Highest temperature
+          case "obs-obs-1-1-TA_PT1H_MAX":
+            weather.temperature = { ...weather.temperature, ...getThreeDaysHighest(result) };
             break;
 
           // Average wind speed
           case "obs-obs-1-1-WS_PT1H_AVG":
-            weather.windspeed = {};
-            weather.windspeed = getThreeDayStatistics(result);
-            console.log(weather.windspeed);
+            weather.windspeed = { ...weather.windspeed, ...getThreeDayStatistics(result) };
+            break;
+
+          // Greatest wind speed
+          case "obs-obs-1-1-WS_PT1H_MAX":
+            weather.windspeed = { ...weather.windspeed, ...getThreeDaysHighest(result) };
             break;
 
           // Average wind direction
           // Wind's income direction as degrees (360 = north)
           case "obs-obs-1-1-WD_PT1H_AVG":
-            weather.winddirection = {};
-            weather.winddirection = getThreeDayStatistics(result);
-            console.log(weather.winddirection);
+            weather.winddirection = { ...weather.winddirection, ...getThreeDayStatistics(result) };
             break;
             
           // Air pressure as hPA
           case "obs-obs-1-1-PA_PT1H_AVG":
-            weather.airpressure = {};
-            weather.airpressure = getThreeDayStatistics(result);
-            console.log(weather.airpressure);
+            weather.airpressure = { ...weather.airpressure, ...getThreeDayStatistics(result) };
             break;
 
           default:
             break;
           }
         }
+
+        /*
+        // Fetch info about thaw days from Muonio Laukokero station
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=2020-10-31T00:00:00.000Z&storedquery_id=fmi::observations::weather::daily::timevaluepair&fmisid=101982&`)
+        .then((response) => response.text())
+        .then((response) => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(response,"text/xml");
+          const results = xmlDoc.getElementsByTagName("om:result");
+          });
+
+          for (let result of results) {
+            if result
+          }
+          */
       });
       
     // If there is no weather data yet, it will be stored into React hook state

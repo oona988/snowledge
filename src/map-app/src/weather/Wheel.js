@@ -11,7 +11,6 @@ Create initial components for showing weather statistics
 **/
 
 import * as React from "react";
-//import Typography from "@material-ui/core/Typography";
 
  
 function Wheel({weatherState}) {
@@ -19,7 +18,6 @@ function Wheel({weatherState}) {
   
   return (
     <div>
-      {/* <Typography variant="subtitle1">{weatherState !== null && weatherState.temperature !== undefined ? `EXAMPLE: Average temperature two days ago ${weatherState.temperature.firstDayAverage}` : "NULL"}</Typography> */}
     </div>
   );
 }

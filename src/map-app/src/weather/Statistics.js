@@ -11,7 +11,6 @@ Create initial components for showing weather statistics
 **/
 
 import * as React from "react";
-//import Typography from "@material-ui/core/Typography";
 
  
 function Statistics({weatherState}) {
@@ -19,7 +18,6 @@ function Statistics({weatherState}) {
 
   return (
     <div>
-      {/* <Typography variant="subtitle1">{weatherState !== null && weatherState.winddirection !== undefined ? `EXAMPLE: Three day average of wind direction ${weatherState.winddirection.threeDaysAverage}` : "NULL"}</Typography> */}
     </div>
   );
 }
