@@ -1,5 +1,5 @@
 /**
-Kartan piirto käyttöliittymään ('@react-google-maps/api' -kirjaston komponenteilla)
+Kartan piirto käyttöliittymään ('react-maplibre-gl' -kirjaston komponenteilla)
 Viimeisin päivitys
 
 Markku Nirkkonen 9.1.2021
@@ -27,7 +27,13 @@ Arttu Lakkala 15.11.2020
 Lisätty päivitys värin valintaan
 
 Emil Calonius 18.10.2021
-Vaihdettiin sovelluksen käyttämä kartta Google Mapsista Maanmittauslaitoksen karttaan.
+Changed map from Google Maps to Maanmittauslaitos map
+
+Emil Calonius 24.10.2021
+Added drawing of segments on map
+
+Emil Calonius 31.10.2021
+Added highlighting to segments
 
 **/
 
@@ -245,8 +251,6 @@ function Map(props) {
           height: "100%",
           width: "100%",
         }}
-        minZoom={11}
-        maxZoom={5}
         defaultCenter={center}
         defaultZoom={zoom}
       >
@@ -254,7 +258,6 @@ function Map(props) {
           props.segments.map(item => {
             var drawColor = "#000000";
             var snowID = 0;
-            // eslint-disable-next-line no-unused-vars
             var drawOpacity = 0.15;
             var highlightOpacity = 0.65;
             if(item.update !== null) {
@@ -263,29 +266,35 @@ function Map(props) {
                 snowID = item.update.Lumi.ID;
               }
             }
-            // Create an array that includes arrays of a point's coordinates in a segment
+            // Array that includes coordinates for a segment
             var segmentArray;
+            // Array that includes coordinates for a segment that should be highlighted.
             var highlightArray;
             // In the case that only subsegments should be shown, add coordinates only if segment is a subsegment
             if(subsOnly && item.On_Alasegmentti === null) {
               segmentArray = [];
+              highlightArray = [];
             } else {
               segmentArray = [];
               item.Points.forEach(data => {
                 segmentArray.push([data.lng, data.lat]);
               });
               highlightArray = [];
+              // Add segment to highlighted array if segment is selected by clicking on it or by hovering/clicking on a snowtype on the infobox,
+              // else add a segment outside of the maps bounds to avoid errors by not giving a valid geojson input to layer source.
               if((selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) {
                 item.Points.forEach(data => {
                   highlightArray.push([data.lng, data.lat]);
                 });
               }
-              else {
-                highlightArray = [[23.778911, 61.494772], [23.776518, 61.492831], [23.781786, 61.492554], [23.778911, 61.494772]];
-              }
             }
           
-            // Piirretään segmentit monikulmioina
+            /* Drawing segments as polygons on the map
+            *  Segment fills and outlines are drawn seperately
+            *
+            *  If a segment should be highligted another identical segment
+            *  is drawn on top of it to give it an highlighted appearence
+            */
             return (
               <Box key={item.ID}>
                 <MapLayer
