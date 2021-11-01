@@ -100,11 +100,13 @@ function Map(props) {
   
   // Use state hooks
   const [ selectedSegment, setSelectedSegment ] = React.useState({});
+  // eslint-disable-next-line no-unused-vars
   const [ mouseover, setMouseover ] = React.useState({ID: null, name: null});
   const [ subsOnly, setSubsOnly ] = React.useState(false);
   const [ expanded, setExpanded ] = React.useState(props.isMobile ? false : true);
   const [ highlighted, setHighlighted] = React.useState(null);
 
+  // Coordinates that the map is centered on when it is refreshed
   const center = [24.05, 68.069];
 
   // zoom rippuu näytön koosta
@@ -243,6 +245,8 @@ function Map(props) {
           height: "100%",
           width: "100%",
         }}
+        minZoom={11}
+        maxZoom={5}
         defaultCenter={center}
         defaultZoom={zoom}
       >
@@ -250,20 +254,19 @@ function Map(props) {
           props.segments.map(item => {
             var drawColor = "#000000";
             var snowID = 0;
+            // eslint-disable-next-line no-unused-vars
             var drawOpacity = 0.15;
+            var highlightOpacity = 0.65;
             if(item.update !== null) {
               if(item.update.Lumi !== undefined) {
                 drawColor = item.update.Lumi.Vari;
                 snowID = item.update.Lumi.ID;
               }
             }
-            // Set opacity to be higher value when highlighted
-            if(mouseover.ID === item.ID || (selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) {
-              drawOpacity = 0.8;
-            }
-            // Create an array that includes arrays of a points coordinates in a segment
+            // Create an array that includes arrays of a point's coordinates in a segment
             var segmentArray;
-            // In the case that only subsegments should be shown, add only subsegments to the array
+            var highlightArray;
+            // In the case that only subsegments should be shown, add coordinates only if segment is a subsegment
             if(subsOnly && item.On_Alasegmentti === null) {
               segmentArray = [];
             } else {
@@ -271,6 +274,15 @@ function Map(props) {
               item.Points.forEach(data => {
                 segmentArray.push([data.lng, data.lat]);
               });
+              highlightArray = [];
+              if((selectedSegment.ID === item.ID && props.shownSegment !== null) || highlighted === snowID) {
+                item.Points.forEach(data => {
+                  highlightArray.push([data.lng, data.lat]);
+                });
+              }
+              else {
+                highlightArray = [[23.778911, 61.494772], [23.776518, 61.492831], [23.781786, 61.492554], [23.778911, 61.494772]];
+              }
             }
           
             // Piirretään segmentit monikulmioina
@@ -293,7 +305,25 @@ function Map(props) {
                     type="geojson"
                     data={{
                       "type":"Polygon",
-                      "coordinates":[segmentArray, []]
+                      "coordinates":[segmentArray]
+                    }}
+                  ></MapSource>
+                </MapLayer>
+                <MapLayer
+                  id={"highlight-area-" + item.ID}
+                  source={"highlight-source-" + item.ID}
+                  type="fill"
+                  paint={{
+                    "fill-color": drawColor,
+                    "fill-opacity": highlightOpacity,
+                  }}
+                >
+                  <MapSource
+                    id={"highlight-source-" + item.ID}
+                    type="geojson"
+                    data={{
+                      "type":"Polygon",
+                      "coordinates":[highlightArray]
                     }}
                   ></MapSource>
                 </MapLayer>
