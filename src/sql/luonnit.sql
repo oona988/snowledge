@@ -34,7 +34,8 @@ CREATE TABLE Paivitykset (
     Alalumilaatu_ID int(10) unsigned,
     FOREIGN KEY(Tekija) references Kayttajat(ID) ON DELETE CASCADE,
     FOREIGN KEY(Segmentti) references Segmentit(ID) ON DELETE CASCADE,
-    CONSTRAINT Lumilaatu_ID FOREIGN KEY (Lumilaatu_ID) REFERENCES Lumilaatu (ID) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT Lumilaatu_ID FOREIGN KEY (Lumilaatu_ID) REFERENCES Lumilaatu (ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT Alalumilaatu_ID FOREIGN KEY (Alalumilaatu_ID) REFERENCES Alalumilaatu (ID) ON DELETE NO ACTION ON UPDATE NO ACTION
     CONSTRAINT tunniste PRIMARY KEY (Aika, Segmentti)
 );
 

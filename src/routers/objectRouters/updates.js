@@ -32,12 +32,15 @@ router.post("/:id", function(req, res) {
     res.json("Segmentti numerot eivät täsmää");
     res.status(400);
   }
-  database.query("INSERT INTO Paivitykset(Tekija, Segmentti, Lumilaatu, Teksti, Aika) VALUES(?, ?, ?, ?, NOW())",
+  database.query("INSERT INTO Paivitykset(Tekija, Segmentti, Lumilaatu, Kuvaus, Aika, Lumen_kuva, Lumilaatu_ID,Alalumilaatu_ID ) VALUES(?, ?, ?, ?, NOW(), ?, ?, ?)",
     [
       req.decoded.id,
       req.body.Segmentti,
       req.body.Lumilaatu,
-      req.body.Teksti
+      req.body.Kuvaus,
+      req.body.Lumen_kuva,
+      req.body.Lumilaatu_ID,
+      req.body.Alalumilaatu_ID
     ],
     function (err) {
       if (err) throw err;
