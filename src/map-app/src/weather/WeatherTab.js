@@ -110,7 +110,7 @@ function WeatherTab() {
         for (let result of results) {
           switch (result.firstElementChild.getAttribute("gml:id")) {
             
-          // Average temperature
+          // Average temperatures
           case "obs-obs-1-1-TA_PT1H_AVG":
             weather.temperature = { ...weather.temperature, ...getThreeDayStatistics(result) };
             break;
@@ -125,7 +125,7 @@ function WeatherTab() {
             weather.temperature = { ...weather.temperature, ...getThreeDaysLowest(result) };
             break;
 
-          // Average wind speed
+          // Average wind speeds
           case "obs-obs-1-1-WS_PT1H_AVG":
             weather.windspeed = { ...weather.windspeed, ...getThreeDayStatistics(result) };
             break;
@@ -135,7 +135,7 @@ function WeatherTab() {
             weather.windspeed = { ...weather.windspeed, ...getThreeDaysHighest(result) };
             break;
 
-          // Average wind direction
+          // Average wind directions
           // Wind's income direction as degrees (360 = north)
           case "obs-obs-1-1-WD_PT1H_AVG":
             weather.winddirection = { ...weather.winddirection, ...getThreeDayStatistics(result) };
@@ -150,6 +150,19 @@ function WeatherTab() {
             break;
           }
         }
+
+        // Calculate how many thaw (+0 degrees) days there are out of three
+        var thawDays = 0;
+        if (weather.temperature.firstDayAverage >= 0) {
+          ++thawDays;
+        }
+        if (weather.temperature.secondDayAverage >= 0) {
+          ++thawDays;
+        }
+        if (weather.temperature.thirdDayAverage >= 0) {
+          ++thawDays;
+        }
+        weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
 
         /*
         // Fetch info about thaw days from Muonio Laukokero station
