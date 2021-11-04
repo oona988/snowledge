@@ -15,4 +15,5 @@ VALUES('Metsä', 'Metsä', FALSE, null),
       ('Pyhäkuru', 'Vakio', TRUE, 11),
       ('Soilenrinne', 'Vakio', FALSE, 8),
       ('Veitikka', 'Vakio', FALSE, 10),
-      ('Viivakuru', 'Vakio', FALSE, 6);
+      ('Viivakuru', 'Vakio', FALSE, 6),      
+      ('Orotuskero pohjoinen', 'Kivirakka, alhaalla kosteikkoa', FALSE, null);
