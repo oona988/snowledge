@@ -59,6 +59,19 @@ function getThreeDaysHighest(data) {
   return { threeDaysHighest: highest };
 }
 
+function getThreeDaysLowest(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  var lowest = measurements[0].lastElementChild.innerHTML;
+  for (let i = 0; i < measurements.length; i++) {
+    if (lowest > Number(measurements[i].lastElementChild.innerHTML)) {
+      lowest = Number(measurements[i].lastElementChild.innerHTML);
+    }
+  }
+
+  return { threeDaysLowest: lowest };
+}
+
  
 function WeatherTab() {
 
@@ -105,6 +118,11 @@ function WeatherTab() {
           // Highest temperature
           case "obs-obs-1-1-TA_PT1H_MAX":
             weather.temperature = { ...weather.temperature, ...getThreeDaysHighest(result) };
+            break;
+
+          // Lowest temperature
+          case "obs-obs-1-1-TA_PT1H_MIN":
+            weather.temperature = { ...weather.temperature, ...getThreeDaysLowest(result) };
             break;
 
           // Average wind speed
