@@ -24,8 +24,6 @@ import Collapse from "@material-ui/core/Collapse";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/500.css";
 
 
 const useStyles = makeStyles(() => ({
@@ -37,20 +35,23 @@ const useStyles = makeStyles(() => ({
     alignContent: "center",
   },
   bigHeaders: {
-    fontFamily: "Segoe UI",
+    fontFamily: "Donau",
+    letterSpacing: 5,
     fontWeight: 500,
     display: "block",
   },
   smallHeaders: {
-    fontFamily: "Roboto",
-    fontWeight: 500,
+    fontFamily: "Donau",
+    letterSpacing: 3,
+    fontWeight: 600,
     display: "block",
     fontSize: "medium",
   },
   normalText: {
-    fontFamily: "Roboto",
+    fontFamily: "Donau",
+    letterSpacing: 2,
     fontWeight: 300,
-    fontSize: "small",
+    fontSize: "medium",
   },
   dangerIcon: {
     verticalAlign: "middle",
@@ -233,7 +234,7 @@ function SnowRecordView({segmentdata}) {
           
           <Grid item xs={12} sm={12} container>
             <Grid item xs={2} sm={3}>
-              <Typography className={classes.bigHeaders} style={{paddingLeft: "3px"}} variant="body1" component="p" display="inline">Alatyypit</Typography>
+              <Typography className={classes.smallHeaders} style={{paddingLeft: "3px"}} variant="body1" component="p" display="inline">Alatyypit</Typography>
             </Grid>
             {!isXS &&
               <Grid item sm={12}>
