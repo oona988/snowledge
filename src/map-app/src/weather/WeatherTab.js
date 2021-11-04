@@ -72,6 +72,35 @@ function getThreeDaysLowest(data) {
   return { threeDaysLowest: lowest };
 }
 
+function getSnowDepthStatistics(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  console.log(measurements.length);
+
+  var firstDayCount = 0;
+  for (let i = 576; i < 720; i++) {
+    firstDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
+
+  var secondDayCount = 0;
+  for (let i = 720; i < 864; i++) {
+    secondDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
+
+  var thirdDayCount = 0;
+  for (let i = 864; i < measurements.length; i++) {
+    thirdDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
+
+  return {
+    firstDayAverage: firstDayCount / 144,
+    secondDayAverage: secondDayCount / 144,
+    thirdDayAverage: thirdDayCount / (measurements.length - 864),
+    // This should be calculated
+    sevenDaysGrowth: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
+  };
+}
+
  
 function WeatherTab() {
 
@@ -85,6 +114,12 @@ function WeatherTab() {
     firstDayStart.setUTCHours(0,0,0,0);
     var firstDayStartString = firstDayStart.toISOString();
     console.log(firstDayStartString);
+
+    var snowDataStart = new Date();
+    snowDataStart.setDate(snowDataStart.getDate() - 6);
+    snowDataStart.setUTCHours(0,0,0,0);
+    var snowDataStartString = snowDataStart.toISOString();
+    console.log(snowDataStartString);
 
     /*
     var secondDayStart = new Date();
@@ -179,7 +214,29 @@ function WeatherTab() {
           }
           */
       });
-      
+
+    fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${snowDataStartString}&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101987&`)
+      .then((response) => response.text())
+      .then((response) => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(response,"text/xml");
+        const results = xmlDoc.getElementsByTagName("om:result");
+        
+        for(let result of results) {
+          switch (result.firstElementChild.getAttribute("gml:id")) {
+            
+          // Snow depth data from last seven days
+          case "obs-obs-1-1-snow_aws":
+            weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result) };
+            break;
+
+          default:
+            break;
+          }
+        }
+      });
+    
+    
     // If there is no weather data yet, it will be stored into React hook state
     if (weatherState === null) {
       setWeatherState(weather);
