@@ -75,12 +75,26 @@ function getThreeDaysLowest(data) {
 function getXMLTimeString(date) {
   var dateString = date.toISOString();
   var result = dateString.slice(0, 19) + dateString.slice(23);
-  //console.log(result);
   return result;
 }
 
 function getSnowDepthStatistics(data, currentDate) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  var firstDayCount = 0;
+  for (let i = 576; i < 720; i++) {
+    firstDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
+
+  var secondDayCount = 0;
+  for (let i = 720; i < 864; i++) {
+    secondDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
+
+  var thirdDayCount = 0;
+  for (let i = 864; i < measurements.length; i++) {
+    thirdDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  }
 
   var currentEvenHour = new Date(currentDate.getTime());
   currentEvenHour.setMinutes(0,0,0);
@@ -161,16 +175,15 @@ function getSnowDepthStatistics(data, currentDate) {
       break;
 
     default:
-      //console.log(measurement.getElementsByTagName("wml2:time")[0].innerHTML);
       break;
     }
   }
 
 
   return {
-    firstDayAverage: value5,
-    secondDayAverage: value6,
-    thirdDayAverage: value7,
+    firstDayAverage: firstDayCount / 144,
+    secondDayAverage: secondDayCount / 144,
+    thirdDayAverage: thirdDayCount / (measurements.length - 864),
     sevenDaysGrowth: growth
   };
 }
