@@ -72,32 +72,106 @@ function getThreeDaysLowest(data) {
   return { threeDaysLowest: lowest };
 }
 
-function getSnowDepthStatistics(data) {
+function getXMLTimeString(date) {
+  var dateString = date.toISOString();
+  var result = dateString.slice(0, 19) + dateString.slice(23);
+  //console.log(result);
+  return result;
+}
+
+function getSnowDepthStatistics(data, currentDate) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
-  console.log(measurements.length);
+  var currentEvenHour = new Date(currentDate.getTime());
+  currentEvenHour.setMinutes(0,0,0);
 
-  var firstDayCount = 0;
-  for (let i = 576; i < 720; i++) {
-    firstDayCount += Number(measurements[i].lastElementChild.innerHTML);
+  var day1 = new Date(currentEvenHour.getTime());
+  day1.setDate(day1.getDate() - 6);
+
+  var day2 = new Date(currentEvenHour.getTime());
+  day2.setDate(day2.getDate() - 5);
+
+  var day3 = new Date(currentEvenHour.getTime());
+  day3.setDate(day3.getDate() - 4);
+
+  var day4 = new Date(currentEvenHour.getTime());
+  day4.setDate(day4.getDate() - 3);
+
+  var day5 = new Date(currentEvenHour.getTime());
+  day5.setDate(day5.getDate() - 2);
+
+  var day6 = new Date(currentEvenHour.getTime());
+  day6.setDate(day6.getDate() - 1);
+
+  var growth = 0;
+  for (let measurement of measurements) {
+    switch (measurement.getElementsByTagName("wml2:time")[0].innerHTML) {
+
+    // Get snowdepth 6 days ago
+    case getXMLTimeString(day1):
+      var value1 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      break;
+
+    // Get snowdepth 5 days ago
+    case getXMLTimeString(day2):
+      var value2 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value1 < value2) {
+        growth += value2 - value1;
+      }
+      break;
+
+    // Get snowdepth 4 days ago
+    case getXMLTimeString(day3):
+      var value3 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value2 < value3) {
+        growth += value3 - value2;
+      }
+      break;
+
+    // Get snowdepth 3 days ago
+    case getXMLTimeString(day4):
+      var value4 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value3 < value4) {
+        growth += value4 - value3;
+      }
+      break;
+
+    // Get snowdepth 2 days ago
+    case getXMLTimeString(day5):
+      var value5 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value5 < value6) {
+        growth += value6 - value5;
+      }
+      break;
+
+    // Get snowdepth 1 days ago
+    case getXMLTimeString(day6):
+      var value6 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value5 < value6) {
+        growth += value6 - value5;
+      }
+      break;
+
+    // Get current snowdepth
+    case getXMLTimeString(currentEvenHour):
+      var value7 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+      if (value6 < value7) {
+        growth += value7 - value6;
+      }
+      break;
+
+    default:
+      //console.log(measurement.getElementsByTagName("wml2:time")[0].innerHTML);
+      break;
+    }
   }
 
-  var secondDayCount = 0;
-  for (let i = 720; i < 864; i++) {
-    secondDayCount += Number(measurements[i].lastElementChild.innerHTML);
-  }
-
-  var thirdDayCount = 0;
-  for (let i = 864; i < measurements.length; i++) {
-    thirdDayCount += Number(measurements[i].lastElementChild.innerHTML);
-  }
 
   return {
-    firstDayAverage: firstDayCount / 144,
-    secondDayAverage: secondDayCount / 144,
-    thirdDayAverage: thirdDayCount / (measurements.length - 864),
-    // This should be calculated
-    sevenDaysGrowth: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
+    firstDayAverage: value5,
+    secondDayAverage: value6,
+    thirdDayAverage: value7,
+    sevenDaysGrowth: growth
   };
 }
 
@@ -109,17 +183,15 @@ function WeatherTab() {
   const fetchWeather = async () => {
     var weather = {};
 
+    const currentDate = new Date();
+
     var firstDayStart = new Date();
     firstDayStart.setDate(firstDayStart.getDate() - 2);
     firstDayStart.setUTCHours(0,0,0,0);
-    var firstDayStartString = firstDayStart.toISOString();
-    console.log(firstDayStartString);
 
     var snowDataStart = new Date();
     snowDataStart.setDate(snowDataStart.getDate() - 6);
     snowDataStart.setUTCHours(0,0,0,0);
-    var snowDataStartString = snowDataStart.toISOString();
-    console.log(snowDataStartString);
 
     /*
     var secondDayStart = new Date();
@@ -135,7 +207,7 @@ function WeatherTab() {
     */
    
     // Fetch info from Muonio Laukokero station during past three days
-    fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStartString}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+    fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStart.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
       .then((response) => response.text())
       .then((response) => {
         const parser = new DOMParser();
@@ -215,7 +287,7 @@ function WeatherTab() {
           */
       });
 
-    fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${snowDataStartString}&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101987&`)
+    fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${snowDataStart.toISOString()}&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101987&`)
       .then((response) => response.text())
       .then((response) => {
         const parser = new DOMParser();
@@ -227,7 +299,7 @@ function WeatherTab() {
             
           // Snow depth data from last seven days
           case "obs-obs-1-1-snow_aws":
-            weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result) };
+            weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result, currentDate) };
             break;
 
           default:
