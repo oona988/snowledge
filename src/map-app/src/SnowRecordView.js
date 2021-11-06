@@ -36,13 +36,15 @@ const useStyles = makeStyles(() => ({
   },
   bigHeaders: {
     fontFamily: "Donau",
-    letterSpacing: 5,
-    fontWeight: 500,
+    letterSpacing: 4,
+    textTransform: "uppercase",
+    fontWeight: 600,
     display: "block",
   },
   smallHeaders: {
     fontFamily: "Donau",
-    letterSpacing: 3,
+    letterSpacing: 2,
+    textTransform: "uppercase",
     fontWeight: 600,
     display: "block",
     fontSize: "medium",
@@ -233,8 +235,8 @@ function SnowRecordView({segmentdata}) {
           </Grid>}
           
           <Grid item xs={12} sm={12} container>
-            <Grid item xs={2} sm={3}>
-              <Typography className={classes.smallHeaders} style={{paddingLeft: "3px"}} variant="body1" component="p" display="inline">Alatyypit</Typography>
+            <Grid item xs={12} sm={12}>
+              <Typography className={classes.smallHeaders} style={{paddingLeft: "3px"}} variant="body1" component="p" display="inline">Muita alueella esiintyviä lumityyppejä:</Typography>
             </Grid>
             {!isXS &&
               <Grid item sm={12}>
