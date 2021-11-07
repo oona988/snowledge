@@ -5,15 +5,21 @@ Created: Oona Laitamaki
 
 Latest update
 
+7.11.2021 Oona Laitamaki
+Calculated weather statistics that are shown in Statistics.js and Wheel.js
+
 31.10.2021 Oona Laitamaki
-Fetch weather data from Ilmatieteenlaitos and create initial components for showing weather statistics
+Fetched weather data from Ilmatieteenlaitos and create initial components for showing weather statistics
 
 **/
+
 
 import * as React from "react";
 import Wheel from "./Wheel";
 import Statistics from "./Statistics";
 
+
+// Returns latest three day average statistics
 function getThreeDayStatistics(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -46,6 +52,7 @@ function checkThawDays(data) {
 }
 */
 
+// Returns highest value during last three days
 function getThreeDaysHighest(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -59,6 +66,7 @@ function getThreeDaysHighest(data) {
   return { threeDaysHighest: highest };
 }
 
+// Returns lowest value during last three days
 function getThreeDaysLowest(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -72,29 +80,16 @@ function getThreeDaysLowest(data) {
   return { threeDaysLowest: lowest };
 }
 
+// Returns timestamp as a string in FMI API format
 function getXMLTimeString(date) {
   var dateString = date.toISOString();
   var result = dateString.slice(0, 19) + dateString.slice(23);
   return result;
 }
 
+// Calculate snow depth rise during 7 days
 function getSnowDepthStatistics(data, currentDate) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
-
-  var firstDayCount = 0;
-  for (let i = 576; i < 720; i++) {
-    firstDayCount += Number(measurements[i].lastElementChild.innerHTML);
-  }
-
-  var secondDayCount = 0;
-  for (let i = 720; i < 864; i++) {
-    secondDayCount += Number(measurements[i].lastElementChild.innerHTML);
-  }
-
-  var thirdDayCount = 0;
-  for (let i = 864; i < measurements.length; i++) {
-    thirdDayCount += Number(measurements[i].lastElementChild.innerHTML);
-  }
 
   var currentEvenHour = new Date(currentDate.getTime());
   currentEvenHour.setMinutes(0,0,0);
@@ -158,7 +153,7 @@ function getSnowDepthStatistics(data, currentDate) {
       }
       break;
 
-    // Get snowdepth 1 days ago
+    // Get snowdepth 1 day ago
     case getXMLTimeString(day6):
       var value6 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
       if (value5 < value6) {
@@ -179,11 +174,10 @@ function getSnowDepthStatistics(data, currentDate) {
     }
   }
 
-
   return {
-    firstDayAverage: firstDayCount / 144,
-    secondDayAverage: secondDayCount / 144,
-    thirdDayAverage: thirdDayCount / (measurements.length - 864),
+    firstDay: value5,
+    secondDay: value6,
+    thirdDay: value7,
     sevenDaysGrowth: growth
   };
 }
@@ -198,13 +192,14 @@ function WeatherTab() {
 
     const currentDate = new Date();
 
-    var firstDayStart = new Date();
+    var firstDayStart = new Date(currentDate.getTime());
     firstDayStart.setDate(firstDayStart.getDate() - 2);
-    firstDayStart.setUTCHours(0,0,0,0);
+    firstDayStart.setHours(0,0,0,0);
 
-    var snowDataStart = new Date();
+    var snowDataStart = new Date(currentDate.getTime());
     snowDataStart.setDate(snowDataStart.getDate() - 6);
-    snowDataStart.setUTCHours(0,0,0,0);
+    snowDataStart.setHours(snowDataStart.getHours() - 2);
+    snowDataStart.setMinutes(0,0,0);
 
     /*
     var secondDayStart = new Date();
@@ -300,6 +295,7 @@ function WeatherTab() {
           */
       });
 
+    // Fetch info from Kittila Kenttarova station during past 7 days
     fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${snowDataStart.toISOString()}&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101987&`)
       .then((response) => response.text())
       .then((response) => {
@@ -312,7 +308,7 @@ function WeatherTab() {
             
           // Snow depth data from last seven days
           case "obs-obs-1-1-snow_aws":
-            weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result, currentDate) };
+            weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result, currentDate)};
             break;
 
           default:
