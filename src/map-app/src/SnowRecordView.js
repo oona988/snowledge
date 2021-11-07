@@ -1,20 +1,22 @@
 /**
 
-Lumitiedot esittävä komponentti
+Component for snowing snow record information for segment
 
 Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
-18.10.2021
-Siirretty Info.js tiedostosta erilliseen komponenttiin
-Moved here from Info.js
+7.11.2021 Oona Laitamaki
+Updated layout design
 
-23.10.2021 Oona Laitamäki
-Muokattu näkymän ulkoasua sekä lisätty suhteellinen aikaleima, hiihdettävyys-elementit ja alalumityypit
+23.10.2021 Oona Laitamaki
 Changed layout design & added relative timestamp, skiability elements and sub snowtypes
 
+18.10.2021
+Moved here from Info.js
+
 **/
+
 
 import * as React from "react";
 import { useMediaQuery } from "react-responsive";
@@ -163,10 +165,10 @@ function SnowRecordView({segmentdata, close}) {
   return (
     <Grid container className={classes.root}>
 
-      <Grid container item xs={12} sm={12} style={{backgroundColor: "#000000B3", margin: 0, paddingBottom: "3%"}}>
+      <Grid container item xs={12} sm={12} style={{backgroundColor: "#000000B3", margin: 0, paddingBottom: "1%"}}>
         {/* Button for closing snow record view */}
         <Grid item xs={12} sm={12}>
-          <IconButton aria-label="close" style={isXS ? {color: "white", left: "85%"} : {color: "white", left: "92%"}} onClick={() => close()}>
+          <IconButton aria-label="close" style={isXS ? {color: "white", left: "85%"} : {color: "white", left: "92%", paddingTop: "1%", paddingBottom: 0}} onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Grid>
