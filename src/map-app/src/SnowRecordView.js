@@ -1,6 +1,6 @@
 /**
 
-Component for snowing snow record information for segment
+Component for showing snow record information for segment
 
 Luonut: Markku Nirkkonen
 
