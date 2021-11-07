@@ -18,8 +18,12 @@ import * as React from "react";
 import Wheel from "./Wheel";
 import Statistics from "./Statistics";
 
-
-// Returns latest three day average statistics
+/*
+Returns latest three day average statistics
+First day: day before yesterday
+Second day: yesterday
+Third day: today
+*/
 function getThreeDayStatistics(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
