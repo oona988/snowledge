@@ -14,6 +14,7 @@ import * as React from "react";
 
  
 function Wheel({weatherState}) {
+  console.log(weatherState);
   
   return (
     <div>
