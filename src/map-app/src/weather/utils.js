@@ -29,12 +29,6 @@ export function getThreeDayStatistics(data) {
     threeDaysAverage: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
   };
 }
-/*
-function checkThawDays(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
-
-}
-*/
 
 // Returns highest value during last three days
 export function getThreeDaysHighest(data) {
@@ -166,6 +160,7 @@ export function getSnowDepthStatistics(data, currentDate) {
   };
 }
 
+// Calculate recent air pressure change and current value
 export function getCurrentAirPressureInfo(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -199,6 +194,7 @@ export function getCurrentAirPressureInfo(data) {
   return { current: current, direction: direction };
 }
 
+// Calculate winter temperatures from December to May
 export function getWinterTemperatures(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -218,4 +214,54 @@ export function getWinterTemperatures(data) {
   const median = len % 2 == 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 1 : sortedArray[mid - 1];
 
   return { thawDays: thawDays, median: median };
+}
+
+// Calculate winter wind statistics for every month from December to May
+export function getWinterWindStats(speeds, directions) {
+  var speedMeasurements = speeds.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var directionMeasurements = directions.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  var dayCount = 0;
+  var directionSum = 0;
+  var maxWind = 0;
+  var previouslySavedDay = null;
+
+  if (speedMeasurements < directionMeasurements) {
+    for (let i = 0; i < speedMeasurements.length; i++) {
+      let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
+      let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
+      if (date !== previouslySavedDay) {
+        if (speed > 10) {
+          let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
+          previouslySavedDay = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML;
+          ++dayCount;
+          directionSum += direction;
+        }
+
+        if (speed > maxWind) {
+          maxWind = speed;
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < directionMeasurements.length; i++) {
+      let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
+      let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
+      if (date !== previouslySavedDay) {
+        previouslySavedDay = date;
+
+        if (speed > 10) {
+          let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
+          ++dayCount;
+          directionSum += direction;
+        }
+
+        if (speed > maxWind) {
+          maxWind = speed;
+        }
+      }
+    }
+  }
+
+  return { maxWind: maxWind, averageDirection: directionSum / dayCount, dayCount: dayCount };
 }

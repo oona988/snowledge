@@ -5,6 +5,9 @@ Created: Oona Laitamaki
 
 Latest update
 
+10.11.2021 Oona Laitamaki
+Calculated current weather statistics and weather statistics for winter time
+
 7.11.2021 Oona Laitamaki
 Calculated weather statistics that are shown in Statistics.js and Wheel.js
 
@@ -17,7 +20,7 @@ Fetched weather data from Ilmatieteenlaitos and create initial components for sh
 import * as React from "react";
 import Wheel from "./Wheel";
 import Statistics from "./Statistics";
-import {getThreeDayStatistics, getThreeDaysHighest, getThreeDaysLowest, getSnowDepthStatistics, getCurrentAirPressureInfo, getWinterTemperatures} from "./utils";
+import {getThreeDayStatistics, getThreeDaysHighest, getThreeDaysLowest, getSnowDepthStatistics, getCurrentAirPressureInfo, getWinterTemperatures, getWinterWindStats} from "./utils";
  
 function WeatherTab() {
 
@@ -41,24 +44,29 @@ function WeatherTab() {
     console.log(currentDate.getMonth());
     console.log(currentDate.getDate());
 
-    var winterDataStart = new Date(currentDate.getTime());
+    var decemberStart = new Date(currentDate.getTime());
+    var decemberEnd = new Date(currentDate.getTime());
     const currentMonth = currentDate.getMonth();
     const currentDay = currentDate.getDate();
     var winterSeason = false;
     if (currentMonth < 11) {
       console.log("winter time");
       winterSeason = true;
-      winterDataStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
-      winterDataStart.setHours(0,0,0,0);
+      decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
+      decemberStart.setHours(0,0,0,0);
+      decemberEnd.setFullYear(currentDate.getFullYear() - 1, 11, 31);
+      decemberEnd.setHours(0,0,0,0);
     } else if (currentMonth === 11 && currentDay !== 1) {
       console.log("december");
       winterSeason = true;
-      winterDataStart.setFullYear(currentDate.getFullYear(), 11, 1);
-      winterDataStart.setHours(0,0,0,0);
+      decemberStart.setFullYear(currentDate.getFullYear(), 11, 1);
+      decemberStart.setHours(0,0,0,0);
+      decemberEnd.setFullYear(currentDate.getFullYear(), 11, 31);
+      decemberEnd.setHours(0,0,0,0);
     }
 
     console.log(winterSeason);
-    console.log(winterDataStart.toISOString());
+    console.log(decemberStart.toISOString());
 
     // Fetch latest weather from Muonio Laukokero station
     fetch("http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
@@ -185,11 +193,11 @@ function WeatherTab() {
           }
         }
       });
-
-    // Fetch winter temperature statistics
     
     if (winterSeason) {
-      fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${winterDataStart.toISOString()}&storedquery_id=fmi::observations::weather::daily::timevaluepair&fmisid=101982&`)
+
+      // Fetch daily winter temperature statistics
+      fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${decemberStart.toISOString()}&storedquery_id=fmi::observations::weather::daily::timevaluepair&fmisid=101982&`)
         .then((response) => response.text())
         .then((response) => {
           const parser = new DOMParser();
@@ -209,10 +217,232 @@ function WeatherTab() {
             }
           }
         });
+
+      // Fetch hourly winter wind statistics in December
+      fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${decemberStart.toISOString()}&endtime=${decemberEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+        .then((response) => response.text())
+        .then((response) => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(response,"text/xml");
+          const results = xmlDoc.getElementsByTagName("om:result");
+          let windspeeds;
+          let winddirections;
+
+          for (let result of results) {
+            switch (result.firstElementChild.getAttribute("gml:id")) {
+                
+            // Wind speeds
+            case "obs-obs-1-1-WS_PT1H_AVG":
+              windspeeds = result;
+              break;
+
+            // Wind directions
+            case "obs-obs-1-1-WD_PT1H_AVG":
+              winddirections = result;
+              break;
+
+            default:
+              break;
+            }
+          }
+          weather.december = { ...weather.december, ...getWinterWindStats(windspeeds, winddirections)};
+        });
+      
+      if (currentMonth >= 0 && currentMonth !== 11) {
+        var januaryStart = new Date();
+        januaryStart.setFullYear(currentDate.getFullYear(), 0, 1);
+        januaryStart.setHours(0,0,0,0);
+        var januaryEnd = new Date();
+        januaryEnd.setFullYear(currentDate.getFullYear(), 0, 31);
+        januaryEnd.setHours(0,0,0,0);
+
+        // Fetch hourly winter wind statistics in January
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${januaryStart.toISOString()}&endtime=${januaryEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+          .then((response) => response.text())
+          .then((response) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response,"text/xml");
+            const results = xmlDoc.getElementsByTagName("om:result");
+            let windspeeds;
+            let winddirections;
+
+            for (let result of results) {
+              switch (result.firstElementChild.getAttribute("gml:id")) {
+                  
+              // Wind speeds
+              case "obs-obs-1-1-WS_PT1H_AVG":
+                windspeeds = result;
+                break;
+
+              // Wind directions
+              case "obs-obs-1-1-WD_PT1H_AVG":
+                winddirections = result;
+                break;
+
+              default:
+                break;
+              }
+            }
+            weather.january = { ...weather.january, ...getWinterWindStats(windspeeds, winddirections)};
+          });
+      }
+    
+      if (currentMonth > 0 && currentMonth !== 11) {
+        var februaryStart = new Date();
+        februaryStart.setFullYear(currentDate.getFullYear(), 1, 1);
+        februaryStart.setHours(0,0,0,0);
+        var februaryEnd = new Date();
+        februaryEnd.setFullYear(currentDate.getFullYear(), 1, 28);
+        februaryEnd.setHours(0,0,0,0);
+
+        // Fetch hourly winter wind statistics in February
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${februaryStart.toISOString()}&endtime=${februaryEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+          .then((response) => response.text())
+          .then((response) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response,"text/xml");
+            const results = xmlDoc.getElementsByTagName("om:result");
+            let windspeeds;
+            let winddirections;
+
+            for (let result of results) {
+              switch (result.firstElementChild.getAttribute("gml:id")) {
+                  
+              // Wind speeds
+              case "obs-obs-1-1-WS_PT1H_AVG":
+                windspeeds = result;
+                break;
+
+              // Wind directions
+              case "obs-obs-1-1-WD_PT1H_AVG":
+                winddirections = result;
+                break;
+
+              default:
+                break;
+              }
+            }
+            weather.february = { ...weather.february, ...getWinterWindStats(windspeeds, winddirections)};
+          });
+      }
+
+      if (currentMonth > 1 && currentMonth !== 11) {
+        var marchStart = new Date();
+        marchStart.setFullYear(currentDate.getFullYear(), 2, 1);
+        marchStart.setHours(0,0,0,0);
+        var marchEnd = new Date();
+        marchEnd.setFullYear(currentDate.getFullYear(), 2, 31);
+        marchEnd.setHours(0,0,0,0);
+
+        // Fetch hourly winter wind statistics in March
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${marchStart.toISOString()}&endtime=${marchEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+          .then((response) => response.text())
+          .then((response) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response,"text/xml");
+            const results = xmlDoc.getElementsByTagName("om:result");
+            let windspeeds;
+            let winddirections;
+
+            for (let result of results) {
+              switch (result.firstElementChild.getAttribute("gml:id")) {
+                  
+              // Wind speeds
+              case "obs-obs-1-1-WS_PT1H_AVG":
+                windspeeds = result;
+                break;
+
+              // Wind directions
+              case "obs-obs-1-1-WD_PT1H_AVG":
+                winddirections = result;
+                break;
+
+              default:
+                break;
+              }
+            }
+            weather.march = { ...weather.march, ...getWinterWindStats(windspeeds, winddirections)};
+          });
+      }
+
+      if (currentMonth > 2 && currentMonth !== 11) {
+        var aprilStart = new Date();
+        aprilStart.setFullYear(currentDate.getFullYear(), 3, 1);
+        aprilStart.setHours(0,0,0,0);
+        var aprilEnd = new Date();
+        aprilEnd.setFullYear(currentDate.getFullYear(), 3, 30);
+        aprilEnd.setHours(0,0,0,0);
+
+        // Fetch hourly winter wind statistics in April
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${aprilStart.toISOString()}&endtime=${aprilEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+          .then((response) => response.text())
+          .then((response) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response,"text/xml");
+            const results = xmlDoc.getElementsByTagName("om:result");
+            let windspeeds;
+            let winddirections;
+
+            for (let result of results) {
+              switch (result.firstElementChild.getAttribute("gml:id")) {
+                  
+              // Wind speeds
+              case "obs-obs-1-1-WS_PT1H_AVG":
+                windspeeds = result;
+                break;
+
+              // Wind directions
+              case "obs-obs-1-1-WD_PT1H_AVG":
+                winddirections = result;
+                break;
+
+              default:
+                break;
+              }
+            }
+            weather.april = { ...weather.april, ...getWinterWindStats(windspeeds, winddirections)};
+          });
+      }
+
+      if (currentMonth > 3 && currentMonth !== 11) {
+        var mayStart = new Date();
+        mayStart.setFullYear(currentDate.getFullYear(), 4, 1);
+        mayStart.setHours(0,0,0,0);
+        var mayEnd = new Date();
+        mayEnd.setFullYear(currentDate.getFullYear(), 4, 31);
+        mayEnd.setHours(0,0,0,0);
+
+        // Fetch hourly winter wind statistics in May
+        fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${mayStart.toISOString()}&endtime=${mayEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+          .then((response) => response.text())
+          .then((response) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response,"text/xml");
+            const results = xmlDoc.getElementsByTagName("om:result");
+            let windspeeds;
+            let winddirections;
+
+            for (let result of results) {
+              switch (result.firstElementChild.getAttribute("gml:id")) {
+                  
+              // Wind speeds
+              case "obs-obs-1-1-WS_PT1H_AVG":
+                windspeeds = result;
+                break;
+
+              // Wind directions
+              case "obs-obs-1-1-WD_PT1H_AVG":
+                winddirections = result;
+                break;
+
+              default:
+                break;
+              }
+            }
+            weather.may = { ...weather.may, ...getWinterWindStats(windspeeds, winddirections)};
+          });
+      }
     }
-    
-  
-    
     
     // If there is no weather data yet, it will be stored into React hook state
     if (weatherState === null) {
