@@ -186,6 +186,42 @@ function getSnowDepthStatistics(data, currentDate) {
   };
 }
 
+function getCurrentAirPressureInfo(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  /*
+  Air pressure direction according to change during three hours
+
+  >= 0.1 hPa fall per hour : direction 1 (down)
+  < 0.1 hPa change in 3hrs : direction 2 (steady)
+  >= 0.1 hPa rise per hour : direction 3 (up)
+
+  */
+
+  var current = Number(measurements[measurements.length - 1].lastElementChild.innerHTML);
+  console.log(measurements[measurements.length - 1].lastElementChild.innerHTML);
+
+  var hourAgo = Number(measurements[measurements.length - 7].lastElementChild.innerHTML);
+  console.log(measurements[measurements.length - 7].lastElementChild.innerHTML);
+
+  var threeHoursAgo = Number(measurements[measurements.length - 19].lastElementChild.innerHTML);
+  console.log(measurements[measurements.length - 19].lastElementChild.innerHTML);
+
+  var direction = 2;
+  if (Math.abs(current - threeHoursAgo) < 0.1) {
+    direction = 2;
+  } else {
+    var changeDuringOneHour = current - hourAgo;
+    if (changeDuringOneHour >= 0.1) {
+      direction = 3;
+    } else if (changeDuringOneHour <= -0.1) {
+      direction = 1;
+    }
+  }
+
+  return { current: current, direction: direction };
+}
+
  
 function WeatherTab() {
 
@@ -217,6 +253,44 @@ function WeatherTab() {
     var thirdDayStartString = thirdDayStart.toISOString();
     console.log(thirdDayStartString);
     */
+
+    // Fetch latest weather from Muonio Laukokero station
+    fetch("http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
+      .then((response) => response.text())
+      .then((response) => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(response,"text/xml");
+        const results = xmlDoc.getElementsByTagName("om:result");
+
+        for(let result of results) {
+          switch (result.firstElementChild.getAttribute("gml:id")) {
+
+          // Current temperature
+          case "obs-obs-1-1-t2m":
+            weather.temperature = { ...weather.temperature, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            break;
+
+          // Current wind speed
+          case "obs-obs-1-1-ws_10min":
+            weather.windspeed = { ...weather.windspeed, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            break;
+
+          // Current wind direction
+          // Wind's income direction as degrees (360 = north)
+          case "obs-obs-1-1-wd_10min":
+            weather.winddirection = { ...weather.winddirection, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            break;
+
+          // Air pressure as hPA / mBar
+          case "obs-obs-1-1-p_sea":
+            weather.airpressure = { ...weather.airpressure, ...getCurrentAirPressureInfo(result) };
+            break;
+
+          default:
+            break;
+          }
+        }
+      });
    
     // Fetch info from Muonio Laukokero station during past three days
     fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStart.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
@@ -260,7 +334,7 @@ function WeatherTab() {
             weather.winddirection = { ...weather.winddirection, ...getThreeDayStatistics(result) };
             break;
             
-          // Air pressure as hPA
+          // Air pressure as hPA / mBar
           case "obs-obs-1-1-PA_PT1H_AVG":
             weather.airpressure = { ...weather.airpressure, ...getThreeDayStatistics(result) };
             break;
