@@ -263,5 +263,5 @@ export function getWinterWindStats(speeds, directions) {
     }
   }
 
-  return { maxWind: maxWind, averageDirection: directionSum / dayCount, dayCount: dayCount };
+  return { maxWind: maxWind, averageStrongWindDirection: directionSum / dayCount, strongWindDays: dayCount };
 }
