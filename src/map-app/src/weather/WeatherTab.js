@@ -38,7 +38,8 @@ function WeatherTab() {
         threeDaysAverage: "",
         threeDaysHighest: "",
         threeDaysLowest: "",
-        thawDaysOutOfThree: 0
+        thawDaysOutOfThree: 0,
+        thawDays: []
       }, windspeed: { 
       current: "",
       firstDayAverage: "",
@@ -78,6 +79,9 @@ function WeatherTab() {
     var firstDayStart = new Date(currentDate.getTime());
     firstDayStart.setDate(firstDayStart.getDate() - 2);
     firstDayStart.setHours(0,0,0,0);
+
+    var secondDay = new Date(currentDate.getTime());
+    secondDay.setDate(secondDay.getDate() - 1);
 
     var snowDataStart = new Date(currentDate.getTime());
     snowDataStart.setDate(snowDataStart.getDate() - 6);
@@ -202,12 +206,15 @@ function WeatherTab() {
         var thawDays = 0;
         if (weather.temperature.firstDayAverage >= 0) {
           ++thawDays;
+          weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth()}-${firstDayStart.getDate()}`);
         }
         if (weather.temperature.secondDayAverage >= 0) {
           ++thawDays;
+          weather.temperature.thawDays.push(`${secondDay.getFullYear()}-${secondDay.getMonth()}-${secondDay.getDate()}`);
         }
         if (weather.temperature.thirdDayAverage >= 0) {
           ++thawDays;
+          weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`);
         }
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
       });
