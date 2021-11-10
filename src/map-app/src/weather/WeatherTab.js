@@ -20,8 +20,9 @@ Fetched weather data from Ilmatieteenlaitos and create initial components for sh
 import * as React from "react";
 import Wheel from "./Wheel";
 import Statistics from "./Statistics";
-import {getThreeDayStatistics, getThreeDaysHighest, getThreeDaysLowest, getSnowDepthStatistics, getCurrentAirPressureInfo, getWinterTemperatures, getWinterWindStats} from "./utils";
+import {getThreeDayStatistics, getThreeDaysHighest, getThreeDaysLowest, getSnowDepthStatistics, getCurrentAirPressureInfo, getWinterTemperatures, getWinterWindStats} from "./DataCalculations";
  
+
 function WeatherTab() {
 
   const [ weatherState, setWeatherState ] = React.useState(null);
