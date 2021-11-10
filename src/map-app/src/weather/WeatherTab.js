@@ -94,6 +94,8 @@ function WeatherTab() {
     const currentMonth = currentDate.getMonth();
     const currentDay = currentDate.getDate();
     var winterSeason = false;
+
+    // Remember to change 11 to 5 after development
     if (currentMonth < 11) {
       console.log("winter time");
       winterSeason = true;
@@ -113,7 +115,7 @@ function WeatherTab() {
     console.log(winterSeason);
     console.log(decemberStart.toISOString());
 
-    // Fetch latest weather from Muonio Laukokero station
+    // Fetch latest weather from Muonio Laukukero station
     fetch("http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
       .then((response) => response.text())
       .then((response) => {
@@ -153,7 +155,7 @@ function WeatherTab() {
         console.log(error);
       });
    
-    // Fetch info from Muonio Laukokero station during past three days
+    // Fetch info from Muonio Laukukero station during past three days
     fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStart.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
       .then((response) => response.text())
       .then((response) => {
@@ -247,11 +249,12 @@ function WeatherTab() {
       }).catch((error) => {
         console.log(error);
       });
-    
-    // Winter weather statistics are fetched if its winter season currently
+
+
+    // Winter weather statistics are fetched from Muonio Laukukero station if its winter season currently
     if (winterSeason) {
 
-      // Fetch daily winter temperature statistics
+      // Fetch daily winter temperature statistics from last December and after that
       fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${decemberStart.toISOString()}&storedquery_id=fmi::observations::weather::daily::timevaluepair&fmisid=101982&`)
         .then((response) => response.text())
         .then((response) => {
@@ -275,7 +278,7 @@ function WeatherTab() {
           console.log(error);
         });
 
-      // Fetch hourly winter wind statistics in December
+      // Fetch hourly winter wind statistics in last December
       fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${decemberStart.toISOString()}&endtime=${decemberEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
         .then((response) => response.text())
         .then((response) => {
@@ -321,7 +324,7 @@ function WeatherTab() {
         januaryEnd.setFullYear(currentDate.getFullYear(), 0, 31);
         januaryEnd.setHours(0,0,0,0);
 
-        // Fetch hourly winter wind statistics in January
+        // Fetch hourly winter wind statistics in last January
         fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${januaryStart.toISOString()}&endtime=${januaryEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
           .then((response) => response.text())
           .then((response) => {
@@ -368,7 +371,7 @@ function WeatherTab() {
         februaryEnd.setFullYear(currentDate.getFullYear(), 1, 28);
         februaryEnd.setHours(0,0,0,0);
 
-        // Fetch hourly winter wind statistics in February
+        // Fetch hourly winter wind statistics in last February
         fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${februaryStart.toISOString()}&endtime=${februaryEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
           .then((response) => response.text())
           .then((response) => {
@@ -415,7 +418,7 @@ function WeatherTab() {
         marchEnd.setFullYear(currentDate.getFullYear(), 2, 31);
         marchEnd.setHours(0,0,0,0);
 
-        // Fetch hourly winter wind statistics in March
+        // Fetch hourly winter wind statistics in last March
         fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${marchStart.toISOString()}&endtime=${marchEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
           .then((response) => response.text())
           .then((response) => {
@@ -462,7 +465,7 @@ function WeatherTab() {
         aprilEnd.setFullYear(currentDate.getFullYear(), 3, 30);
         aprilEnd.setHours(0,0,0,0);
 
-        // Fetch hourly winter wind statistics in April
+        // Fetch hourly winter wind statistics in last April
         fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${aprilStart.toISOString()}&endtime=${aprilEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
           .then((response) => response.text())
           .then((response) => {
@@ -509,7 +512,7 @@ function WeatherTab() {
         mayEnd.setFullYear(currentDate.getFullYear(), 4, 31);
         mayEnd.setHours(0,0,0,0);
 
-        // Fetch hourly winter wind statistics in May
+        // Fetch hourly winter wind statistics in last May
         fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${mayStart.toISOString()}&endtime=${mayEnd.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
           .then((response) => response.text())
           .then((response) => {
