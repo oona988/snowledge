@@ -148,6 +148,8 @@ function WeatherTab() {
             break;
           }
         }
+      }).catch((error) => {
+        console.log(error);
       });
    
     // Fetch info from Muonio Laukokero station during past three days
@@ -217,6 +219,8 @@ function WeatherTab() {
           weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`);
         }
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
+      }).catch((error) => {
+        console.log(error);
       });
 
     // Fetch info from Kittila Kenttarova station during past 7 days
@@ -239,6 +243,8 @@ function WeatherTab() {
             break;
           }
         }
+      }).catch((error) => {
+        console.log(error);
       });
     
     // Winter weather statistics are fetched if its winter season currently
@@ -264,6 +270,8 @@ function WeatherTab() {
               break;
             }
           }
+        }).catch((error) => {
+          console.log(error);
         });
 
       // Fetch hourly winter wind statistics in December
@@ -300,6 +308,8 @@ function WeatherTab() {
             maxWind = weather.december.maxWind;
           }
           weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.december.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.december.strongWindDays, months: ++weather.winter.months };
+        }).catch((error) => {
+          console.log(error);
         });
       
       if (currentMonth >= 0 && currentMonth !== 11) {
@@ -344,6 +354,8 @@ function WeatherTab() {
               maxWind = weather.january.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.january.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.january.strongWindDays, months: ++weather.winter.months };
+          }).catch((error) => {
+            console.log(error);
           });
       }
     
@@ -389,6 +401,8 @@ function WeatherTab() {
               maxWind = weather.february.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.february.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.february.strongWindDays, months: ++weather.winter.months };
+          }).catch((error) => {
+            console.log(error);
           });
       }
 
@@ -434,6 +448,8 @@ function WeatherTab() {
               maxWind = weather.march.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.march.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.march.strongWindDays, months: ++weather.winter.months };
+          }).catch((error) => {
+            console.log(error);
           });
       }
 
@@ -479,6 +495,8 @@ function WeatherTab() {
               maxWind = weather.april.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.april.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.april.strongWindDays, months: ++weather.winter.months };
+          }).catch((error) => {
+            console.log(error);
           });
       }
 
@@ -524,6 +542,8 @@ function WeatherTab() {
               maxWind = weather.may.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionSum: weather.winter.strongWindDirectionSum += weather.may.strongWindDirectionSum, strongWindDays: weather.winter.strongWindDays += weather.may.strongWindDays, months: ++weather.winter.months };
+          }).catch((error) => {
+            console.log(error);
           });
       }
 
@@ -534,7 +554,7 @@ function WeatherTab() {
       setWeatherState(weather);
     }
   };
-  
+
   fetchWeather();
 
   return (
