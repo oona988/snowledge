@@ -93,7 +93,7 @@ function WeatherTab() {
     const currentMonth = currentDate.getMonth();
     const currentDay = currentDate.getDate();
     var winterSeason = false;
-    if (currentMonth < 5) {
+    if (currentMonth < 11) {
       console.log("winter time");
       winterSeason = true;
       decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
@@ -546,7 +546,6 @@ function WeatherTab() {
             console.log(error);
           });
       }
-
     }
 
     // If there is no weather data yet, it will be stored into React hook state

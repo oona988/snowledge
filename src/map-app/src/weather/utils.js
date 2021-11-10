@@ -194,7 +194,7 @@ export function getCurrentAirPressureInfo(data) {
   return { current: current, direction: direction };
 }
 
-// Calculate winter temperatures from December to May
+// Calculate daily winter temperatures from December to May
 export function getWinterTemperatures(data) {
   var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
@@ -216,51 +216,68 @@ export function getWinterTemperatures(data) {
   return { thawDays: thawDays, median: median };
 }
 
-// Calculate winter wind statistics for every month from December to May
+// Calculate hourly winter wind statistics for every month from December to May
 export function getWinterWindStats(speeds, directions) {
   var speedMeasurements = speeds.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
   var directionMeasurements = directions.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
 
+  var maxWind = 0;
   var dayCount = 0;
   var directionSum = 0;
-  var maxWind = 0;
+  
+  var directionIndex = 0;
+  var speedIndex = 0;
+  
   var previouslySavedDay = null;
 
-  if (speedMeasurements < directionMeasurements) {
-    for (let i = 0; i < speedMeasurements.length; i++) {
-      let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
-      let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
-      if (date !== previouslySavedDay) {
-        if (speed > 10) {
-          let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
-          previouslySavedDay = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML;
-          ++dayCount;
-          directionSum += direction;
-        }
+  for (let i = 0; i < [speedMeasurements.length < directionMeasurements.length ? speedMeasurements.length : directionMeasurements.length]; i++) {
+    let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
+    let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
 
-        if (speed > maxWind) {
-          maxWind = speed;
+    if (speed > 10) {
+      let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
+      let day = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
+
+      if (speed > maxWind) {
+        maxWind = speed;
+      }
+
+      // There is no previous strong winds for this month
+      if (previouslySavedDay === null) {
+        ++dayCount;
+
+        directionIndex = direction;
+        speedIndex = speed;
+      }
+
+      // There is no previous strong winds for this day
+      // If there are some statistics for previous days, these should be saved
+      else if (date !== previouslySavedDay) {
+        ++dayCount;
+
+        // Add previous direction to direction sum from index
+        directionSum += directionIndex;
+
+        directionIndex = direction;
+        speedIndex = speed;
+      }
+
+      // There is already strong wind saved from this day
+      // So check if wind speed has increased
+      else {
+        if (speed > speedIndex) {
+          speedIndex = speed;
+          directionIndex = direction;
         }
       }
-    }
-  } else {
-    for (let i = 0; i < directionMeasurements.length; i++) {
-      let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
-      let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
-      if (date !== previouslySavedDay) {
-        previouslySavedDay = date;
 
-        if (speed > 10) {
-          let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
-          ++dayCount;
-          directionSum += direction;
-        }
-
-        if (speed > maxWind) {
-          maxWind = speed;
-        }
-      }
+      previouslySavedDay = day;
     }
+  }
+
+  // Get index statistics from previously saved day
+  if (previouslySavedDay !== null && dayCount !== 0) {
+    directionSum += directionIndex;
   }
 
   return { maxWind: maxWind, strongWindDirectionSum: directionSum, strongWindDays: dayCount };
