@@ -1,3 +1,12 @@
+export function toDegrees(angle) {
+  return angle * (180 / Math.PI);
+}
+
+function toRadians(angle) {
+  return angle * (Math.PI / 180);
+}
+
+
 /*
 Returns latest three day average statistics
 First day: day before yesterday
@@ -27,6 +36,47 @@ export function getThreeDayStatistics(data) {
     secondDayAverage: secondDayCount / 24,
     thirdDayAverage: thirdDayCount / (measurements.length - 48),
     threeDaysAverage: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
+  };
+}
+
+/*
+Returns latest three day average wind directions
+First day: day before yesterday
+Second day: yesterday
+Third day: today
+*/
+export function getThreeDayWindStatistics(data) {
+  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+
+  var firstDayCountX = 0;
+  var firstDayCountY = 0;
+  for (let i = 0; i < 24; i++) {
+    let direction = Number(measurements[i].lastElementChild.innerHTML);
+    firstDayCountX += Math.cos(toRadians(direction));
+    firstDayCountY += Math.sin(toRadians(direction));
+  }
+
+  var secondDayCountX = 0;
+  var secondDayCountY = 0;
+  for (let i = 24; i < 48; i++) {
+    let direction = Number(measurements[i].lastElementChild.innerHTML);
+    secondDayCountX += Math.cos(toRadians(direction));
+    secondDayCountY += Math.sin(toRadians(direction));
+  }
+
+  var thirdDayCountX = 0;
+  var thirdDayCountY = 0;
+  for (let i = 48; i < measurements.length; i++) {
+    let direction = Number(measurements[i].lastElementChild.innerHTML);
+    thirdDayCountX += Math.cos(toRadians(direction));
+    thirdDayCountY += Math.sin(toRadians(direction));
+  }
+
+  return {
+    firstDayAverage: toDegrees(Math.atan2(firstDayCountY, firstDayCountX)),
+    secondDayAverage: toDegrees(Math.atan2(secondDayCountY, secondDayCountX)),
+    thirdDayAverage: toDegrees(Math.atan2(thirdDayCountY, thirdDayCountX)),
+    threeDaysAverage: toDegrees(Math.atan2(firstDayCountY + secondDayCountY + thirdDayCountY, firstDayCountX + secondDayCountX +  thirdDayCountX))
   };
 }
 
@@ -223,7 +273,8 @@ export function getWinterWindStats(speeds, directions) {
 
   var maxWind = 0;
   var dayCount = 0;
-  var directionSum = 0;
+  var directionX = 0;
+  var directionY = 0;
   
   var directionIndex = 0;
   var speedIndex = 0;
@@ -256,7 +307,8 @@ export function getWinterWindStats(speeds, directions) {
         ++dayCount;
 
         // Add previous direction to direction sum from index
-        directionSum += directionIndex;
+        directionX += Math.cos(toRadians(directionIndex));
+        directionY += Math.sin(toRadians(directionIndex));
 
         directionIndex = direction;
         speedIndex = speed;
@@ -277,8 +329,9 @@ export function getWinterWindStats(speeds, directions) {
 
   // Get index statistics from previously saved day
   if (previouslySavedDay !== null && dayCount !== 0) {
-    directionSum += directionIndex;
+    directionX += Math.cos(toRadians(directionIndex));
+    directionY += Math.sin(toRadians(directionIndex));
   }
 
-  return { maxWind: maxWind, strongWindDirectionSum: directionSum, strongWindDays: dayCount };
+  return { maxWind: maxWind, strongWindDirectionX: directionX, strongWindDirectionY: directionY, strongWindDays: dayCount };
 }
