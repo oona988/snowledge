@@ -138,6 +138,8 @@ function PallasMap(props) {
           }
         });
 
+        // Add a scale bar to the bottom right of the map
+        map.addControl(new maplibregl.ScaleControl({ maxWidth: 80, unit: "metric"}), "bottom-right");
 
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
