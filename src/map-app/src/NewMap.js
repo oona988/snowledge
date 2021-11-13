@@ -231,6 +231,7 @@ function Map(props) {
         chosenSegment={segment => updateChosen(segment)}
         segmentColors={props.segmentColors}
         segments={props.segments}
+        isMobile={props.isMobile}
         zoom={zoom}
         subsOnly={subsOnly}
       ></PallasMap>

@@ -1,5 +1,5 @@
 /**
-Creation of map with maplibre-ui-library
+Creation of map with maplibre-gl-library
 
 Latest updates:
 
@@ -12,6 +12,10 @@ Emil Calonius 7.11
 Segment highlighting
 Subsegment filter
 segment coloring based on snowtype
+
+Emil Calonius 13.11
+Bugfixes and improvements to segment coloring
+Added different bounds on mobile and large screen
 
  **/
 import React, { useRef, useEffect, useState, useMemo } from "react";
@@ -36,7 +40,7 @@ function PallasMap(props) {
   const [data, setData] = useState({type: "FeatureCollection", features: []});
 
   const center = [24.05, 68.069];
-  const bounds = [[23.556208, 67.988229], [24.561503, 68.162280]];
+  const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
 
   useMemo(() => {
     setData({
@@ -83,6 +87,14 @@ function PallasMap(props) {
           data: data
         });
 
+        // An array that specifies which color layers paint property needs to paint a certain segment
+        const fillColor = ["match", ["get", "snowId"]];
+        for(let i = 1; i <= props.segmentColors.length-1; i++) {
+          fillColor.push(i);
+          fillColor.push(props.segmentColors[i].color);
+        }
+        fillColor.push("#000000");
+
         // Layer for segment fills
         map.addLayer({
           id: "segments-fills",
@@ -90,15 +102,7 @@ function PallasMap(props) {
           type: "fill",
           layout: {},
           paint: {
-            "fill-color": [
-              "match", ["get", "snowId"],
-              1, "#76c4d6",
-              2, "#3f7089",
-              3, "#3838a0",
-              4, "#7a357c",
-              5, "#b533b2",
-              "#000000"
-            ],
+            "fill-color": fillColor,
             // Opacity is dependant on the segments hover feature state
             "fill-opacity": [
               "case",
@@ -116,8 +120,7 @@ function PallasMap(props) {
           type: "fill",
           layout: {},
           paint: {
-            "fill-color": "#000000",
-            // Opacity is dependant on the segments hover feature state
+            "fill-color": fillColor,
             "fill-opacity": 0.6
           },
           filter: ["==", ["get", "segmentId"], 0]
@@ -172,7 +175,18 @@ function PallasMap(props) {
           props.chosenSegment(props.segments[e.features[0].id-1]);
           map.setFilter("segments-selected", ["==", ["get", "segmentId"], e.features[0].id]);
           // Filter out the selected segment from segments-fills layer when it is visible in segments-highlight layer
-          map.setFilter("segments-fills", ["!=", ["get", "segmentId"], e.features[0].id]);
+          // If only subsegments should be shown, filter out segments that are not subsegments
+          if(map.getFilter("segments-fills") === undefined) {
+            map.setFilter("segments-fills", ["!=", ["get", "segmentId"], e.features[0].id]);
+          } else {
+            if(JSON.stringify(map.getFilter("segments-fills")) === JSON.stringify(["==", ["get", "subsegment"], true]) || 
+            map.getFilter("segments-fills")[0] === "all") {
+              map.setFilter("segments-fills", ["all", ["!=", ["get", "segmentId"], e.features[0].id], ["==", ["get", "subsegment"], true]]);
+            }
+            else {
+              map.setFilter("segments-fills", ["!=", ["get", "segmentId"], e.features[0].id]);
+            }
+          }
         });
 
       });
