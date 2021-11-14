@@ -181,6 +181,7 @@ function App() {
                 onClick={chooseSegment} 
                 isMobile={isMobile}
                 woodsSegment={woodsSegment}
+                viewManagement={viewManagement}
               />
           )
         }

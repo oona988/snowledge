@@ -38,14 +38,32 @@ function PallasMap(props) {
   const styledClasses = useStyles();
 
   const [data, setData] = useState({type: "FeatureCollection", features: []});
+  const [refreshMap, setRefreshMap] = useState(false);
 
   const center = [24.05, 68.069];
   const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
 
   useMemo(() => {
+    // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
+    // This ensures that subsegments get drawn on top of other segments
+    let woodsSegments = [];
+    let normalSegments = [];
+    let subSegments = [];
+    props.segments.forEach(segment => {
+      if(segment.Nimi === "Metsä") {
+        woodsSegments.push(segment);
+      } else if(segment.On_Alasegmentti != null) {
+        subSegments.push(segment);
+      } else {
+        normalSegments.push(segment);
+      }
+    });
+    let segments = woodsSegments.concat(normalSegments);
+    segments = segments.concat(subSegments);
+
     setData({
       "type": "FeatureCollection",
-      "features": props.segments.map((item, index) => {
+      "features": segments.map((item, index) => {
         return {
           "type": "Feature",
           "geometry": {
@@ -67,7 +85,7 @@ function PallasMap(props) {
   }, [props.segments]);
 
   useEffect(() => {
-    if(data.features.length > 0 && typeof map === "undefined") {
+    if((data.features.length > 0 && map === undefined) || refreshMap) {
       map = new maplibregl.Map({
         container: mapContainerRef.current,
         style: mapStyle,
@@ -77,15 +95,18 @@ function PallasMap(props) {
         maxZoom: 15,
         minZoom: 11,
       });
+      setRefreshMap(false);
     }
 
-    if(typeof map !== "undefined") {
+    if(map != undefined) {
       map.on("load", function () {
         // Add geojson as source for layers
-        map.addSource("segments-source", {
-          type: "geojson",
-          data: data
-        });
+        if(map.getSource("segments-source") === undefined) {
+          map.addSource("segments-source", {
+            type: "geojson",
+            data: data
+          });
+        }
 
         // An array that specifies which color layers paint property needs to paint a certain segment
         const fillColor = ["match", ["get", "snowId"]];
@@ -96,47 +117,53 @@ function PallasMap(props) {
         fillColor.push("#000000");
 
         // Layer for segment fills
-        map.addLayer({
-          id: "segments-fills",
-          source: "segments-source",
-          type: "fill",
-          layout: {},
-          paint: {
-            "fill-color": fillColor,
-            // Opacity is dependant on the segments hover feature state
-            "fill-opacity": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              0.6,
-              0.15
-            ]
-          }
-        });
+        if(map.getLayer("segments-fills") === undefined) {
+          map.addLayer({
+            id: "segments-fills",
+            source: "segments-source",
+            type: "fill",
+            layout: {},
+            paint: {
+              "fill-color": fillColor,
+              // Opacity is dependant on the segments hover feature state
+              "fill-opacity": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                0.6,
+                0.15
+              ]
+            }
+          });
+        }
 
         // Layer for selected segment
-        map.addLayer({
-          id: "segments-selected",
-          source: "segments-source",
-          type: "fill",
-          layout: {},
-          paint: {
-            "fill-color": fillColor,
-            "fill-opacity": 0.6
-          },
-          filter: ["==", ["get", "segmentId"], 0]
-        });
+        if(map.getLayer("segments-selected") === undefined) {
+          map.addLayer({
+            id: "segments-selected",
+            source: "segments-source",
+            type: "fill",
+            layout: {},
+            paint: {
+              "fill-color": fillColor,
+              "fill-opacity": 0.6
+            },
+            filter: ["==", ["get", "segmentId"], 0]
+          });
+        }
 
         // Layer for segment outlines
-        map.addLayer({
-          id: "segments-outlines",
-          source: "segments-source",
-          type: "line",
-          layout: {},
-          paint: {
-            "line-color": "#000000",
-            "line-width": 1.15
-          }
-        });
+        if(map.getLayer("segments-outlines") === undefined) {
+          map.addLayer({
+            id: "segments-outlines",
+            source: "segments-source",
+            type: "line",
+            layout: {},
+            paint: {
+              "line-color": "#000000",
+              "line-width": 1.15
+            }
+          });
+        }
 
         // Add a scale bar to the bottom right of the map
         map.addControl(new maplibregl.ScaleControl({ maxWidth: 80, unit: "metric"}), "bottom-right");
@@ -213,7 +240,14 @@ function PallasMap(props) {
         }
       }
     }
-  }, [data, props.subsOnly, props.shownSegment]);
+  }, [data, props.subsOnly, props.shownSegment, refreshMap]);
+
+  // Ensure that map refreshes when user leaves management view
+  useEffect(() => {
+    if(data.features.length > 0) {
+      setRefreshMap(true);
+    }
+  }, [props.viewManagement]);
 
   return (
     <div className={styledClasses.mapContainer} ref={mapContainerRef} />

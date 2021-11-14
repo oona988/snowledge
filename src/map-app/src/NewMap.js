@@ -234,6 +234,7 @@ function Map(props) {
         isMobile={props.isMobile}
         zoom={zoom}
         subsOnly={subsOnly}
+        viewManagement={props.viewManagement}
       ></PallasMap>
     </div>
   );
