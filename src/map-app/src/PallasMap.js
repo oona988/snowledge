@@ -60,25 +60,29 @@ function PallasMap(props) {
     });
     let segments = woodsSegments.concat(normalSegments);
     segments = segments.concat(subSegments);
-
+    console.log(segments);
     setData({
       "type": "FeatureCollection",
-      "features": segments.map((item, index) => {
+      "features": segments.map(item => {
         return {
           "type": "Feature",
           "geometry": {
             "type": "Polygon",
             "coordinates": [item.Points.map(point => {
               return [point.lng, point.lat];
-            })]
+            }),
+            segments.find(segment => item.On_Alasegmentti === null && item.Nimi === segment.On_Alasegmentti) === undefined ? [] :
+              segments.find(segment => item.On_Alasegmentti === null && item.Nimi === segment.On_Alasegmentti).Points.map(point => {
+                return [point.lng, point.lat];
+              })]
           },
           "properties": {
             "name": item.Nimi,
             "subsegment": item.On_Alasegmentti === null ? false : true,
-            "segmentId": index+1,
+            "segmentId": item.ID,
             "snowId": item.update !== null ? item.update.Lumi.ID : 0
           },
-          "id": index+1
+          "id": item.ID
         };
       })
     });
