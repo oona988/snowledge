@@ -5,7 +5,7 @@
 --         ('Sohjo', '#7a357c',null),
 --         ('Jää', '#b533b2',null);
 
-INSERT INTO Lumilaadut
+INSERT INTO Lumilaadut(ID, Nimi, Vari)
 VALUES (1,'Pehmeä lumi','#76c4d6'),
         (2,'Tuulen pieksämä aaltoileva lumi','#3f7089'),
         (3,'Korppu','#3838a0'),

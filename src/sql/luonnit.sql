@@ -7,6 +7,14 @@ CREATE TABLE Segmentit (
     FOREIGN KEY(On_Alasegmentti) REFERENCES Segmentit(ID)
 );
 
+CREATE TABLE Koordinaatit(
+    Segmentti BIGINT UNSIGNED,
+    Jarjestys BIGINT UNSIGNED,
+    Sijainti Point,
+    FOREIGN KEY(Segmentti) references Segmentit(ID) ON DELETE CASCADE,
+    CONSTRAINT tunniste PRIMARY KEY(Jarjestys, Segmentti)
+);
+
 CREATE TABLE Kayttajat (
     ID SERIAL PRIMARY KEY,
     Etunimi VARCHAR(20),
@@ -23,6 +31,17 @@ CREATE TABLE Lumilaadut (
     Vari VARCHAR(15)
 );
 
+CREATE TABLE Alalumilaadut (
+  Alalumilaatu_ID int(10) unsigned NOT NULL AUTO_INCREMENT,
+  Alatyypin_nimi varchar(45) DEFAULT NULL,
+  Lumilaatu_ID bigint(20) unsigned DEFAULT NULL,
+  Hiihdettavyys int(10) DEFAULT NULL,
+  PRIMARY KEY (Alalumilaatu_ID),
+  KEY Lumi_alatyyppi_ibfk_1_idx(Lumilaatu_ID),
+  CONSTRAINT Alalumilaadut_ibfk_1 
+  FOREIGN KEY (Lumilaatu_ID) references Lumilaadut(ID) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
 CREATE TABLE Paivitykset (
     Tekija BIGINT UNSIGNED,
     Segmentti BIGINT UNSIGNED,
@@ -34,25 +53,7 @@ CREATE TABLE Paivitykset (
     Alalumilaatu_ID int(10) unsigned,
     FOREIGN KEY(Tekija) references Kayttajat(ID) ON DELETE CASCADE,
     FOREIGN KEY(Segmentti) references Segmentit(ID) ON DELETE CASCADE,
-    CONSTRAINT Lumilaatu_ID FOREIGN KEY (Lumilaatu_ID) REFERENCES Lumilaatu (ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT Alalumilaatu_ID FOREIGN KEY (Alalumilaatu_ID) REFERENCES Alalumilaatu (ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT Lumilaatu_ID FOREIGN KEY (Lumilaatu_ID) REFERENCES Lumilaadut (ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT Alalumilaatu_ID FOREIGN KEY (Alalumilaatu_ID) REFERENCES Alalumilaadut (Alalumilaatu_ID) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT tunniste PRIMARY KEY (Aika, Segmentti)
-);
-
-CREATE TABLE Koordinaatit(
-    Segmentti BIGINT UNSIGNED,
-    Jarjestys BIGINT UNSIGNED,
-    Sijainti Point,
-    FOREIGN KEY(Segmentti) references Segmentit(ID) ON DELETE CASCADE,
-    CONSTRAINT tunniste PRIMARY KEY(Jarjestys, Segmentti)
-);
-
-CREATE TABLE Alalumilaadut (
-  Alalumilaatu_ID int(10) unsigned NOT NULL AUTO_INCREMENT,
-  Alatyypin_nimi varchar(45) DEFAULT NULL,
-  Lumilaatu_ID bigint(20) unsigned DEFAULT NULL,
-  Hiihdettavyys int(10) DEFAULT NULL,
-  PRIMARY KEY (Alalumilaatu_ID),
-  KEY Lumi_alatyyppi_ibfk_1_idx(Lumilaatu_ID),
-  CONSTRAINT Alalumilaadut_ibfk_1 FOREIGN KEY (Lumilaatu_ID) references Lumilaadut(ID) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

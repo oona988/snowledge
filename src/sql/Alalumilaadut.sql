@@ -1,4 +1,4 @@
-INSERT INTO `Alalumilaadut` 
+INSERT INTO Alalumilaadut (Alatyypin_nimi, Lumilaatu_ID, Hiihdettavyys) 
 VALUES ('Vitilumi',6,5),
 ('Puuteri',6,5),
 ('Kostea uusilumi',6,4),
