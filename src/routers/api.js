@@ -107,7 +107,7 @@ router.get("/segments", function(req, res) {
 //segmentin tuoreimman päivityksen haku
 router.get("/segments/update/:id", function(req, res) {
   database.query(
-    `SELECT Tekija, Segmentti, Lumilaatu, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Alalumilaatu_ID
+    `SELECT Tekija, Segmentti, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Lumilaatu_ID1,Alalumilaatu_ID ,Alalumilaatu_ID1
   FROM Paivitykset
   WHERE (Segmentti, Aika)
   IN
@@ -131,7 +131,7 @@ router.get("/segments/update/:id", function(req, res) {
 //päivitysten haku
 router.get("/segments/update", function(req, res) {
   database.query(
-    `SELECT Tekija, Segmentti, Lumilaatu, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Alalumilaatu_ID
+    `SELECT Tekija, Segmentti, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Lumilaatu_ID1,Alalumilaatu_ID ,Alalumilaatu_ID1
   FROM Paivitykset
   WHERE (Segmentti, Aika)
   IN
