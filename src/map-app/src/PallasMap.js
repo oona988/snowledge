@@ -39,6 +39,7 @@ function PallasMap(props) {
 
   const [data, setData] = useState({type: "FeatureCollection", features: []});
   const [refreshMap, setRefreshMap] = useState(false);
+  const [segmentArray, setSegmentArray] = useState([]);
 
   const center = [24.05, 68.069];
   const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
@@ -58,9 +59,49 @@ function PallasMap(props) {
         normalSegments.push(segment);
       }
     });
-    let segments = woodsSegments.concat(normalSegments);
-    segments = segments.concat(subSegments);
+    let noWoodsSegments = normalSegments.concat(subSegments);
+    let segments = woodsSegments.concat(noWoodsSegments);
+    setSegmentArray(segments);
+    console.log("segments -->");
     console.log(segments);
+
+    function getCoordinates(id) {
+      let coordinates = [];
+      let segment = segments.find(item => item.ID === id);
+      console.log(segment);
+      coordinates.push(segment.Points.map(point => {
+        return [point.lng, point.lat];
+      }));
+
+      if(segment.Nimi === "Metsä") {
+        let index = segments.indexOf(segment);
+        console.log(index);
+        let newSegments = [...segments];
+        newSegments.splice(index, 1);
+        console.log("new segments -->");
+        console.log(newSegments);
+        newSegments.forEach(item => {
+          if(item.On_Alasegmentti === null) {
+            coordinates.push(item.Points.map(point => {
+              return [point.lng, point.lat];
+            }));
+          }
+        });
+      } else {
+        if(segment.On_Alasegmentti === null) {
+          segments.forEach(item => {
+            if(item.On_Alasegmentti === segment.Nimi) {
+              coordinates.push(item.Points.map(point => {
+                return [point.lng, point.lat];
+              }));
+            }
+          });
+        }
+      }
+
+      return coordinates;
+    }
+    // Create a geojson feature collection that the segments are drawn from
     setData({
       "type": "FeatureCollection",
       "features": segments.map(item => {
@@ -68,13 +109,7 @@ function PallasMap(props) {
           "type": "Feature",
           "geometry": {
             "type": "Polygon",
-            "coordinates": [item.Points.map(point => {
-              return [point.lng, point.lat];
-            }),
-            segments.find(segment => item.On_Alasegmentti === null && item.Nimi === segment.On_Alasegmentti) === undefined ? [] :
-              segments.find(segment => item.On_Alasegmentti === null && item.Nimi === segment.On_Alasegmentti).Points.map(point => {
-                return [point.lng, point.lat];
-              })]
+            "coordinates": getCoordinates(item.ID)
           },
           "properties": {
             "name": item.Nimi,
@@ -99,12 +134,12 @@ function PallasMap(props) {
         maxZoom: 15,
         minZoom: 11,
       });
-      setRefreshMap(false);
     }
 
     if(map != undefined) {
       map.on("load", function () {
         // Add geojson as source for layers
+        console.log(data);
         if(map.getSource("segments-source") === undefined) {
           map.addSource("segments-source", {
             type: "geojson",
@@ -170,7 +205,10 @@ function PallasMap(props) {
         }
 
         // Add a scale bar to the bottom right of the map
-        map.addControl(new maplibregl.ScaleControl({ maxWidth: 80, unit: "metric"}), "bottom-right");
+        const scaleControl = new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric"});
+        if(map.hasControl(scaleControl) === false) {
+          map.addControl(scaleControl, "bottom-right");
+        }
 
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
@@ -205,7 +243,7 @@ function PallasMap(props) {
 
         // When a segment is clicked send it to NewMap.js to update chosen segment and filter segment-highlights layer so that selected segment is shown
         map.on("click", "segments-fills", function (e) {
-          props.chosenSegment(props.segments[e.features[0].id-1]);
+          props.chosenSegment(segmentArray.find(item => item.ID === e.features[0].id));
           map.setFilter("segments-selected", ["==", ["get", "segmentId"], e.features[0].id]);
           // Filter out the selected segment from segments-fills layer when it is visible in segments-highlight layer
           // If only subsegments should be shown, filter out segments that are not subsegments
@@ -221,7 +259,7 @@ function PallasMap(props) {
             }
           }
         });
-
+        
       });
 
       if(map.isStyleLoaded()) {
@@ -243,6 +281,7 @@ function PallasMap(props) {
           if(!props.subsOnly) map.setFilter("segments-fills", null);
         }
       }
+      setRefreshMap(false);
     }
   }, [data, props.subsOnly, props.shownSegment, refreshMap]);
 
