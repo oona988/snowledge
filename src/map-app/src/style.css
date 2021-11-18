@@ -21,9 +21,14 @@
   /* The width is the width of the web page */
 /*} */
 
+@font-face {
+  font-family: Donau;
+  src: url("fonts/donau.otf") format("opentype");
+}
+
 body {
   height: 100%;
-  margin: 0
+  margin: 0;
 }
 
 .app {

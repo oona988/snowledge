@@ -24,6 +24,7 @@ import Map from "./NewMap";
 import Manage from "./Manage";
 import Info from "./Info";
 import TopBar from "./TopBar";
+import WeatherTab from "./weather/WeatherTab";
 import { useMediaQuery } from "react-responsive";
 
 var refreshInterval = setInterval(window.location.reload.bind(window.location), (30*60000));
@@ -157,6 +158,11 @@ function App() {
           viewManagement={viewManagement} 
           manageOrMap={manageOrMap} 
         />   
+      </div>
+      {/* Weather tab - this is here temporarily so that component is rendered
+      and information fetched when application starts */}
+      <div className="weather_tab">
+        <WeatherTab/>   
       </div>
       <div className="map_container">
         {/* Hallintanäkymä tai kartta tilanteen mukaan */}

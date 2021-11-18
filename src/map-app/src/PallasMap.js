@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
 Creation of map with maplibre-gl-library
+=======
+Creation of map with maplibre-ui-library
+>>>>>>> a6b294ca8d8d67ad77d10014540d3e0193f3e55d
 
 Latest updates:
 
