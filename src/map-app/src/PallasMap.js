@@ -1,9 +1,5 @@
 /**
-<<<<<<< HEAD
 Creation of map with maplibre-gl-library
-=======
-Creation of map with maplibre-ui-library
->>>>>>> a6b294ca8d8d67ad77d10014540d3e0193f3e55d
 
 Latest updates:
 
@@ -27,6 +23,7 @@ import maplibregl from "maplibre-gl";
 import mapStyle from "./pallas_map";
 import { makeStyles } from "@material-ui/core/styles";
 import "maplibre-gl/dist/maplibre-gl.css";
+import union from "@turf/union";
 
 const useStyles = makeStyles(() => ({
   mapContainer: {
@@ -84,13 +81,33 @@ function PallasMap(props) {
         newSegments.splice(index, 1);
         console.log("new segments -->");
         console.log(newSegments);
-        newSegments.forEach(item => {
-          if(item.On_Alasegmentti === null) {
-            coordinates.push(item.Points.map(point => {
+        let unifiedSegment = {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [newSegments[0].Points.map(point => {
               return [point.lng, point.lat];
-            }));
-          }
-        });
+            })]
+          },
+          properties: {}
+        };
+        let otherSegment = {};
+        for(let i = 1; i<newSegments.length;i++) {
+          otherSegment = {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [newSegments[i].Points.map(point => {
+                return [point.lng, point.lat];
+              })]
+            },
+            properties: {}
+          };
+          unifiedSegment = union(unifiedSegment, otherSegment);
+        }
+        console.log("UnifiedSegment -->");
+        console.log(unifiedSegment);
+        coordinates.push(unifiedSegment.geometry.coordinates[0]);
       } else {
         if(segment.On_Alasegmentti === null) {
           segments.forEach(item => {
@@ -153,7 +170,8 @@ function PallasMap(props) {
 
         // An array that specifies which color layers paint property needs to paint a certain segment
         const fillColor = ["match", ["get", "snowId"]];
-        for(let i = 1; i <= props.segmentColors.length-1; i++) {
+        console.log(props.segmentColors);
+        for(let i = 1; i <= props.segmentColors.length-3; i++) {
           fillColor.push(i);
           fillColor.push(props.segmentColors[i].color);
         }
