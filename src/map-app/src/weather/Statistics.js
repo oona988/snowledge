@@ -14,11 +14,37 @@ Create initial components for showing weather statistics
 **/
 
 import * as React from "react";
+import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Paper from "@material-ui/core/Paper";
-import Carousel from "react-material-ui-carousel";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import {toDegrees} from "./DataCalculations";
+
+const responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 1,
+    partialVisibilityGutter: 10,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 1,
+    partialVisibilityGutter: 10,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 1,
+    partialVisibilityGutter: 30,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    partialVisibilityGutter: 30,
+  }
+};
 
 
 const useStyles = makeStyles(() => ({
@@ -40,10 +66,11 @@ function KeyValuePair({keyName, value}) {
 
 function Item(props) {
   const classes = useStyles();
+  const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   if (props.item.name === "Lähipäivien sää") {
     return (
-      <Paper style={{marginLeft: "20%", marginRight: "20%", paddingTop: "1%", paddingBottom: "1%"}} align="center">
+      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%", paddingTop: "1%", paddingBottom: "1%"} : {marginLeft: "20%", marginRight: "20%", paddingTop: "1%", paddingBottom: "1%"}} align="center">
         <h2>{props.item.name}</h2>
 
         <Card className={classes.card}>
@@ -66,7 +93,7 @@ function Item(props) {
     );
   } else if (props.item.name === "Talven säähavainnot") {
     return (
-      <Paper style={{marginLeft: "20%", marginRight: "20%", paddingTop: "1%", paddingBottom: "1%"}} align="center">
+      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%", paddingTop: "1%", paddingBottom: "1%"} : {marginLeft: "20%", marginRight: "20%", paddingTop: "1%", paddingBottom: "1%"}} align="center">
         <h2>{props.item.name}</h2>
 
         <Card className={classes.card}>
@@ -92,6 +119,8 @@ function Item(props) {
 
 function Statistics({weatherState}) {
 
+  //const isXS = useMediaQuery({ query: "(max-width: 1200px)" });
+
   var items = [
     {
       name: "Lähipäivien sää"
@@ -102,10 +131,9 @@ function Statistics({weatherState}) {
   ];
 
   return (
-    <Carousel autoPlay="false" stopAutoPlayOnHover="true" interval={60000} navButtonsAlwaysVisible="true">
-      {
-        items.map( (item, i) => <Item key={i} item={item} weatherState={weatherState} /> )
-      }
+    <Carousel responsive={responsive} swipeable={true} draggable={true} showDots={true} autoPlay={false} navButtonsAlwaysVisible="true" partialVisible={true}>
+      <Item key={0} item={items[0]} weatherState={weatherState}/>
+      <Item key={1} item={items[1]} weatherState={weatherState}/>
     </Carousel>
   );
 }
