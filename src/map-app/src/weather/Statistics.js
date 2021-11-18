@@ -58,6 +58,10 @@ const useStyles = makeStyles(() => ({
   },
   paper: {
     borderRadius: "10px",
+    paddingTop: "1%",
+    marginTop: "4%",
+    paddingBottom: "1%",
+    backgroundColor: "rgba(255,255,255,0.6)"
   }
 }));
 
@@ -75,7 +79,7 @@ function Item(props) {
 
   if (props.item.name === "Lähipäivien sää") {
     return (
-      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%", paddingTop: "1%", marginTop: "5%", paddingBottom: "1%", backgroundColor: "rgba(255,255,255,0.6)"} : {marginLeft: "20%", marginRight: "20%", paddingTop: "1%",marginTop: "4%", paddingBottom: "1%", backgroundColor: "rgba(255,255,255,0.6)"}} className={classes.paper} align="center">
+      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%"} : {marginLeft: "20%", marginRight: "20%"}} className={classes.paper} align="center">
         <h2>{props.item.name}</h2>
 
         <Card className={classes.card}>
@@ -102,7 +106,7 @@ function Item(props) {
     );
   } else if (props.item.name === "Talven säähavainnot") {
     return (
-      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%", paddingTop: "1%", marginTop: "5%", paddingBottom: "1%", backgroundColor: "rgba(255,255,255,0.6)"} : {marginLeft: "20%", marginRight: "20%", paddingTop: "1%",marginTop: "4%", paddingBottom: "1%", backgroundColor: "rgba(255,255,255,0.6)"}} className={classes.paper} align="center">
+      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%"} : {marginLeft: "20%", marginRight: "20%"}} className={classes.paper} align="center">
         <h2>{props.item.name}</h2>
 
         <Card className={classes.card}>
