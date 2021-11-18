@@ -99,14 +99,12 @@ function WeatherTab() {
 
     // Remember to change 11 to 5 after development
     if (currentMonth < 11) {
-      console.log("winter time");
       winterSeason = true;
       decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
       decemberStart.setHours(0,0,0,0);
       decemberEnd.setFullYear(currentDate.getFullYear() - 1, 11, 31);
       decemberEnd.setHours(0,0,0,0);
     } else if (currentMonth === 11 && currentDay !== 1) {
-      console.log("december");
       winterSeason = true;
       decemberStart.setFullYear(currentDate.getFullYear(), 11, 1);
       decemberStart.setHours(0,0,0,0);
@@ -114,8 +112,8 @@ function WeatherTab() {
       decemberEnd.setHours(0,0,0,0);
     }
 
-    console.log(winterSeason);
-    console.log(decemberStart.toISOString());
+    //console.log(winterSeason);
+    //console.log(decemberStart.toISOString());
 
     // Fetch latest weather from Muonio Laukukero station
     fetch("http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
@@ -566,7 +564,7 @@ function WeatherTab() {
     <div>
       <Wheel weatherState={weatherState}></Wheel>
       <Statistics weatherState={weatherState}></Statistics>
-      <p>
+      <p style={{display: "none"}}>
         {weatherState.winter.strongWindDirectionX}
       </p>
     </div>

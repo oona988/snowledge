@@ -18,7 +18,7 @@ function Wheel({weatherState}) {
   
   return (
     <div>
-      <p>{weatherState.temperature.threeDaysAverage}</p>
+      <p style={{display: "none"}}>{weatherState.temperature.threeDaysAverage}</p>
     </div>
   );
 }

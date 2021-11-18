@@ -19,7 +19,7 @@ function Statistics({weatherState}) {
 
   return (
     <div>
-      <p>{toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX))}</p>
+      <p style={{display: "none"}}>{toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX))}</p>
     </div>
   );
 }
