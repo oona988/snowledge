@@ -3,19 +3,24 @@ Creation of map with maplibre-gl-library
 
 Latest updates:
 
-Emil Calonius 4.11
-Create map with maplibre-gl
-Setting bounds and max and min zoom levels
-Drawing of segments
+Emil Calonius 18.11
+Forest segment covers the whole visible map except other segments
+Fixed bug where scale bar was being added twice after leaving management view
+
+Emil Calonius 13.11
+Bugfixes and improvements to segment coloring
+Added different bounds on mobile and large screen
+When a segment is highlighted, subsegments inside it don't get highlighted
 
 Emil Calonius 7.11
 Segment highlighting
 Subsegment filter
 segment coloring based on snowtype
 
-Emil Calonius 13.11
-Bugfixes and improvements to segment coloring
-Added different bounds on mobile and large screen
+Emil Calonius 4.11
+Create map with maplibre-gl
+Setting bounds and max and min zoom levels
+Drawing of segments
 
  **/
 import React, { useRef, useEffect, useState, useMemo } from "react";
@@ -32,7 +37,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-var map;
+let map;
+let scaleAdded = false;
 
 function PallasMap(props) {
   const mapContainerRef = useRef(null); 
@@ -63,24 +69,21 @@ function PallasMap(props) {
     let noWoodsSegments = normalSegments.concat(subSegments);
     let segments = woodsSegments.concat(noWoodsSegments);
     setSegmentArray(segments);
-    console.log("segments -->");
-    console.log(segments);
 
+    // Gets the coordinates for the geometry of a segment
+    // If segemnts has a subsegment add it as a hole to the segment
+    // For forest segment add the union of all other segments as a hole
     function getCoordinates(id) {
       let coordinates = [];
       let segment = segments.find(item => item.ID === id);
-      console.log(segment);
       coordinates.push(segment.Points.map(point => {
         return [point.lng, point.lat];
       }));
 
       if(segment.Nimi === "Metsä") {
         let index = segments.indexOf(segment);
-        console.log(index);
         let newSegments = [...segments];
         newSegments.splice(index, 1);
-        console.log("new segments -->");
-        console.log(newSegments);
         let unifiedSegment = {
           type: "Feature",
           geometry: {
@@ -105,8 +108,6 @@ function PallasMap(props) {
           };
           unifiedSegment = union(unifiedSegment, otherSegment);
         }
-        console.log("UnifiedSegment -->");
-        console.log(unifiedSegment);
         coordinates.push(unifiedSegment.geometry.coordinates[0]);
       } else {
         if(segment.On_Alasegmentti === null) {
@@ -160,7 +161,6 @@ function PallasMap(props) {
     if(map != undefined) {
       map.on("load", function () {
         // Add geojson as source for layers
-        console.log(data);
         if(map.getSource("segments-source") === undefined) {
           map.addSource("segments-source", {
             type: "geojson",
@@ -170,7 +170,6 @@ function PallasMap(props) {
 
         // An array that specifies which color layers paint property needs to paint a certain segment
         const fillColor = ["match", ["get", "snowId"]];
-        console.log(props.segmentColors);
         for(let i = 1; i <= props.segmentColors.length-3; i++) {
           fillColor.push(i);
           fillColor.push(props.segmentColors[i].color);
@@ -228,8 +227,9 @@ function PallasMap(props) {
 
         // Add a scale bar to the bottom right of the map
         const scaleControl = new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric"});
-        if(map.hasControl(scaleControl) === false) {
+        if(!scaleAdded) {
           map.addControl(scaleControl, "bottom-right");
+          scaleAdded = true;
         }
 
         // When user hovers over a segment, update its hover feature state to true
@@ -310,9 +310,10 @@ function PallasMap(props) {
   // Ensure that map refreshes when user leaves management view
   useEffect(() => {
     if(data.features.length > 0) {
+      scaleAdded = false;
       setRefreshMap(true);
     }
-  }, [props.viewManagement]);
+  }, []);
 
   return (
     <div className={styledClasses.mapContainer} ref={mapContainerRef} />
