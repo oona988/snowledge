@@ -26,27 +26,27 @@ import {getThreeDayStatistics, getThreeDayWindStatistics, getThreeDaysHighest, g
 function WeatherTab() {
   var initialState = { temperature: 
     { current: "",
-      firstDayAverage: "",
-      secondDayAverage: "",
-      thirdDayAverage: "",
-      threeDaysAverage: "",
+      firstDayAverage: 0,
+      secondDayAverage: 0,
+      thirdDayAverage: 0,
+      threeDaysAverage: 0,
       threeDaysHighest: "",
       threeDaysLowest: "",
       thawDaysOutOfThree: 0,
       thawDays: []
     }, windspeed: { 
     current: "",
-    firstDayAverage: "",
-    secondDayAverage: "",
-    thirdDayAverage: "",
-    threeDaysAverage: "",
+    firstDayAverage: 0,
+    secondDayAverage: 0,
+    thirdDayAverage: 0,
+    threeDaysAverage: 0,
     threeDaysHighest: ""
   }, winddirection: {
     current: "",
-    firstDayAverage: "",
-    secondDayAverage: "",
-    thirdDayAverage: "",
-    threeDaysAverage: ""
+    firstDayAverage: 0,
+    secondDayAverage: 0,
+    thirdDayAverage: 0,
+    threeDaysAverage: 0
   }, snowdepth: {
     firstDay: "",
     secondDay: "",

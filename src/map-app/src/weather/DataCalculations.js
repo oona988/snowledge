@@ -73,10 +73,10 @@ export function getThreeDayWindStatistics(data) {
   }
 
   return {
-    firstDayAverage: toDegrees(Math.atan2(firstDayCountY, firstDayCountX)),
-    secondDayAverage: toDegrees(Math.atan2(secondDayCountY, secondDayCountX)),
-    thirdDayAverage: toDegrees(Math.atan2(thirdDayCountY, thirdDayCountX)),
-    threeDaysAverage: toDegrees(Math.atan2(firstDayCountY + secondDayCountY + thirdDayCountY, firstDayCountX + secondDayCountX +  thirdDayCountX))
+    firstDayAverage: (toDegrees(Math.atan2(firstDayCountY, firstDayCountX)) + 360) % 360,
+    secondDayAverage: (toDegrees(Math.atan2(secondDayCountY, secondDayCountX)) + 360) % 360,
+    thirdDayAverage: (toDegrees(Math.atan2(thirdDayCountY, thirdDayCountX)) + 360) % 360,
+    threeDaysAverage: (toDegrees(Math.atan2(firstDayCountY + secondDayCountY + thirdDayCountY, firstDayCountX + secondDayCountX +  thirdDayCountX)) + 360) % 360
   };
 }
 
@@ -334,4 +334,10 @@ export function getWinterWindStats(speeds, directions) {
   }
 
   return { maxWind: maxWind, strongWindDirectionX: directionX, strongWindDirectionY: directionY, strongWindDays: dayCount };
+}
+
+// Return verbal wind direction for degrees
+export function getWindDirection(degrees) {
+  const directions = ["pohjoinen", "koillinen", "itä", "kaakko", "etelä", "lounas", "länsi", "luode"];
+  return directions[Math.round(degrees / 45) % 8];
 }
