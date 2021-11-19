@@ -158,13 +158,6 @@ function Map(props) {
   const styledClasses = useStyles();
 
   return (
-    /*
-     * Karttaan piirretään checkbox yläsegmenttien piilottamiselle,
-     * Infolaatikko selittämään kartan värejä
-     * Segmentit monikulmioina
-     * Custom markereita metsän ja mahdollisen lumivyöryvaaran merkkaamiseksi
-     * Kartta piirretään '@react-google-maps/api' -kirjaston komponenteilla
-     */
     <div className="map">
       <Box className={styledClasses.checkboxContainer}>
         <FormControlLabel

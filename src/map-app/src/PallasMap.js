@@ -176,6 +176,22 @@ function PallasMap(props) {
         }
         fillColor.push("#000000");
 
+        // Layer for segment highlights
+        if(map.getLayer("segments-highlights") === undefined) {
+          map.addLayer({
+            id: "segments-highlights",
+            source: "segments-source",
+            type: "fill",
+            layout: {},
+            paint: {
+              "fill-color": fillColor,
+              // Opacity is dependant on the segments hover or highlight feature state
+              "fill-opacity": 0.3
+            },
+            filter: ["==", ["get", "segmentId"], 0]
+          });
+        }
+
         // Layer for segment fills
         if(map.getLayer("segments-fills") === undefined) {
           map.addLayer({
@@ -185,12 +201,12 @@ function PallasMap(props) {
             layout: {},
             paint: {
               "fill-color": fillColor,
-              // Opacity is dependant on the segments hover feature state
+              // Opacity is dependant on the segments hover or highlight feature state
               "fill-opacity": [
                 "case",
                 ["boolean", ["feature-state", "hover"], false],
-                0.6,
-                0.15
+                0.3,
+                0
               ]
             }
           });
@@ -205,7 +221,7 @@ function PallasMap(props) {
             layout: {},
             paint: {
               "fill-color": fillColor,
-              "fill-opacity": 0.6
+              "fill-opacity": 0.3
             },
             filter: ["==", ["get", "segmentId"], 0]
           });
@@ -287,14 +303,12 @@ function PallasMap(props) {
       if(map.isStyleLoaded()) {
         // Add a filter so that only subsegments get rendered
         if(props.subsOnly) {
-          map.setFilter("segments-fills", ["==", ["get", "subsegment"], true]);
-          map.setFilter("segments-outlines", ["==", ["get", "subsegment"], true]);
+          map.setFilter("segments-highlights", ["==", ["get", "subsegment"], true]);
         }
 
         // Remove the filters set above if all segments should be visible
         if(!props.subsOnly) {
-          map.setFilter("segments-fills", null);
-          map.setFilter("segments-outlines", null);
+          map.setFilter("segments-highlights", ["==", ["get", "segmentId"], 0]);
         }
 
         // Hide segments-highlighted layer and remove filter from segments-highlight layer if no segment is currently selected
