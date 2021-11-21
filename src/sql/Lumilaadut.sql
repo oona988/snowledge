@@ -1,18 +1,27 @@
--- INSERT INTO Lumilaadut(Nimi, Vari, Ennatysaika)
--- VALUES ('Pehmeä lumi', '#76c4d6' ,null),
---         ('Tuulen pieksämä aaltoileva lumi', '#3f7089',null),
---         ('Korppu', '#3838a0',null),
---         ('Sohjo', '#7a357c',null),
---         ('Jää', '#b533b2',null);
-
-INSERT INTO Lumilaadut(ID, Nimi, Vari)
+INSERT INTO Lumilaadut(ID, Nimi, Vari, Hiihdettavyys, Kategoria_ID)
 VALUES (1,'Pehmeä lumi','#76c4d6'),
         (2,'Tuulen pieksämä aaltoileva lumi','#3f7089'),
-        (3,'Korppu','#3838a0'),
-        (4,'Sohjo','#919394'),
-        (5,'Jää','#34929A'),
-        (6,'Uusi Lumi','#5AABED'),
-        (7,'Tuulen pieksemä lumi','#7C759F'),
-        (8,'Vähäinen lumi','#6D4F32'),
-        (10,'Haitat','#6D4F32'),
-        (11,'Lumeton maa',NULL);
+        (3,'Korppu','#3838a0',NULL,NULL),
+        (4,'Sohjo','#919394',NULL,NULL),
+        (5,'Jää','#34929A',NULL,NULL),
+        (6,'Uusi Lumi','#5AABED',NULL, NULL),
+        (7,'Tuulen pieksemä lumi','#7C759F',NULL,NULL),
+        (8,'Vähäinen lumi','#6D4F32',NULL,NULL),
+        (10,'Haitat','#6D4F32',NULL,NULL),
+        (11,'Lumeton maa',NULL,NULL,NULL),
+        (12,'Vitilumi','#5AABED',5,6),
+        (13,'Puuteri','#5AABED',5,6),
+        (14,'Kostea uusilumi','#5AABED',4,6),
+        (15,'Sastrugi','#7C759F',2,7),
+        (16,'Aaltoileva lumi','#7C759F',3,7),
+        (17,'Tuiskulumi','#7C759F',4,7),
+        (18,'Ohut korppu','#3838a0',3,3),
+        (19,'Rikkoutuva korppu','#3838a0',2,3),
+        (20,'Kantava korppu',4,3),
+        (21,'Jää','#34929A',3,5),
+        (22,'Haurastuva jää',4,5),
+        (23,'Kastuva','#919394',5,4),
+        (24,'Saturoitunut','#919394',2,4),
+        (25,'Kiviä','#4B4B4B',NULL,10),
+        (26,'Oksia','#6D4F32',NULL,10),
+        (27,'Kantoja','#6D4F32',NULL,10);
