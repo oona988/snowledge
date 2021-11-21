@@ -60,6 +60,7 @@ function WeatherTab() {
     thirdDayAverage: "",
     threeDaysAverage: ""
   }, winter: {
+    season: false,
     median: "",
     thawDays: "",
     maxWind: 0,
@@ -98,14 +99,16 @@ function WeatherTab() {
     var winterSeason = false;
 
     // Remember to change 11 to 5 after development
-    if (currentMonth < 11) {
+    if (currentMonth < 5) {
       winterSeason = true;
+      weather.winter = { ...weather.winter, season: true };
       decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
       decemberStart.setHours(0,0,0,0);
       decemberEnd.setFullYear(currentDate.getFullYear() - 1, 11, 31);
       decemberEnd.setHours(0,0,0,0);
     } else if (currentMonth === 11 && currentDay !== 1) {
       winterSeason = true;
+      weather.winter = { ...weather.winter, season: true };
       decemberStart.setFullYear(currentDate.getFullYear(), 11, 1);
       decemberStart.setHours(0,0,0,0);
       decemberEnd.setFullYear(currentDate.getFullYear(), 11, 31);
