@@ -252,16 +252,21 @@ export function getWinterTemperatures(data) {
   var array = [];
   for (let i = 0; i < measurements.length; i++) {
     var temp = Number(measurements[i].lastElementChild.innerHTML);
-    array.push(Math.round(temp));
+
+    var roundedTemp = Math.round(temp);
+    if (roundedTemp === 0) {
+      roundedTemp = 0;
+    }
+    array.push(roundedTemp);
     if (temp > 0) {
       ++thawDays;
     }
   }
 
-  const sortedArray = array.sort();
-  const len = array.length;
+  const sortedArray = array.sort(function(a,b){return a-b;});
+  const len = sortedArray.length;
   const mid = Math.ceil(len / 2);
-  const median = len % 2 == 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 1 : sortedArray[mid - 1];
+  const median = len % 2 === 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 2 : sortedArray[mid];
 
   return { thawDays: thawDays, median: median };
 }

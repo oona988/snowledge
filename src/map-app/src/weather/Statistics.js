@@ -118,7 +118,7 @@ function Item(props) {
           <KeyValuePair keyName="7 vuorokauden aikana" value={props.weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
         </Card>
         <Card className={classes.card}>
-          <p className={classes.cardHeader}>Lämpötila</p>
+          <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
           <KeyValuePair keyName="korkein" value={props.weatherState.temperature.threeDaysHighest + " \xB0C"}/>
           <Divider/>
           <KeyValuePair keyName="matalin" value={props.weatherState.temperature.threeDaysLowest + " \xB0C"}/>
@@ -129,7 +129,7 @@ function Item(props) {
           )}
         </Card>
         <Card className={classes.card}>
-          <p className={classes.cardHeader}>Tuuli</p>
+          <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
           <KeyValuePair keyName="kesk. nopeus" value={props.weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
           <Divider/>
           <KeyValuePair keyName="kesk. suunta" value={getWindDirection(props.weatherState.winddirection.threeDaysAverage)}/>
