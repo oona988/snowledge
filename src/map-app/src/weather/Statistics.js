@@ -141,22 +141,28 @@ function Item(props) {
   } else if (props.item.name === "Talven säähavainnot") {
     return (
       <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%"} : {marginLeft: "20%", marginRight: "20%"}} className={classes.paper} align="center">
-        <h2 className={classes.paperHeader}>{props.item.name}</h2>
 
-        <Card className={classes.card}>
-          <p className={classes.cardHeader}>Lämpötila</p>
-          <KeyValuePair keyName="suojapäivät" value={props.weatherState.winter.thawDays + " kpl"}/>
-          <Divider/>
-          <KeyValuePair keyName="mediaani" value={props.weatherState.winter.median + " \xB0C"}/>
-        </Card>
-        <Card className={classes.card}>
-          <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
-          <KeyValuePair keyName="kovin tuuli" value={props.weatherState.winter.maxWind + " m/s"}/>
-          <Divider/>
-          <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(props.weatherState.winter.strongWindDirectionY, props.weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
-          <Divider/>
-          <KeyValuePair keyName="päivien lkm" value={props.weatherState.winter.strongWindDays}/>
-        </Card>
+        {props.weatherState.winter.season === true ?
+          <div>
+            <h2 className={classes.paperHeader}>{props.item.name}</h2>
+
+            <Card className={classes.card}>
+              <p className={classes.cardHeader}>Lämpötila</p>
+              <KeyValuePair keyName="suojapäivät" value={props.weatherState.winter.thawDays + " kpl"}/>
+              <Divider/>
+              <KeyValuePair keyName="mediaani" value={props.weatherState.winter.median + " \xB0C"}/>
+            </Card>
+            <Card className={classes.card}>
+              <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
+              <KeyValuePair keyName="kovin tuuli" value={props.weatherState.winter.maxWind + " m/s"}/>
+              <Divider/>
+              <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(props.weatherState.winter.strongWindDirectionY, props.weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
+              <Divider/>
+              <KeyValuePair keyName="päivien lkm" value={props.weatherState.winter.strongWindDays}/>
+            </Card>
+          </div> :
+          <h2 className={classes.cardHeader}>Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)</h2>
+        }
 
       </Paper>
     );
