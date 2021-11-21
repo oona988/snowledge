@@ -99,7 +99,7 @@ function KeyValuePair({keyName, value}) {
 
   return (
     <p className={classes.text} style={{textAlign: "left", paddingLeft: "3%"}}>{keyName}
-      <span className={classes.text} style={{float: "right", paddingRight: "3%"}}>{value}</span>
+      <span className={classes.text} style={{float: "right", paddingRight: "3%", whiteSpace: "pre"}}>{value}</span>
     </p>
   );
 }
@@ -123,10 +123,15 @@ function Item(props) {
           <Divider/>
           <KeyValuePair keyName="matalin" value={props.weatherState.temperature.threeDaysLowest + " \xB0C"}/>
           <Divider/>
-          <KeyValuePair keyName="suojapäivät" value={props.weatherState.temperature.thawDaysOutOfThree + " kpl"}/>
-          {props.weatherState.temperature.thawDays.map(day =>
-            (<p className={classes.text} key={day}>{day}</p>)
-          )}
+          <KeyValuePair keyName="suojapäivien määrä" value={`${props.weatherState.temperature.thawDaysOutOfThree} kpl`}/>
+          {props.weatherState.temperature.thawDays.length !== 0 &&
+          <div style={{paddingBottom: "40px"}}>
+            <Divider/>
+            {isXS ?
+              <KeyValuePair keyName="suojapäivät" value={props.weatherState.temperature.thawDays.join("\r\n")}/> :
+              <KeyValuePair keyName="suojapäivät" value={props.weatherState.temperature.thawDays.join(", ")}/>
+            }
+          </div>}
         </Card>
         <Card className={classes.card}>
           <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>

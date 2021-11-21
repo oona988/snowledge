@@ -33,7 +33,7 @@ function WeatherTab() {
       threeDaysHighest: "",
       threeDaysLowest: "",
       thawDaysOutOfThree: 0,
-      thawDays: ["2021-11-21"]
+      thawDays: ["2021-11-21", "2021-11-22", "2021-11-23"]
     }, windspeed: { 
     current: "",
     firstDayAverage: 0,
