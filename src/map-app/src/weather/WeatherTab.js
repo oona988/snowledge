@@ -18,7 +18,7 @@ Fetched weather data from Ilmatieteenlaitos and create initial components for sh
 
 
 import * as React from "react";
-import Wheel from "./Wheel";
+import WeatherInfo from "./WeatherInfo";
 import Statistics from "./Statistics";
 import {getThreeDayStatistics, getThreeDayWindStatistics, getThreeDaysHighest, getThreeDaysLowest, getSnowDepthStatistics, getCurrentAirPressureInfo, getWinterTemperatures, getWinterWindStats} from "./DataCalculations";
  
@@ -51,18 +51,18 @@ function WeatherTab() {
     firstDay: "",
     secondDay: "",
     thirdDay: "",
-    sevenDaysGrowth: ""
+    sevenDaysGrowth: 0
   }, airpressure: {
     current: "",
     direction: "",
-    firstDayAverage: "",
-    secondDayAverage: "",
-    thirdDayAverage: "",
-    threeDaysAverage: ""
+    firstDayAverage: 0,
+    secondDayAverage: 0,
+    thirdDayAverage: 0,
+    threeDaysAverage: 0
   }, winter: {
     season: false,
-    median: "",
-    thawDays: "",
+    median: 0,
+    thawDays: 0,
     maxWind: 0,
     strongWindDays: 0,
     strongWindDirectionX: 0,
@@ -99,7 +99,7 @@ function WeatherTab() {
     var winterSeason = false;
 
     // Remember to change 11 to 5 after development
-    if (currentMonth < 5) {
+    if (currentMonth < 11) {
       winterSeason = true;
       weather.winter = { ...weather.winter, season: true };
       decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
@@ -565,7 +565,7 @@ function WeatherTab() {
 
   return (
     <div>
-      <Wheel weatherState={weatherState}></Wheel>
+      <WeatherInfo weatherState={weatherState}></WeatherInfo>
       <Statistics weatherState={weatherState}></Statistics>
       <p style={{display: "none"}}>
         {weatherState.winter.strongWindDirectionX}
