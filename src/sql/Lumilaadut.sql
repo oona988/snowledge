@@ -1,6 +1,6 @@
 INSERT INTO Lumilaadut(ID, Nimi, Vari, Hiihdettavyys, Kategoria_ID)
-VALUES (1,'Pehmeä lumi','#76c4d6'),
-        (2,'Tuulen pieksämä aaltoileva lumi','#3f7089'),
+VALUES (1,'Pehmeä lumi','#76c4d6',NULL,NULL),
+        (2,'Tuulen pieksämä aaltoileva lumi','#3f7089',NULL,NULL),
         (3,'Korppu','#3838a0',NULL,NULL),
         (4,'Sohjo','#919394',NULL,NULL),
         (5,'Jää','#34929A',NULL,NULL),
