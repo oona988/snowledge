@@ -72,7 +72,8 @@ const useStyles = makeStyles(() => ({
     //left: "50%",
   },
   grid: {
-    justifyContent: "center"
+    justifyContent: "center",
+    padding: "10px",
   },
   paperHeader: {
     fontFamily: "Donau",
@@ -111,13 +112,16 @@ const useStyles = makeStyles(() => ({
     textAlign: "left",
     paddingLeft: "20px",
   },
+  navigationIcon: {
+    transform: props => "rotate(" + props.currentDirection + "deg)",
+  },
 }));
 
 
 function WeatherInfo({weatherState}) {
   console.log(weatherState);
   
-  const classes = useStyles();
+  const classes = useStyles({currentDirection: weatherState.winddirection.current});
   const isXS = useMediaQuery({ query: "(max-width: 1200px)" });
 
   return (
@@ -127,78 +131,80 @@ function WeatherInfo({weatherState}) {
 
         <h2 className={classes.paperHeader}>Pallas</h2>
 
-        <Grid item xs={12} sm={12} container className={classes.grid}>
+        <Grid item xs={12} sm={12} container>
+          <Grid item xs={12} sm={6} container className={classes.grid}>
+            <Grid item xs={8} sm={7}>
+              <Typography className={classes.cardHeader}>Lumen syvyys</Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} container className={classes.grid}>
+              <Grid item xs={2} sm={3}>
+                <CardMedia
+                  component={"img"}
+                  style={{fill: "#FFFFFF"}}
+                  src={process.env.PUBLIC_URL + "/icons/weather/snow.svg"}
+                  alt="lumityypin logo"
+                />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <Typography className={classes.text}>{`${weatherState.snowdepth.thirdDay} cm`}</Typography>
+              </Grid>
+            </Grid>
 
-          <Grid item xs={8} sm={8}>
-            <Typography className={classes.cardHeader}>Lumen syvyys</Typography>
-          </Grid>
-          <Grid item xs={12} sm={12} container className={classes.grid}>
-            <Grid item xs={2} sm={2}>
-              <CardMedia
-                component={"img"}
-                style={{fill: "#FFFFFF"}}
-                src={process.env.PUBLIC_URL + "/icons/weather/snowflake1.svg"}
-                alt="lumityypin logo"
-              />
+            <Grid item xs={8} sm={7}>
+              <Typography className={classes.cardHeader}>Lämpötila</Typography>
             </Grid>
-            <Grid item xs={6} sm={6}>
-              <Typography className={classes.text}>{`${weatherState.snowdepth.thirdDay} cm`}</Typography>
-            </Grid>
-          </Grid>
-
-          <Grid item xs={8} sm={8}>
-            <Typography className={classes.cardHeader}>Lämpötila</Typography>
-          </Grid>
-          <Grid item xs={12} sm={12} container className={classes.grid}>
-            <Grid item xs={2} sm={2}>
-              <CardMedia
-                component={"img"}
-                style={{fill: "#FFFFFF"}}
-                src={process.env.PUBLIC_URL + "/icons/weather/snowflake1.svg"}
-                alt="lumityypin logo"
-              />
-            </Grid>
-            <Grid item xs={6} sm={6}>
-              <Typography style={{whiteSpace: "pre"}} className={classes.text}>{`${weatherState.temperature.current} \xB0C`}</Typography>
-            </Grid>
-          </Grid>
-
-          <Grid item xs={8} sm={8}>
-            <Typography className={classes.cardHeader}>Tuuli</Typography>
-          </Grid>
-          <Grid item xs={12} sm={12} container className={classes.grid}>
-            <Grid item xs={2} sm={2}>
-              <CardMedia
-                component={"img"}
-                style={{fill: "#FFFFFF"}}
-                src={process.env.PUBLIC_URL + "/icons/weather/snowflake1.svg"}
-                alt="lumityypin logo"
-              />
-            </Grid>
-            <Grid item xs={6} sm={6}>
-              <Typography className={classes.text}>{`${weatherState.windspeed.current} m/s`}</Typography>
-              <Typography className={classes.subText}>{getWindDirection(weatherState.winddirection.current)}</Typography>
-            </Grid>
-          </Grid>
-          
-          <Grid item xs={8} sm={8}>
-            <Typography className={classes.cardHeader}>Ilmanpaine</Typography>
-          </Grid>
-          <Grid item xs={12} sm={12} container className={classes.grid}>
-            <Grid item xs={2} sm={2}>
-              <CardMedia
-                component={"img"}
-                style={{fill: "#FFFFFF"}}
-                src={process.env.PUBLIC_URL + "/icons/weather/snowflake1.svg"}
-                alt="lumityypin logo"
-              />
-            </Grid>
-            <Grid item xs={6} sm={6}>
-              <Typography className={classes.text}>{`${weatherState.airpressure.current} mBar`}</Typography>
-              <Typography className={classes.subText}>{weatherState.airpressure.direction}</Typography>
+            <Grid item xs={12} sm={12} container className={classes.grid}>
+              <Grid item xs={2} sm={3}>
+                <CardMedia
+                  component={"img"}
+                  style={{fill: "#FFFFFF"}}
+                  src={process.env.PUBLIC_URL + "/icons/weather/temperature.svg"}
+                  alt="lumityypin logo"
+                />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <Typography style={{whiteSpace: "pre"}} className={classes.text}>{`${weatherState.temperature.current} \xB0C`}</Typography>
+              </Grid>
             </Grid>
           </Grid>
 
+          <Grid item xs={12} sm={6} container className={classes.grid}>
+            <Grid item xs={8} sm={7}>
+              <Typography className={classes.cardHeader}>Tuuli</Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} container className={classes.grid}>
+              <Grid item xs={2} sm={3}>
+                <CardMedia
+                  component={"img"}
+                  className={classes.navigationIcon}
+                  src={process.env.PUBLIC_URL + "/icons/weather/winddirection.svg"}
+                  alt="lumityypin logo"
+                />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <Typography className={classes.text}>{`${weatherState.windspeed.current} m/s`}</Typography>
+                <Typography className={classes.subText}>{getWindDirection(weatherState.winddirection.current)}</Typography>
+              </Grid>
+            </Grid>
+            
+            <Grid item xs={8} sm={7}>
+              <Typography className={classes.cardHeader}>Ilmanpaine</Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} container className={classes.grid}>
+              <Grid item xs={2} sm={3}>
+                <CardMedia
+                  component={"img"}
+                  style={{fill: "#FFFFFF"}}
+                  src={process.env.PUBLIC_URL + "/icons/weather/airpressure.svg"}
+                  alt="lumityypin logo"
+                />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <Typography className={classes.text}>{`${weatherState.airpressure.current} mBar`}</Typography>
+                <Typography className={classes.subText}>{weatherState.airpressure.direction}</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
 
       </Paper>
