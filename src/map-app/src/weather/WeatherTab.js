@@ -24,7 +24,11 @@ import {getThreeDayStatistics, getThreeDayWindStatistics, getThreeDaysHighest, g
  
 
 function WeatherTab() {
-  var initialState = { temperature: 
+  var initialState = { 
+    firstDay: "",
+    secondDay: "",
+    thirdDay: "",
+    temperature: 
     { current: "",
       firstDayAverage: 0,
       secondDayAverage: 0,
@@ -35,40 +39,40 @@ function WeatherTab() {
       thawDaysOutOfThree: 0,
       thawDays: ["2021-11-21", "2021-11-22", "2021-11-23"]
     }, windspeed: { 
-    current: "",
-    firstDayAverage: 0,
-    secondDayAverage: 0,
-    thirdDayAverage: 0,
-    threeDaysAverage: 0,
-    threeDaysHighest: ""
-  }, winddirection: {
-    current: "",
-    firstDayAverage: 0,
-    secondDayAverage: 0,
-    thirdDayAverage: 0,
-    threeDaysAverage: 0
-  }, snowdepth: {
-    firstDay: "",
-    secondDay: "",
-    thirdDay: "",
-    sevenDaysGrowth: 0
-  }, airpressure: {
-    current: "",
-    direction: "",
-    firstDayAverage: 0,
-    secondDayAverage: 0,
-    thirdDayAverage: 0,
-    threeDaysAverage: 0
-  }, winter: {
-    season: false,
-    median: 0,
-    thawDays: 0,
-    maxWind: 0,
-    strongWindDays: 0,
-    strongWindDirectionX: 0,
-    strongWindDirectionY: 0,
-    months: 0
-  } };
+      current: "",
+      firstDayAverage: 0,
+      secondDayAverage: 0,
+      thirdDayAverage: 0,
+      threeDaysAverage: 0,
+      threeDaysHighest: ""
+    }, winddirection: {
+      current: "",
+      firstDayAverage: 0,
+      secondDayAverage: 0,
+      thirdDayAverage: 0,
+      threeDaysAverage: 0
+    }, snowdepth: {
+      firstDay: "",
+      secondDay: "",
+      thirdDay: "",
+      sevenDaysGrowth: 0
+    }, airpressure: {
+      current: "",
+      direction: "",
+      firstDayAverage: 0,
+      secondDayAverage: 0,
+      thirdDayAverage: 0,
+      threeDaysAverage: 0
+    }, winter: {
+      season: false,
+      median: 0,
+      thawDays: 0,
+      maxWind: 0,
+      strongWindDays: 0,
+      strongWindDirectionX: 0,
+      strongWindDirectionY: 0,
+      months: 0
+    } };
 
   const [ weatherState, setWeatherState ] = React.useState(initialState);
 
@@ -80,12 +84,18 @@ function WeatherTab() {
 
     const currentDate = new Date();
 
+    weather.thirdDay = `${currentDate.getDate()}.${currentDate.getMonth()}.`;
+
     var firstDayStart = new Date(currentDate.getTime());
     firstDayStart.setDate(firstDayStart.getDate() - 2);
     firstDayStart.setHours(0,0,0,0);
 
+    weather.firstDay = `${firstDayStart.getDate()}.${firstDayStart.getMonth()}.`;
+
     var secondDay = new Date(currentDate.getTime());
     secondDay.setDate(secondDay.getDate() - 1);
+
+    weather.secondDay = `${secondDay.getDate()}.${secondDay.getMonth()}.`;
 
     var snowDataStart = new Date(currentDate.getTime());
     snowDataStart.setDate(snowDataStart.getDate() - 6);
