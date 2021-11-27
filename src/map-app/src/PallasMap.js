@@ -315,8 +315,13 @@ function PallasMap(props) {
           map.setFilter("segments-highlights", ["==", ["get", "snowId"], props.highlightedSnowType]);
         }
 
-        // Remove the filters set above if all segments should be visible
+        // Make highligt layer completely visible
         if(props.highlightedSnowType === -2) {
+          map.setFilter("segments-highlights", null);
+        }
+
+        // Remove the filters set above if all segments should be visible
+        if(props.highlightedSnowType === -3) {
           map.setFilter("segments-highlights", ["==", ["get", "segmentId"], 0]);
         }
 

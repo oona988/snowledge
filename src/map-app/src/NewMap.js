@@ -52,32 +52,52 @@ import PallasMap from "./PallasMap";
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
   menuContainer: {
     display: "flex",
     padding: theme.spacing(1),
-    position: "absolute",
-    bottom: "20px",
-    left: theme.spacing(1),
-    zIndex: 1,
     flexDirection: "column-reverse",
-    width: "300px",
+    flex: 6,
   },
   menu: {
     display: "block",
-    width: "300px",
     backgroundColor: "white",
     borderRadius: 8
+  },
+  buttonsCntainer: {
+    display: "flex",
+    padding: theme.spacing(1),
+    position: "absolute",
+    bottom: theme.spacing(1),
+    left: theme.spacing(1),
+    zIndex: 1,
+    width: "350px"
+  },
+  eyeIcon: {
+    color: "white",
+  },
+  eyeIconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "auto",
+    marginBottom: theme.spacing(1),
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    borderRadius: 8,
+    flex: 1,
+    height: "40px",
   }
 }));
 
 function Map(props) {
   
   // Use state hooks
-  // Snow type to be highlighted on the map, -1 means subsegments only, -2 means nothing should be highlighted
-  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-2);
+  // Snow type to be highlighted on the map, -1 means subsegments only, -2 everything and -3 nothing
+  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-3);
   // An array of snow types that are currently applied to a segment on the map
   const [ currentSnowTypes, setCurrentSnowTypes ] = React.useState([]);
   const [ open, setOpen ] = React.useState(false);
@@ -109,7 +129,7 @@ function Map(props) {
 
   function updateHighlightedSnowType(snow) {
     if(highlightedSnowType === snow.ID) {
-      setHighlightedSnowType(-2);
+      setHighlightedSnowType(-3);
       setButtonText("Näytä ainoastaan...");
     } else {
       setHighlightedSnowType(snow.ID);
@@ -128,46 +148,56 @@ function Map(props) {
   return (
     <div className="map">
       {/* A menu where user can select which segments are highlighted on the map */}
-      <Box className={styledClasses.menuContainer}>
-        <Button
-          onClick={handleClick}
-          variant="contained"
-          style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white"}}
-        >
-          {buttonText}
-        </Button>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List>
-            <Box className={styledClasses.menu}>
-              {
-                // Append a snow type to the list if it can be found on a segment
-                currentSnowTypes.map(snowType => {
-                  return(
-                    currentSnowTypes.length > 0 ?
-                      <Box key={snowType.ID}>
-                        <Button
-                          fullWidth="true"
-                          onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
-                          style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
-                        >
-                          {snowType.Nimi}
-                        </Button>
-                      </Box>
-                      :
-                      <Box></Box>
-                  );
-                })
-              }
-              <Button
-                fullWidth="true"
-                onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
-                style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
-              >
-                Vain laskualueet
-              </Button>
-            </Box>
-          </List>
-        </Collapse>
+      <Box className={styledClasses.buttonsCntainer}>
+        <Box className={styledClasses.menuContainer}>
+          <Button
+            onClick={handleClick}
+            variant="contained"
+            style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px"}}
+          >
+            {buttonText}
+          </Button>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List>
+              <Box className={styledClasses.menu}>
+                {
+                  // Append a snow type to the list if it can be found on a segment
+                  currentSnowTypes.map(snowType => {
+                    return(
+                      currentSnowTypes.length > 0 ?
+                        <Box key={snowType.ID}>
+                          <Button
+                            fullWidth="true"
+                            onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                            style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                          >
+                            {snowType.Nimi}
+                          </Button>
+                        </Box>
+                        :
+                        <Box></Box>
+                    );
+                  })
+                }
+                <Button
+                  fullWidth="true"
+                  onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
+                  style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+                >
+                  Vain laskualueet
+                </Button>
+              </Box>
+            </List>
+          </Collapse>
+        </Box>
+        <Box className={styledClasses.eyeIconContainer}>
+          <IconButton
+            className={styledClasses.eyeIcon}
+            onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+          >
+            {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </IconButton>
+        </Box>
       </Box>
       <PallasMap
         shownSegment={props.shownSegment}
