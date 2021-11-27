@@ -76,7 +76,7 @@ function App() {
       
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
-          if(snow.ID === update.Lumilaatu){
+          if(snow.ID === update.Lumilaatu_ID){
             update.Lumi = snow;
           }
         });

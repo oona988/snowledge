@@ -23,7 +23,8 @@ Setting bounds and max and min zoom levels
 Drawing of segments
 
  **/
-import React, { useRef, useEffect, useState, useMemo } from "react";
+
+import React, { useRef, useEffect, useState } from "react";
 import maplibregl from "maplibre-gl";
 import mapStyle from "./pallas_map";
 import { makeStyles } from "@material-ui/core/styles";
@@ -51,7 +52,7 @@ function PallasMap(props) {
   const center = [24.05, 68.069];
   const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
 
-  useMemo(() => {
+  useEffect(() => {
     // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
     // This ensures that subsegments get drawn on top of other segments
     let woodsSegments = [];
@@ -137,7 +138,7 @@ function PallasMap(props) {
             "name": item.Nimi,
             "subsegment": item.On_Alasegmentti === null ? false : true,
             "segmentId": item.ID,
-            "snowId": item.update !== null ? item.update.Lumi.ID : 0
+            "snowId": item.update !== null ? (item.update.Lumi !== undefined ? item.update.Lumi.ID : 0) : 0
           },
           "id": item.ID
         };
@@ -155,6 +156,7 @@ function PallasMap(props) {
         maxBounds: bounds,
         maxZoom: 15,
         minZoom: 11,
+        maxPitch: 0,
       });
     }
 
@@ -301,13 +303,21 @@ function PallasMap(props) {
       });
 
       if(map.isStyleLoaded()) {
-        // Add a filter so that only subsegments get rendered
+        console.log("Highlighted snowtype: "+props.highlightedSnowType);
+        console.log("Subs only: "+props.subsOnly);
+
+        // Add a filter so that only subsegments get highlighted
         if(props.subsOnly) {
           map.setFilter("segments-highlights", ["==", ["get", "subsegment"], true]);
         }
 
+        // Add a filter so that only a certain snowtype gets highlighted
+        if(props.highlightedSnowType !== -1) {
+          map.setFilter("segments-highlights", ["==", ["get", "snowId"], props.highlightedSnowType]);
+        }
+
         // Remove the filters set above if all segments should be visible
-        if(!props.subsOnly) {
+        if(!props.subsOnly && props.highlightedSnowType === -1) {
           map.setFilter("segments-highlights", ["==", ["get", "segmentId"], 0]);
         }
 
@@ -319,7 +329,7 @@ function PallasMap(props) {
       }
       setRefreshMap(false);
     }
-  }, [data, props.subsOnly, props.shownSegment, refreshMap]);
+  }, [data, props.subsOnly, props.shownSegment, refreshMap, props.highlightedSnowType]);
 
   // Ensure that map refreshes when user leaves management view
   useEffect(() => {
