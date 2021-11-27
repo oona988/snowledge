@@ -306,17 +306,17 @@ function PallasMap(props) {
         console.log("Highlighted snowtype: "+props.highlightedSnowType);
 
         // Add a filter so that only subsegments get highlighted
-        if(props.highlightedSnowType === 0) {
+        if(props.highlightedSnowType === -1) {
           map.setFilter("segments-highlights", ["==", ["get", "subsegment"], true]);
         }
 
         // Add a filter so that only a certain snowtype gets highlighted
-        if(props.highlightedSnowType > 0) {
+        if(props.highlightedSnowType > -1) {
           map.setFilter("segments-highlights", ["==", ["get", "snowId"], props.highlightedSnowType]);
         }
 
         // Remove the filters set above if all segments should be visible
-        if(!props.subsOnly && props.highlightedSnowType === -1) {
+        if(props.highlightedSnowType === -2) {
           map.setFilter("segments-highlights", ["==", ["get", "segmentId"], 0]);
         }
 
