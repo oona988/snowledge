@@ -158,7 +158,7 @@ function Map(props) {
             {buttonText}
           </Button>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <List>
+            <List style={{maxHeight: "500px", overflow: "auto"}}>
               <Box className={styledClasses.menu}>
                 {
                   // Append a snow type to the list if it can be found on a segment
