@@ -65,10 +65,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column-reverse",
     width: "300px",
   },
-  listItem: {
+  menu: {
     display: "block",
-    backgroundColor: "white",
     width: "300px",
+    backgroundColor: "white",
     borderRadius: 8
   }
 }));
@@ -76,11 +76,12 @@ const useStyles = makeStyles((theme) => ({
 function Map(props) {
   
   // Use state hooks
-  const [ subsOnly, setSubsOnly ] = React.useState(false);
-  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-1);
+  // Snow type to be highlighted on the map, -1 means subsegments only, -2 means nothing should be highlighted
+  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-2);
   // An array of snow types that are currently applied to a segment on the map
   const [ currentSnowTypes, setCurrentSnowTypes ] = React.useState([]);
   const [ open, setOpen ] = React.useState(false);
+  const [ buttonText, setButtonText ] = React.useState("Näytä ainoastaan...");
 
   // Zoom depends on the size of the screen
   const zoom = (props.isMobile ? 11 : 11.35);
@@ -105,24 +106,20 @@ function Map(props) {
   function handleClick() {
     setOpen(!open);
   }
-  // eslint-disable-next-line no-unused-vars
-  function updateHighlightedSnowType(snowId) {
-    if(highlightedSnowType === snowId) {
-      setHighlightedSnowType(-1);
+
+  function updateHighlightedSnowType(snow) {
+    if(highlightedSnowType === snow.ID) {
+      setHighlightedSnowType(-2);
+      setButtonText("Näytä ainoastaan...");
     } else {
-      setHighlightedSnowType(snowId);
+      setHighlightedSnowType(snow.ID);
+      setButtonText(snow.Nimi);
     }
   }
   
-  // Päivittää tiedon kartalta valitusta segmentistä
+  // Updates the chosen segment
   function updateChosen(segment) {
     props.onClick(segment);
-  }
-  
-  // Päivitetään tieto siitä, näytetäänkö vain alasegmentit vai ei
-  // eslint-disable-next-line no-unused-vars
-  function updateSubsOnly() {
-    setSubsOnly(!subsOnly);
   }
   
   // Use styles
@@ -130,21 +127,29 @@ function Map(props) {
 
   return (
     <div className="map">
+      {/* A menu where user can select which segments are highlighted on the map */}
       <Box className={styledClasses.menuContainer}>
         <Button
           onClick={handleClick}
           variant="contained"
-        >Näytä alueet...</Button>
+          style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white"}}
+        >
+          {buttonText}
+        </Button>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List>
-            <Box className={styledClasses.listItem}>
+            <Box className={styledClasses.menu}>
               {
                 // Append a snow type to the list if it can be found on a segment
                 currentSnowTypes.map(snowType => {
                   return(
                     currentSnowTypes.length > 0 ?
                       <Box key={snowType.ID}>
-                        <Button fullWidth="true" onClick={() => {updateHighlightedSnowType(snowType.ID); handleClick(); if(subsOnly) updateSubsOnly();}}>
+                        <Button
+                          fullWidth="true"
+                          onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                          style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                        >
                           {snowType.Nimi}
                         </Button>
                       </Box>
@@ -153,7 +158,11 @@ function Map(props) {
                   );
                 })
               }
-              <Button fullWidth="true" onClick={() => {updateSubsOnly(); handleClick(); if(highlightedSnowType !== -1) updateHighlightedSnowType(-1);}}>
+              <Button
+                fullWidth="true"
+                onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
+                style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+              >
                 Vain laskualueet
               </Button>
             </Box>
@@ -167,7 +176,6 @@ function Map(props) {
         segments={props.segments}
         isMobile={props.isMobile}
         zoom={zoom}
-        subsOnly={subsOnly}
         viewManagement={props.viewManagement}
         highlightedSnowType={highlightedSnowType}
       ></PallasMap>

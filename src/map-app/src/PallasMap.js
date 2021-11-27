@@ -304,15 +304,14 @@ function PallasMap(props) {
 
       if(map.isStyleLoaded()) {
         console.log("Highlighted snowtype: "+props.highlightedSnowType);
-        console.log("Subs only: "+props.subsOnly);
 
         // Add a filter so that only subsegments get highlighted
-        if(props.subsOnly) {
+        if(props.highlightedSnowType === 0) {
           map.setFilter("segments-highlights", ["==", ["get", "subsegment"], true]);
         }
 
         // Add a filter so that only a certain snowtype gets highlighted
-        if(props.highlightedSnowType !== -1) {
+        if(props.highlightedSnowType > 0) {
           map.setFilter("segments-highlights", ["==", ["get", "snowId"], props.highlightedSnowType]);
         }
 
