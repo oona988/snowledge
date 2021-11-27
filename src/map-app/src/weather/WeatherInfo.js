@@ -19,34 +19,11 @@ import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import Carousel from "react-multi-carousel";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
+import Carousel from "react-material-ui-carousel";
 import "react-multi-carousel/lib/styles.css";
 import {getWindDirection} from "./DataCalculations";
- 
-
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  }
-};
 
 
 const useStyles = makeStyles(() => ({
@@ -150,6 +127,7 @@ function FirstDayWeatherPaper({weatherState}) {
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
+        <Typography className={classes.cardHeader}>Toissapäivänä</Typography>
 
         {/* Temperature on day before yesterday */}
         <Grid item xs={8} sm={8}>
@@ -240,6 +218,7 @@ function SecondDayWeatherPaper({weatherState}) {
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
+        <Typography className={classes.cardHeader}>Eilen</Typography>
 
         {/* Temperature on yesterday */}
         <Grid item xs={8} sm={8}>
@@ -330,6 +309,7 @@ function CurrentWeatherPaper({weatherState}) {
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
+        <Typography className={classes.cardHeader}>Nyt</Typography>
 
         {/* Current temperature info */}
         <Grid item xs={8} sm={8}>
@@ -418,11 +398,13 @@ function WeatherInfo({weatherState}) {
   const classes = useStyles({currentDirection: weatherState.winddirection.current - 180});
   const isXS = useMediaQuery({ query: "(max-width: 899px)" });
   const [value, setValue] = React.useState(2);
+  //const [carouselSlide, setCarouselSlide] = React.useState(2);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     console.log(newValue);
   };
+
 
   return (
     <div>
@@ -442,10 +424,34 @@ function WeatherInfo({weatherState}) {
             </Tabs>
           </Paper>
           
-          <Carousel responsive={responsive} swipeable={true} draggable={true} showDots={false} autoPlay={false} navButtonsAlwaysVisible="true" center={true} infinite={true}>
-            <FirstDayWeatherPaper weatherState={weatherState}/>
-            <SecondDayWeatherPaper weatherState={weatherState}/>
-            <CurrentWeatherPaper weatherState={weatherState}/>
+          <Carousel
+            index={2}
+            autoPlay={false}
+            navButtonsAlwaysVisible={true}
+            indicators={false}
+            selectedItem={2}
+            showThumbs={false}
+            showArrows={false}
+            next={ (next, active) => console.log(`we left ${active}, and are now at ${next}`) }
+            prev={ (prev, active) => console.log(`we left ${active}, and are now at ${prev}`) }
+            NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
+            PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
+            navButtonsProps={{
+              style: {
+                backgroundColor: "rgba(255,255,255,0.2)",
+                borderRadius: 50
+              }
+            }} 
+          >
+            <div>
+              <FirstDayWeatherPaper weatherState={weatherState}/>
+            </div>
+            <div>
+              <SecondDayWeatherPaper weatherState={weatherState}/>
+            </div>
+            <div>
+              <CurrentWeatherPaper weatherState={weatherState}/>
+            </div>   
           </Carousel>
         </div> : 
         <div>
