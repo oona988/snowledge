@@ -18,6 +18,7 @@ import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -65,6 +66,8 @@ const useStyles = makeStyles(() => ({
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
     minHeight: "600px",
+    marginLeft: "5%",
+    marginRight: "5%",
     //width: "80%",
     //maxWidth: "500px",
     //margin: 0,
@@ -108,80 +111,108 @@ function KeyValuePair({keyName, value}) {
 }
 
 
-function Statistics({weatherState}) {
+function ShortIntervalStatsPaper({weatherState}) {
   const classes = useStyles();
+  const isXS = useMediaQuery({ query: "(max-width: 599px)" });
+
+  return (
+    <Paper className={classes.paper} align="center">
+
+      <h2 className={classes.paperHeader}>Lähipäivien sää</h2>
+
+      <Card className={classes.card}>
+        <p className={classes.cardHeader}>Lumensyvyyden kasvu</p>
+        <KeyValuePair keyName="7 vuorokauden aikana" value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
+      </Card>
+
+      <Card className={classes.card}>
+        <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
+        <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
+        <Divider/>
+        <KeyValuePair keyName="matalin" value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
+        <Divider/>
+        <KeyValuePair keyName="suojapäivien määrä" value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
+        {weatherState.temperature.thawDays.length !== 0 &&
+        <div style={{paddingBottom: "40px"}}>
+          <Divider/>
+          {isXS ?
+            <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/> :
+            <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join(", ")}/>
+          }
+        </div>}
+      </Card>
+
+      <Card className={classes.card}>
+        <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
+        <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
+        <Divider/>
+        <KeyValuePair keyName="kesk. suunta" value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
+        <Divider/>
+        <KeyValuePair keyName="kovin tuuli" value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
+      </Card>
+
+    </Paper>
+  );
+}
+
+
+function WinterStatsPaper({weatherState}) {
+  const classes = useStyles();
+  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
+
+  return (
+    <Paper className={classes.paper} align="center">
+
+      {weatherState.winter.season === true ?
+        <div>
+
+          <h2 className={classes.paperHeader}>Talven säähavainnot</h2>
+
+          <Card className={classes.card}>
+            <p className={classes.cardHeader}>Lämpötila</p>
+            <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
+            <Divider/>
+            <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
+          </Card>
+          
+          <Card className={classes.card}>
+            <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
+            <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
+            <Divider/>
+            <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
+            <Divider/>
+            <KeyValuePair keyName="päivien lkm" value={weatherState.winter.strongWindDays}/>
+          </Card>
+
+        </div> :
+        <h2 className={classes.cardHeader}>Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)</h2>
+      }
+    </Paper>
+  );
+}
+
+
+function Statistics({weatherState}) {
+  //const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 1200px)" });
 
   return (
-    <Carousel responsive={responsive} swipeable={true} draggable={true} showDots={true} autoPlay={false} navButtonsAlwaysVisible="true" center={true} infinite={true}>
-
-      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%"} : {marginLeft: "20%", marginRight: "20%"}} className={classes.paper} align="center">
-
-        <h2 className={classes.paperHeader}>Lähipäivien sää</h2>
-
-        <Card className={classes.card}>
-          <p className={classes.cardHeader}>Lumensyvyyden kasvu</p>
-          <KeyValuePair keyName="7 vuorokauden aikana" value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
-        </Card>
-
-        <Card className={classes.card}>
-          <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
-          <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
-          <Divider/>
-          <KeyValuePair keyName="matalin" value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
-          <Divider/>
-          <KeyValuePair keyName="suojapäivien määrä" value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
-          {weatherState.temperature.thawDays.length !== 0 &&
-          <div style={{paddingBottom: "40px"}}>
-            <Divider/>
-            {isXS ?
-              <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/> :
-              <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join(", ")}/>
-            }
-          </div>}
-        </Card>
-
-        <Card className={classes.card}>
-          <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
-          <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
-          <Divider/>
-          <KeyValuePair keyName="kesk. suunta" value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
-          <Divider/>
-          <KeyValuePair keyName="kovin tuuli" value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
-        </Card>
-
-      </Paper>
-
-      <Paper style={isXS ? {marginLeft: "5%", marginRight: "5%"} : {marginLeft: "20%", marginRight: "20%"}} className={classes.paper} align="center">
-
-        {weatherState.winter.season === true ?
-          <div>
-
-            <h2 className={classes.paperHeader}>Talven säähavainnot</h2>
-
-            <Card className={classes.card}>
-              <p className={classes.cardHeader}>Lämpötila</p>
-              <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
-              <Divider/>
-              <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
-            </Card>
-            
-            <Card className={classes.card}>
-              <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
-              <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
-              <Divider/>
-              <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
-              <Divider/>
-              <KeyValuePair keyName="päivien lkm" value={weatherState.winter.strongWindDays}/>
-            </Card>
-
-          </div> :
-          <h2 className={classes.cardHeader}>Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)</h2>
-        }
-
-      </Paper>
-
-    </Carousel>
+    <div>
+      {isXS ? 
+        <Carousel responsive={responsive} swipeable={true} draggable={true} showDots={false} autoPlay={false} navButtonsAlwaysVisible="true" center={true} infinite={true}>
+          <ShortIntervalStatsPaper weatherState={weatherState}/>
+          <WinterStatsPaper weatherState={weatherState}/>
+        </Carousel> : 
+        <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
+          <Grid item xs={6} sm={6}>
+            <ShortIntervalStatsPaper weatherState={weatherState}/>
+          </Grid>
+          <Grid item xs={6} sm={6}>
+            <WinterStatsPaper weatherState={weatherState}/>
+          </Grid>
+        </Grid>
+      }
+    </div>
   );
 }
  

@@ -222,6 +222,20 @@ function WeatherTab() {
 
         // Calculate how many thaw (+0 degrees) days there are out of three
         var thawDays = 0;
+        /*
+        if (weather.temperature.firstDayAverage >= 0) {
+          ++thawDays;
+          weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth()}.`);
+        }
+        if (weather.temperature.secondDayAverage >= 0) {
+          ++thawDays;
+          weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth()}.`);
+        }
+        if (weather.temperature.thirdDayAverage >= 0) {
+          ++thawDays;
+          weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth()}.`);
+        }
+        */
         if (weather.temperature.firstDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth()}-${firstDayStart.getDate()}`);

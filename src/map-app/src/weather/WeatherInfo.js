@@ -18,10 +18,10 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import {getWindDirection} from "./DataCalculations";
-import { Typography } from "@material-ui/core";
  
 
 const responsive = {
