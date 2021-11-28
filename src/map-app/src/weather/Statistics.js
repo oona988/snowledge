@@ -16,6 +16,7 @@ Create initial components for showing weather statistics
 import * as React from "react";
 import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
@@ -171,7 +172,7 @@ function WinterStatsPaper({weatherState}) {
 }
 
 
-function Statistics({weatherState}) {
+function Statistics({weatherState, handleReturnClick}) {
   //const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 1200px)" });
 
@@ -206,6 +207,17 @@ function Statistics({weatherState}) {
           </Grid>
           <Grid item xs={6} sm={6}>
             <WinterStatsPaper weatherState={weatherState}/>
+          </Grid>
+          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingRight: "80px"}}>
+            <Button
+              onClick={handleReturnClick}
+              variant="contained"
+              color="inherit"
+              style={{backgroundColor: "rgba(255,255,255,0.5)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
+              startIcon={<NavigateBeforeIcon/>}
+            >
+              Takaisin
+            </Button>
           </Grid>
         </Grid>
       }

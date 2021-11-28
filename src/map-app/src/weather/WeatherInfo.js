@@ -13,12 +13,14 @@ Create initial components for showing weather statistics
 import * as React from "react";
 import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import EqualizerIcon from "@material-ui/icons/Equalizer";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Carousel from "react-material-ui-carousel";
@@ -391,7 +393,7 @@ function CurrentWeatherPaper({weatherState}) {
 }
 
 
-function WeatherInfo({weatherState}) {
+function WeatherInfo({weatherState, handleMoreInformationClick}) {
   console.log(weatherState);
   const carouselRef = React.useRef(null);
   const classes = useStyles({currentDirection: weatherState.winddirection.current - 180});
@@ -478,6 +480,17 @@ function WeatherInfo({weatherState}) {
             </Grid>
             <Grid item xs={4} sm={4}>
               <CurrentWeatherPaper weatherState={weatherState}/>
+            </Grid>
+            <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingRight: "80px"}}>
+              <Button
+                onClick={handleMoreInformationClick}
+                variant="contained"
+                color="inherit"
+                style={{backgroundColor: "rgba(255,255,255,0.5)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
+                startIcon={<EqualizerIcon/>}
+              >
+                Lisätietoja
+              </Button>
             </Grid>
           </Grid>
         </div>

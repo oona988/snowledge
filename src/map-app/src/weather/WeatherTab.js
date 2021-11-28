@@ -75,6 +75,7 @@ function WeatherTab() {
     } };
 
   const [ weatherState, setWeatherState ] = React.useState(initialState);
+  const [ displayWeatherStatistics, setDisplayWeatherStatistics ] = React.useState(false);
 
   const fetchWeather = async () => {
 
@@ -223,15 +224,15 @@ function WeatherTab() {
         // Calculate how many thaw (+0 degrees) days there are out of three
         var thawDays = 0;
         
-        if (weather.temperature.firstDayAverage <= 0) {
+        if (weather.temperature.firstDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth() + 1}.  ${weather.temperature.firstDayAverage.toFixed()}\xB0C`);
         }
-        if (weather.temperature.secondDayAverage <= 0) {
+        if (weather.temperature.secondDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth() + 1}.  ${weather.temperature.secondDayAverage.toFixed()}\xB0C`);
         }
-        if (weather.temperature.thirdDayAverage <= 0) {
+        if (weather.temperature.thirdDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth() + 1}.  ${weather.temperature.thirdDayAverage.toFixed()}\xB0C`);
         }
@@ -588,10 +589,19 @@ function WeatherTab() {
 
   fetchWeather();
 
+  const handleReturnClick = () => {
+    setDisplayWeatherStatistics(false);
+  };
+
+  const handleMoreInformationClick = () => {
+    setDisplayWeatherStatistics(true);
+  };
+
   return (
     <div>
-      <WeatherInfo weatherState={weatherState}></WeatherInfo>
-      <Statistics weatherState={weatherState}></Statistics>
+      {!displayWeatherStatistics ?
+        <WeatherInfo weatherState={weatherState} handleMoreInformationClick={handleMoreInformationClick}></WeatherInfo> :
+        <Statistics weatherState={weatherState} handleReturnClick={handleReturnClick}></Statistics>}
       <p style={{display: "none"}}>
         {weatherState.winter.strongWindDirectionX}
       </p>
