@@ -84,18 +84,18 @@ function WeatherTab() {
 
     const currentDate = new Date();
 
-    weather.thirdDay = `${currentDate.getDate()}.${currentDate.getMonth()}.`;
+    weather.thirdDay = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.`;
 
     var firstDayStart = new Date(currentDate.getTime());
     firstDayStart.setDate(firstDayStart.getDate() - 2);
     firstDayStart.setHours(0,0,0,0);
 
-    weather.firstDay = `${firstDayStart.getDate()}.${firstDayStart.getMonth()}.`;
+    weather.firstDay = `${firstDayStart.getDate()}.${firstDayStart.getMonth() + 1}.`;
 
     var secondDay = new Date(currentDate.getTime());
     secondDay.setDate(secondDay.getDate() - 1);
 
-    weather.secondDay = `${secondDay.getDate()}.${secondDay.getMonth()}.`;
+    weather.secondDay = `${secondDay.getDate()}.${secondDay.getMonth() + 1}.`;
 
     var snowDataStart = new Date(currentDate.getTime());
     snowDataStart.setDate(snowDataStart.getDate() - 6);
@@ -225,28 +225,28 @@ function WeatherTab() {
         
         if (weather.temperature.firstDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth()}.  ${weather.temperature.firstDayAverage.toFixed()}\xB0C`);
+          weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth() + 1}.  ${weather.temperature.firstDayAverage.toFixed()}\xB0C`);
         }
         if (weather.temperature.secondDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth()}.  ${weather.temperature.secondDayAverage.toFixed()}\xB0C`);
+          weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth() + 1}.  ${weather.temperature.secondDayAverage.toFixed()}\xB0C`);
         }
         if (weather.temperature.thirdDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth()}.  ${weather.temperature.thirdDayAverage.toFixed()}\xB0C`);
+          weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth() + 1}.  ${weather.temperature.thirdDayAverage.toFixed()}\xB0C`);
         }
         
         /*if (weather.temperature.firstDayAverage >= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth()}-${firstDayStart.getDate()}`);
+          weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth() + 1}-${firstDayStart.getDate()}`);
         }
         if (weather.temperature.secondDayAverage >= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${secondDay.getFullYear()}-${secondDay.getMonth()}-${secondDay.getDate()}`);
+          weather.temperature.thawDays.push(`${secondDay.getFullYear()}-${secondDay.getMonth() + 1}-${secondDay.getDate()}`);
         }
         if (weather.temperature.thirdDayAverage >= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`);
+          weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
         }*/
 
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
