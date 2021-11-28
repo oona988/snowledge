@@ -37,7 +37,7 @@ function WeatherTab() {
       threeDaysHighest: "",
       threeDaysLowest: "",
       thawDaysOutOfThree: 0,
-      thawDays: ["2021-11-21", "2021-11-22", "2021-11-23"]
+      thawDays: ["21.11.  3\xB0C", "22.11.  4\xB0C", "23.11.  2\xB0C"]
     }, windspeed: { 
       current: "",
       firstDayAverage: 0,
@@ -222,21 +222,21 @@ function WeatherTab() {
 
         // Calculate how many thaw (+0 degrees) days there are out of three
         var thawDays = 0;
-        /*
-        if (weather.temperature.firstDayAverage >= 0) {
+        
+        if (weather.temperature.firstDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth()}.`);
+          weather.temperature.thawDays.push(`${firstDayStart.getDate()}.${firstDayStart.getMonth()}.  ${weather.temperature.firstDayAverage.toFixed()}\xB0C`);
         }
-        if (weather.temperature.secondDayAverage >= 0) {
+        if (weather.temperature.secondDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth()}.`);
+          weather.temperature.thawDays.push(`${secondDay.getDate()}.${secondDay.getMonth()}.  ${weather.temperature.secondDayAverage.toFixed()}\xB0C`);
         }
-        if (weather.temperature.thirdDayAverage >= 0) {
+        if (weather.temperature.thirdDayAverage <= 0) {
           ++thawDays;
-          weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth()}.`);
+          weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth()}.  ${weather.temperature.thirdDayAverage.toFixed()}\xB0C`);
         }
-        */
-        if (weather.temperature.firstDayAverage >= 0) {
+        
+        /*if (weather.temperature.firstDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth()}-${firstDayStart.getDate()}`);
         }
@@ -247,7 +247,8 @@ function WeatherTab() {
         if (weather.temperature.thirdDayAverage >= 0) {
           ++thawDays;
           weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`);
-        }
+        }*/
+
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
       }).catch((error) => {
         console.log(error);
