@@ -1,9 +1,13 @@
 /**
-Element to show weather data during past three days (wheel of weather)
+
+Element to show weather data during past two days and current weather
 
 Created: Oona Laitamaki
 
 Latest update
+
+28.10.2021 Oona Laitamaki
+Create user interface for showing weather information on mobile and laptop view
 
 31.10.2021 Oona Laitamaki
 Create initial components for showing weather statistics
@@ -58,23 +62,17 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgba(255,255,255,0.7)",
     marginLeft: "10%",
     marginRight: "10%",
-    //minHeight: "600px",
-    alignContent: "center"
-    //width: "80%",
-    //maxWidth: "500px",
-    //margin: 0,
-    //msTransform: "translate(0%, 0%)",
-    //transform: "translate(0%, 0%)",
-    //left: "50%",
+    minHeight: "600px",
+    alignContent: "center",
   },
   upperGridContainer: {
     justifyContent: "center",
-    paddingTop: "30px"
+    paddingTop: "30px",
   },
   gridContainer: {
     justifyContent: "center",
     paddingBottom: "30px",
-    alignItems: "center"
+    alignItems: "center",
   },
   paperHeader: {
     fontFamily: "Donau",
@@ -100,7 +98,7 @@ const useStyles = makeStyles(() => ({
     textTransform: "uppercase",
     fontWeight: 600,
     display: "block",
-    fontSize: "4vh",
+    fontSize: "3vh",
     textAlign: "left",
     paddingLeft: "20px",
   },
@@ -127,7 +125,6 @@ const useStyles = makeStyles(() => ({
 // Paper for displaying weather info on day before yesterday
 function FirstDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.firstDayAverage - 180});
-  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -217,7 +214,6 @@ function FirstDayWeatherPaper({weatherState}) {
 // Paper for displaying weather info on yesterday
 function SecondDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.secondDayAverage - 180});
-  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -307,7 +303,6 @@ function SecondDayWeatherPaper({weatherState}) {
 // Paper for displaying current weather info
 function CurrentWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180, airpressureDirection: weatherState.airpressure.direction - 45});
-  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -399,10 +394,9 @@ function CurrentWeatherPaper({weatherState}) {
 
 
 function WeatherInfo({weatherState, handleMoreInformationClick}) {
-  console.log(weatherState);
   const carouselRef = React.useRef(null);
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180});
-  const isXS = useMediaQuery({ query: "(max-width: 899px)" });
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
   const [carouselSlide, setCarouselSlide] = React.useState(2);
 
   const handleChange = (event, newValue) => {
@@ -473,7 +467,6 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               position: "absolute",
               right: "15px",
               top: "90%",
-              "z-Index": -1,
               borderRadius: "100%",
               padding: "20px"}}
           >

@@ -1,12 +1,13 @@
 /**
-Element to show long term and average weather statistics
+
+Element to show short interval and winter weather statistics
 
 Created: Oona Laitamaki
 
 Latest update
 
-31.10.2021 Oona Laitamaki
-Show weather statistics in carousel element
+28.10.2021 Oona Laitamaki
+Create user interface for showing weather statistics on mobile and laptop view
 
 31.10.2021 Oona Laitamaki
 Create initial components for showing weather statistics
@@ -42,15 +43,9 @@ const useStyles = makeStyles(() => ({
     marginTop: "4%",
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
-    minHeight: "600px",
+    minHeight: "610px",
     marginLeft: "10%",
     marginRight: "10%",
-    //width: "80%",
-    //maxWidth: "500px",
-    //margin: 0,
-    //msTransform: "translate(0%, 0%)",
-    //transform: "translate(0%, 0%)",
-    //left: "50%",
   },
   paperHeader: {
     fontFamily: "Donau",
@@ -58,7 +53,7 @@ const useStyles = makeStyles(() => ({
     textTransform: "uppercase",
     fontWeight: 600,
     display: "block",
-    fontSize: "large",
+    fontSize: "2.5vh",
   },
   cardHeader: {
     fontFamily: "Donau",
@@ -72,7 +67,7 @@ const useStyles = makeStyles(() => ({
     letterSpacing: 2,
     fontWeight: 400,
     display: "block",
-    fontSize: "2.5vh",
+    fontSize: "2.4vh",
   },
   divider: {
     border: "thin solid transparent",
@@ -96,7 +91,6 @@ function KeyValuePair({keyName, value}) {
 
 function ShortIntervalStatsPaper({weatherState}) {
   const classes = useStyles();
-  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -138,7 +132,6 @@ function ShortIntervalStatsPaper({weatherState}) {
 
 function WinterStatsPaper({weatherState}) {
   const classes = useStyles();
-  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -173,8 +166,7 @@ function WinterStatsPaper({weatherState}) {
 
 
 function Statistics({weatherState, handleReturnClick}) {
-  //const classes = useStyles();
-  const isXS = useMediaQuery({ query: "(max-width: 1200px)" });
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
     <div>
@@ -213,7 +205,6 @@ function Statistics({weatherState, handleReturnClick}) {
               position: "absolute",
               right: "15px",
               top: "90%",
-              "z-Index": -1,
               borderRadius: "100%",
               padding: "20px"}}
           >
@@ -227,12 +218,17 @@ function Statistics({weatherState, handleReturnClick}) {
           <Grid item xs={6} sm={6}>
             <WinterStatsPaper weatherState={weatherState}/>
           </Grid>
-          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingRight: "80px"}}>
+          <Grid item xs={12} sm={12} container style={{justifyContent: "end", padding: "30px", paddingRight: "80px"}}>
             <Button
               onClick={handleReturnClick}
               variant="contained"
               color="inherit"
-              style={{backgroundColor: "rgba(255,255,255,0.6)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                borderColor: "transparent",
+                fontFamily: "Donau",
+                textTransform: "unset",
+                fontSize: "3vh"}}
               startIcon={<NavigateBeforeIcon/>}
             >
               Takaisin
