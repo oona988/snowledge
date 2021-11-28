@@ -457,6 +457,23 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               <CurrentWeatherPaper weatherState={weatherState}/>
             </div>   
           </Carousel>
+          <Button
+            onClick={handleMoreInformationClick}
+            variant="contained"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.9)",
+              fontFamily: "Donau",
+              textTransform: "unset",
+              fontSize: "3vh",
+              position: "absolute",
+              left: "80%",
+              top: "90%",
+              "z-Index": -1,
+              borderRadius: "100%",
+              padding: "20px"}}
+          >
+            <EqualizerIcon style={{fontSize: "6vh"}}/>
+          </Button>
         </div> : 
         <div>
           <Grid item xs={12} sm={12} container style={{padding: "100px"}}>

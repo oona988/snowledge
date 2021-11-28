@@ -600,11 +600,8 @@ function WeatherTab() {
   return (
     <div>
       {!displayWeatherStatistics ?
-        <WeatherInfo weatherState={weatherState} handleMoreInformationClick={handleMoreInformationClick}></WeatherInfo> :
-        <Statistics weatherState={weatherState} handleReturnClick={handleReturnClick}></Statistics>}
-      <p style={{display: "none"}}>
-        {weatherState.winter.strongWindDirectionX}
-      </p>
+        <WeatherInfo weatherState={weatherState} handleMoreInformationClick={handleMoreInformationClick}/> :
+        <Statistics weatherState={weatherState} handleReturnClick={handleReturnClick}/>}
     </div>
   );
 }

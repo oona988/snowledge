@@ -178,29 +178,48 @@ function Statistics({weatherState, handleReturnClick}) {
 
   return (
     <div>
-      {isXS ? 
-        <Carousel
-          autoPlay={false}
-          animation="slide"
-          cycleNavigation={false}
-          navButtonsAlwaysVisible={true}
-          fullHeightHover={false}
-          indicators={false}
-          showThumbs={false}
-          showArrows={false}
-          NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
-          PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
-          navButtonsProps={{
-            style: {
-              backgroundColor: "rgba(255,255,255,0.2)",
-              padding: "5px",
-              borderRadius: 50
-            }
-          }}
-        >
-          <ShortIntervalStatsPaper weatherState={weatherState}/>
-          <WinterStatsPaper weatherState={weatherState}/>
-        </Carousel> : 
+      {isXS ?
+        <div>
+          <Carousel
+            autoPlay={false}
+            animation="slide"
+            cycleNavigation={false}
+            navButtonsAlwaysVisible={true}
+            fullHeightHover={false}
+            indicators={false}
+            showThumbs={false}
+            showArrows={false}
+            NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
+            PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
+            navButtonsProps={{
+              style: {
+                backgroundColor: "rgba(255,255,255,0.2)",
+                padding: "5px",
+                borderRadius: 50
+              }
+            }}
+          >
+            <ShortIntervalStatsPaper weatherState={weatherState}/>
+            <WinterStatsPaper weatherState={weatherState}/>
+          </Carousel>
+          <Button
+            onClick={handleReturnClick}
+            variant="contained"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.9)",
+              fontFamily: "Donau",
+              textTransform: "unset",
+              fontSize: "3vh",
+              position: "absolute",
+              left: "80%",
+              top: "90%",
+              "z-Index": -1,
+              borderRadius: "100%",
+              padding: "20px"}}
+          >
+            <NavigateBeforeIcon style={{fontSize: "6vh"}}/>
+          </Button>
+        </div> : 
         <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
           <Grid item xs={6} sm={6}>
             <ShortIntervalStatsPaper weatherState={weatherState}/>
