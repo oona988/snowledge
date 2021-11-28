@@ -20,6 +20,7 @@ import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import CallMadeIcon from "@material-ui/icons/CallMade";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
@@ -114,21 +115,24 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "20px",
   },
   navigationIcon: {
-    transform: props => "rotate(" + props.currentDirection + "deg)",
+    transform: props => "rotate(" + props.windDirection + "deg)",
   },
+  airpressureDirection: {
+    transform: props => "rotate(" + props.airpressureDirection + "deg)",
+    fontSize: "4vh"
+  }
 }));
 
 
 // Paper for displaying weather info on day before yesterday
 function FirstDayWeatherPaper({weatherState}) {
-  const classes = useStyles({currentDirection: weatherState.winddirection.firstDayAverage - 180});
+  const classes = useStyles({windDirection: weatherState.winddirection.firstDayAverage - 180});
   //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
-        <Typography className={classes.cardHeader}>Toissapäivänä</Typography>
 
         {/* Temperature on day before yesterday */}
         <Grid item xs={8} sm={8}>
@@ -212,14 +216,13 @@ function FirstDayWeatherPaper({weatherState}) {
 
 // Paper for displaying weather info on yesterday
 function SecondDayWeatherPaper({weatherState}) {
-  const classes = useStyles({currentDirection: weatherState.winddirection.secondDayAverage - 180});
+  const classes = useStyles({windDirection: weatherState.winddirection.secondDayAverage - 180});
   //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
-        <Typography className={classes.cardHeader}>Eilen</Typography>
 
         {/* Temperature on yesterday */}
         <Grid item xs={8} sm={8}>
@@ -303,14 +306,13 @@ function SecondDayWeatherPaper({weatherState}) {
 
 // Paper for displaying current weather info
 function CurrentWeatherPaper({weatherState}) {
-  const classes = useStyles({currentDirection: weatherState.winddirection.current - 180});
+  const classes = useStyles({windDirection: weatherState.winddirection.current - 180, airpressureDirection: weatherState.airpressure.direction - 45});
   //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
-        <Typography className={classes.cardHeader}>Nyt</Typography>
 
         {/* Current temperature info */}
         <Grid item xs={8} sm={8}>
@@ -382,7 +384,10 @@ function CurrentWeatherPaper({weatherState}) {
           </Grid>
           <Grid item xs={6} sm={6}>
             <Typography className={classes.text}>{`${weatherState.airpressure.current} mBar`}</Typography>
-            <Typography className={classes.subText}>{weatherState.airpressure.direction}</Typography>
+            
+            <Typography className={classes.subText} style={{verticalAlign: "middle", display: "flex", left: "1%"}}>Muutos
+              <CallMadeIcon className={classes.airpressureDirection} />
+            </Typography>
           </Grid>
         </Grid>
 
@@ -396,7 +401,7 @@ function CurrentWeatherPaper({weatherState}) {
 function WeatherInfo({weatherState, handleMoreInformationClick}) {
   console.log(weatherState);
   const carouselRef = React.useRef(null);
-  const classes = useStyles({currentDirection: weatherState.winddirection.current - 180});
+  const classes = useStyles({windDirection: weatherState.winddirection.current - 180});
   const isXS = useMediaQuery({ query: "(max-width: 899px)" });
   const [carouselSlide, setCarouselSlide] = React.useState(2);
 
@@ -466,13 +471,13 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               textTransform: "unset",
               fontSize: "3vh",
               position: "absolute",
-              left: "80%",
+              right: "15px",
               top: "90%",
               "z-Index": -1,
               borderRadius: "100%",
               padding: "20px"}}
           >
-            <EqualizerIcon style={{fontSize: "6vh"}}/>
+            <EqualizerIcon style={{fontSize: "5vh"}}/>
           </Button>
         </div> : 
         <div>
@@ -498,12 +503,16 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
             <Grid item xs={4} sm={4}>
               <CurrentWeatherPaper weatherState={weatherState}/>
             </Grid>
-            <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingRight: "80px"}}>
+            <Grid item xs={12} sm={12} container style={{justifyContent: "end", padding: "30px", paddingRight: "80px"}}>
               <Button
                 onClick={handleMoreInformationClick}
                 variant="contained"
                 color="inherit"
-                style={{backgroundColor: "rgba(255,255,255,0.5)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
+                style={{backgroundColor: "rgba(255,255,255,0.6)",
+                  borderColor: "transparent",
+                  fontFamily: "Donau",
+                  textTransform: "unset",
+                  fontSize: "3vh"}}
                 startIcon={<EqualizerIcon/>}
               >
                 Lisätietoja

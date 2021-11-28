@@ -217,9 +217,9 @@ export function getCurrentAirPressureInfo(data) {
   /*
   Air pressure direction according to change during three hours
 
-  >= 0.1 hPa fall per hour : direction 1 (down)
-  < 0.1 hPa change in 3hrs : direction 2 (steady)
-  >= 0.1 hPa rise per hour : direction 3 (up)
+  >= 0.1 hPa fall per hour : direction 135 (down)
+  < 0.1 hPa change in 3hrs : direction 90 (steady)
+  >= 0.1 hPa rise per hour : direction 45 (up)
 
   */
 
@@ -229,15 +229,15 @@ export function getCurrentAirPressureInfo(data) {
 
   var threeHoursAgo = Number(measurements[measurements.length - 19].lastElementChild.innerHTML);
 
-  var direction = 2;
+  var direction = 90;
   if (Math.abs(current - threeHoursAgo) < 0.1) {
-    direction = 2;
+    direction = 90;
   } else {
     var changeDuringOneHour = current - hourAgo;
     if (changeDuringOneHour >= 0.1) {
-      direction = 3;
+      direction = 45;
     } else if (changeDuringOneHour <= -0.1) {
-      direction = 1;
+      direction = 135;
     }
   }
 

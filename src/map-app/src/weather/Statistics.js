@@ -211,13 +211,13 @@ function Statistics({weatherState, handleReturnClick}) {
               textTransform: "unset",
               fontSize: "3vh",
               position: "absolute",
-              left: "80%",
+              right: "15px",
               top: "90%",
               "z-Index": -1,
               borderRadius: "100%",
               padding: "20px"}}
           >
-            <NavigateBeforeIcon style={{fontSize: "6vh"}}/>
+            <NavigateBeforeIcon style={{fontSize: "5vh"}}/>
           </Button>
         </div> : 
         <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
@@ -232,7 +232,7 @@ function Statistics({weatherState, handleReturnClick}) {
               onClick={handleReturnClick}
               variant="contained"
               color="inherit"
-              style={{backgroundColor: "rgba(255,255,255,0.5)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
+              style={{backgroundColor: "rgba(255,255,255,0.6)", borderColor: "transparent", fontFamily: "Donau", textTransform: "unset", fontSize: "3vh"}}
               startIcon={<NavigateBeforeIcon/>}
             >
               Takaisin
