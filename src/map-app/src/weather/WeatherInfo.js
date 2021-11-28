@@ -22,7 +22,6 @@ import Typography from "@material-ui/core/Typography";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Carousel from "react-material-ui-carousel";
-import "react-multi-carousel/lib/styles.css";
 import {getWindDirection} from "./DataCalculations";
 
 
@@ -394,15 +393,14 @@ function CurrentWeatherPaper({weatherState}) {
 
 function WeatherInfo({weatherState}) {
   console.log(weatherState);
-  
+  const carouselRef = React.useRef(null);
   const classes = useStyles({currentDirection: weatherState.winddirection.current - 180});
   const isXS = useMediaQuery({ query: "(max-width: 899px)" });
-  const [value, setValue] = React.useState(2);
-  //const [carouselSlide, setCarouselSlide] = React.useState(2);
+  const [carouselSlide, setCarouselSlide] = React.useState(2);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-    console.log(newValue);
+    setCarouselSlide(newValue);
+    carouselRef.current.setActive(newValue);
   };
 
 
@@ -412,7 +410,7 @@ function WeatherInfo({weatherState}) {
         <div>
           <Paper className={classes.tabsRoot}>
             <Tabs
-              value={value}
+              value={carouselSlide}
               onChange={handleChange}
               indicatorColor="primary"
               textColor="primary"
@@ -425,23 +423,27 @@ function WeatherInfo({weatherState}) {
           </Paper>
           
           <Carousel
+            ref={carouselRef}
             index={2}
             autoPlay={false}
+            animation="slide"
+            cycleNavigation={false}
             navButtonsAlwaysVisible={true}
+            fullHeightHover={false}
             indicators={false}
-            selectedItem={2}
             showThumbs={false}
             showArrows={false}
-            next={ (next, active) => console.log(`we left ${active}, and are now at ${next}`) }
-            prev={ (prev, active) => console.log(`we left ${active}, and are now at ${prev}`) }
+            next={(next) => setCarouselSlide(next)}
+            prev={(prev) => setCarouselSlide(prev)}
             NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
             PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
             navButtonsProps={{
               style: {
                 backgroundColor: "rgba(255,255,255,0.2)",
+                padding: "5px",
                 borderRadius: 50
               }
-            }} 
+            }}
           >
             <div>
               <FirstDayWeatherPaper weatherState={weatherState}/>

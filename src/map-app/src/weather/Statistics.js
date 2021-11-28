@@ -19,35 +19,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Paper from "@material-ui/core/Paper";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
+import Carousel from "react-material-ui-carousel";
 import {toDegrees, getWindDirection} from "./DataCalculations";
-
-
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 10,
-  }
-};
 
 
 const useStyles = makeStyles(() => ({
@@ -66,8 +42,8 @@ const useStyles = makeStyles(() => ({
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
     minHeight: "600px",
-    marginLeft: "5%",
-    marginRight: "5%",
+    marginLeft: "10%",
+    marginRight: "10%",
     //width: "80%",
     //maxWidth: "500px",
     //margin: 0,
@@ -95,7 +71,13 @@ const useStyles = makeStyles(() => ({
     letterSpacing: 2,
     fontWeight: 400,
     display: "block",
-    fontSize: "medium",
+    fontSize: "2.5vh",
+  },
+  divider: {
+    border: "thin solid transparent",
+    background: "rgba(0, 0, 0, 0.1)",
+    height: 0.4,
+    margin: 1,
   },
 }));
 
@@ -104,7 +86,7 @@ function KeyValuePair({keyName, value}) {
   const classes = useStyles();
 
   return (
-    <p className={classes.text} style={{textAlign: "left", paddingLeft: "3%"}}>{keyName}
+    <p className={classes.text} style={{textAlign: "left", margin: "7px", paddingLeft: "3%"}}>{keyName}
       <span className={classes.text} style={{float: "right", paddingRight: "3%", whiteSpace: "pre"}}>{value}</span>
     </p>
   );
@@ -113,7 +95,7 @@ function KeyValuePair({keyName, value}) {
 
 function ShortIntervalStatsPaper({weatherState}) {
   const classes = useStyles();
-  const isXS = useMediaQuery({ query: "(max-width: 599px)" });
+  //const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -128,26 +110,23 @@ function ShortIntervalStatsPaper({weatherState}) {
       <Card className={classes.card}>
         <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
         <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
-        <Divider/>
+        <Divider className={classes.divider}/>
         <KeyValuePair keyName="matalin" value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
-        <Divider/>
+        <Divider className={classes.divider}/>
         <KeyValuePair keyName="suojapäivien määrä" value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
         {weatherState.temperature.thawDays.length !== 0 &&
         <div style={{paddingBottom: "40px"}}>
-          <Divider/>
-          {isXS ?
-            <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/> :
-            <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join(", ")}/>
-          }
+          <Divider className={classes.divider}/>
+          <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/>
         </div>}
       </Card>
 
       <Card className={classes.card}>
         <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
         <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
-        <Divider/>
+        <Divider className={classes.divider}/>
         <KeyValuePair keyName="kesk. suunta" value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
-        <Divider/>
+        <Divider className={classes.divider}/>
         <KeyValuePair keyName="kovin tuuli" value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
       </Card>
 
@@ -171,16 +150,16 @@ function WinterStatsPaper({weatherState}) {
           <Card className={classes.card}>
             <p className={classes.cardHeader}>Lämpötila</p>
             <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
-            <Divider/>
+            <Divider className={classes.divider}/>
             <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
           </Card>
           
           <Card className={classes.card}>
             <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
             <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
-            <Divider/>
+            <Divider className={classes.divider}/>
             <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
-            <Divider/>
+            <Divider className={classes.divider}/>
             <KeyValuePair keyName="päivien lkm" value={weatherState.winter.strongWindDays}/>
           </Card>
 
@@ -199,7 +178,25 @@ function Statistics({weatherState}) {
   return (
     <div>
       {isXS ? 
-        <Carousel responsive={responsive} swipeable={true} draggable={true} showDots={false} autoPlay={false} navButtonsAlwaysVisible="true" center={true} infinite={true}>
+        <Carousel
+          autoPlay={false}
+          animation="slide"
+          cycleNavigation={false}
+          navButtonsAlwaysVisible={true}
+          fullHeightHover={false}
+          indicators={false}
+          showThumbs={false}
+          showArrows={false}
+          NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
+          PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
+          navButtonsProps={{
+            style: {
+              backgroundColor: "rgba(255,255,255,0.2)",
+              padding: "5px",
+              borderRadius: 50
+            }
+          }}
+        >
           <ShortIntervalStatsPaper weatherState={weatherState}/>
           <WinterStatsPaper weatherState={weatherState}/>
         </Carousel> : 
