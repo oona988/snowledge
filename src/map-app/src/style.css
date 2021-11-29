@@ -42,17 +42,25 @@ body {
 }
 
 .app .weather_tab {
+  flex: 1 1 auto;
+  height: calc(100vh - 55px);
+  overflow-y: scroll;
+  width: 100vw;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
   background: linear-gradient(135deg, #1C4777, #B8C1E0, #539BD5);
 }
 
 .app .map_container {
   flex: 1 1 auto;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 55px);
 }
 
 .map {
   flex: 1 1 auto;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 55px);
 }
 
 .info {
@@ -63,7 +71,7 @@ body {
   z-index: 1;
   margin: auto;
   position: absolute;
-  top: 120px;
+  top: 0px;
   left: 0px;
 }
 

@@ -474,7 +474,7 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
           </Button>
         </div> : 
         <div>
-          <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
+          <Grid item xs={12} sm={12} container>
             <Grid item xs={4} sm={4}>
               <Typography className={classes.tabsText}>{weatherState.firstDay}</Typography>
               <Typography className={classes.tabsText}>Toissapäivänä</Typography>

@@ -211,7 +211,7 @@ function Statistics({weatherState, handleReturnClick}) {
             <NavigateBeforeIcon style={{fontSize: "5vh"}}/>
           </Button>
         </div> : 
-        <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
+        <Grid item xs={12} sm={12} container>
           <Grid item xs={6} sm={6}>
             <ShortIntervalStatsPaper weatherState={weatherState}/>
           </Grid>

@@ -23,9 +23,12 @@ import "./style.css";
 import Map from "./NewMap";
 import Manage from "./Manage";
 import Info from "./Info";
+// eslint-disable-next-line no-unused-vars
 import TopBar from "./TopBar";
+// eslint-disable-next-line no-unused-vars
 import WeatherTab from "./weather/WeatherTab";
 import { useMediaQuery } from "react-responsive";
+import BottomNav from "./BottomNav";
 
 var refreshInterval = setInterval(window.location.reload.bind(window.location), (30*60000));
 
@@ -39,11 +42,19 @@ function App() {
   const [woodsSegment, setWoodsSegment] = React.useState(null);
   const [shownSegment, setShownSegment] = React.useState(null);
   const [viewManagement, setViewManagement] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [showMap, setShowMap] = React.useState(true);
+  // eslint-disable-next-line no-unused-vars
+  const [showSnow, setShowSnow] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [showWeather, setShowWeather] = React.useState(false);
+  console.log("map: "+showMap+", snow: "+showSnow+", weather: "+showWeather);
 
   //imported hook. Kysely näyttöportin koosta
   const isMobile = useMediaQuery({query: "(max-width:760px)"});
   
   // Valikoissa näkyvä teksti riippuu näytettävästä tilasta
+  // eslint-disable-next-line no-unused-vars
   const manageOrMap = (viewManagement ? "Kartta" : "Hallitse");
 
   // const styledClasses = useStyles();
@@ -117,6 +128,7 @@ function App() {
   }
 
   // Token tallennetaan reactin stateen
+  // eslint-disable-next-line no-unused-vars
   function updateToken(token) {
     if (typeof token !== "undefined"){
       clearInterval(refreshInterval);
@@ -125,6 +137,7 @@ function App() {
   }
 
   // Käyttäjän päivitys (kirjautuneen)
+  // eslint-disable-next-line no-unused-vars
   function updateUser(user) {
     setUser(user);
   }
@@ -139,15 +152,40 @@ function App() {
   }
 
   // Vaihtaa näkymää hallinnan ja kartan välillä
+  // eslint-disable-next-line no-unused-vars
   function updateView() {
     setViewManagement(!viewManagement);
+  }
+
+  function updateShown(value) {
+    switch(value) {
+    case 0: 
+      setShowMap(true);
+      setShowSnow(false);
+      setShowWeather(false);
+      break;
+    case 1:
+      setShowSnow(true);
+      setShowMap(false);
+      setShowWeather(false);
+      break;
+    case 2: 
+      setShowWeather(true);
+      setShowSnow(false);
+      setShowMap(false);
+      break;
+    default:
+      setShowMap(true);
+      setShowSnow(false);
+      setShowWeather(false);
+    }
   }
 
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
     <div className="app">
       {/* Sovelluksen yläpalkki */}
-      <div className="top_bar">
+      {/*<div className="top_bar">
         <TopBar 
           isMobile={isMobile} 
           updateUser={updateUser}
@@ -158,15 +196,21 @@ function App() {
           viewManagement={viewManagement} 
           manageOrMap={manageOrMap} 
         />   
-      </div>
+      </div>*/}
       {/* Weather tab - this is here temporarily so that component is rendered
       and information fetched when application starts */}
-      <div className="weather_tab">
-        <WeatherTab/>   
-      </div>
+      {
+        showWeather 
+          ? 
+          <div className="weather_tab">
+            <WeatherTab/>
+          </div>
+          : 
+          <div></div> 
+      }   
       <div className="map_container">
         {/* Hallintanäkymä tai kartta tilanteen mukaan */}
-        {
+        { 
           (
             viewManagement 
               ?
@@ -188,6 +232,7 @@ function App() {
                 isMobile={isMobile}
                 woodsSegment={woodsSegment}
                 viewManagement={viewManagement}
+                showMap={showMap}
               />
           )
         }
@@ -210,6 +255,11 @@ function App() {
           :
           <div />
         )} 
+      </div>
+      <div className="bottom_navigation">
+        <BottomNav
+          updateShown={updateShown}
+        />
       </div>
     </div>
   );

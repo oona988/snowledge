@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     padding: theme.spacing(1),
     position: "absolute",
-    bottom: theme.spacing(1),
+    bottom: "65px",
     left: theme.spacing(1),
     zIndex: 1,
     width: "350px"
@@ -148,6 +148,17 @@ function Map(props) {
   return (
     <div className="map">
       {/* A menu where user can select which segments are highlighted on the map */}
+      <PallasMap
+        shownSegment={props.shownSegment}
+        chosenSegment={segment => updateChosen(segment)}
+        segmentColors={props.segmentColors}
+        segments={props.segments}
+        isMobile={props.isMobile}
+        zoom={zoom}
+        viewManagement={props.viewManagement}
+        highlightedSnowType={highlightedSnowType}
+        showMap={props.showMap}
+      ></PallasMap>
       <Box className={styledClasses.buttonsCntainer}>
         <Box className={styledClasses.menuContainer}>
           <Button
@@ -199,16 +210,6 @@ function Map(props) {
           </IconButton>
         </Box>
       </Box>
-      <PallasMap
-        shownSegment={props.shownSegment}
-        chosenSegment={segment => updateChosen(segment)}
-        segmentColors={props.segmentColors}
-        segments={props.segments}
-        isMobile={props.isMobile}
-        zoom={zoom}
-        viewManagement={props.viewManagement}
-        highlightedSnowType={highlightedSnowType}
-      ></PallasMap>
     </div>
   );
 }
