@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="500" height="500" viewBox="0 0 500 500" xml:space="preserve">
+<desc>Created with Fabric.js 4.6.0</desc>
+<defs>
+</defs>
+<g transform="matrix(3.28 0 0 3.28 250 250)" id="jS_LaMeZSbKG3nR_VD87V"  >
+<filter id="SVGID_149" y="-36%" height="172%" x="-36%" width="172%" >
+	<feGaussianBlur in="SourceAlpha" stdDeviation="10"></feGaussianBlur>
+	<feOffset dx="0" dy="0" result="oBlur" ></feOffset>
+	<feFlood flood-color="rgb(0,0,0)" flood-opacity="1"/>
+	<feComposite in2="oBlur" operator="in" />
+	<feMerge>
+		<feMergeNode></feMergeNode>
+		<feMergeNode in="SourceGraphic"></feMergeNode>
+	</feMerge>
+</filter>
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;filter: url(#SVGID_149);" vector-effect="non-scaling-stroke"  transform=" translate(-60.84, -61.47)" d="M 59 1.24 L 0.2 120.08 C -0.027511937399138264 120.53848828312907 -0.06254194247941475 121.06883938617274 0.1026897335029116 121.55326861803002 C 0.26792140948523796 122.03769784988728 0.6197361237263491 122.43610191688335 1.0799999999999998 122.66 C 1.6308723011463502 122.94982312609764 2.28912769885365 122.94982312609764 2.8400000000000003 122.66 L 2.84 122.66 L 60.84 91.78999999999999 L 118.84 122.66 L 118.84 122.66 C 119.39087230114636 122.94982312609764 120.04912769885365 122.94982312609764 120.60000000000001 122.66 C 121.06026387627365 122.43610191688335 121.41207859051477 122.03769784988728 121.5773102664971 121.55326861803002 C 121.74254194247942 121.06883938617274 121.70751193739915 120.53848828312907 121.48 120.08 L 62.64 1.24 C 62.315093843759094 0.5268820072640856 61.60364614586364 0.06921649766511462 60.82 0.06921649766511462 C 60.03635385413636 0.06921649766511462 59.32490615624091 0.5268820072640858 59 1.2400000000000002 Z" stroke-linecap="round" />
+</g>
+</svg>

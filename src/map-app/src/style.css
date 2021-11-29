@@ -41,6 +41,10 @@ body {
   flex: 0 1 auto;
 }
 
+.app .weather_tab {
+  background: linear-gradient(135deg, #1C4777, #B8C1E0, #539BD5);
+}
+
 .app .map_container {
   flex: 1 1 auto;
   height: calc(100vh - 120px);

@@ -20,6 +20,7 @@
     "react-dom": "^17.0.1",
     "react-hook-google-maps": "0.0.3",
     "react-maplibre-ui": "^2.0.0",
+    "react-material-ui-carousel": "^2.3.8",
     "react-responsive": "^8.1.0",
     "react-scripts": "4.0.0",
     "web-vitals": "^0.2.4"
