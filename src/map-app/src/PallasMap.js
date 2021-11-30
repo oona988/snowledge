@@ -49,7 +49,7 @@ function PallasMap(props) {
   const [segmentArray, setSegmentArray] = useState([]);
 
   const center = [24.05, 68.069];
-  // const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
+  const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
 
   useMemo(() => {
     // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
@@ -153,9 +153,9 @@ function PallasMap(props) {
         style: mapStyle,
         center: center,
         zoom: props.zoom,
-        // maxBounds: bounds,
-        // maxZoom: 15,
-        // minZoom: 11,
+        maxBounds: bounds,
+        maxZoom: 15,
+        minZoom: 11,
       });
     }
 
