@@ -49,7 +49,7 @@ function PallasMap(props) {
   const [segmentArray, setSegmentArray] = useState([]);
 
   const center = [24.05, 68.069];
-  const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
+  // const bounds = props.isMobile ? [[23.849004, 68.000000], [24.240507, 68.142811]] : [[23.556208, 67.988229], [24.561503, 68.162280]];
 
   useMemo(() => {
     // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
@@ -69,6 +69,7 @@ function PallasMap(props) {
     let noWoodsSegments = normalSegments.concat(subSegments);
     let segments = woodsSegments.concat(noWoodsSegments);
     setSegmentArray(segments);
+
 
     // Gets the coordinates for the geometry of a segment
     // If segemnts has a subsegment add it as a hole to the segment
@@ -152,9 +153,9 @@ function PallasMap(props) {
         style: mapStyle,
         center: center,
         zoom: props.zoom,
-        maxBounds: bounds,
-        maxZoom: 15,
-        minZoom: 11,
+        // maxBounds: bounds,
+        // maxZoom: 15,
+        // minZoom: 11,
       });
     }
 
@@ -231,7 +232,13 @@ function PallasMap(props) {
           map.addControl(scaleControl, "bottom-right");
           scaleAdded = true;
         }
-
+        //Geolocation control
+        map.addControl(new maplibregl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        }));
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
         map.on("mousemove", "segments-fills", function (e) {
@@ -315,6 +322,7 @@ function PallasMap(props) {
     }
   }, []);
 
+      
   return (
     <div className={styledClasses.mapContainer} ref={mapContainerRef} />
   );
