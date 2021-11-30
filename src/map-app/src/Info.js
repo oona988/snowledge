@@ -198,7 +198,7 @@ function Info(props) {
   const openUpdate = () => {
     loadSnowTypes();
     setEntryVisible(true);
-    setText(props.segmentdata.update !== null ? props.segmentdata.update.Teksti : "Ei kuvausta");
+    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
     //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
     setLoginOpen(true);
   };
@@ -206,7 +206,7 @@ function Info(props) {
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
     setLoginOpen(false);
-    setText(props.segmentdata.update !== null ? props.segmentdata.update.Teksti : "Ei kuvausta");
+    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
     //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
     setSearchVisible(false);
     setSelectVisible(false);
@@ -454,16 +454,10 @@ function Info(props) {
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
           if (snow.ID === update.Lumilaatu_ID1) {
-            update.Lumilaatu_ID1 = snow;
+            update.Lumi1 = snow;
           }
           else if (snow.ID === update.Lumilaatu_ID2) {
-            update.Lumilaatu_ID2 = snow;
-          }
-          else if (snow.ID === update.Toissijainen_ID1) {
-            update.Toissijainen_ID1 = snow;
-          }
-          else if (snow.ID === update.Toissijainen_ID2) {
-            update.Toissijainen_ID2 = snow;
+            update.Lumi2 = snow;
           }
         });
       });
@@ -617,16 +611,8 @@ function Info(props) {
                 <InputLabel htmlFor="text" >Kuvaus</InputLabel>*/}
                     <Box className={classes.snowRecordEPart}>
                       <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
-                      <TextField className={classes.snowRecordETextFields} onChange={updateText} id="standard-basic" label="Kirjoita..." multiline variant="outlined" />
+                      <TextField className={classes.snowRecordETextFields} onChange={updateText} id="standard-basic" placeholder="Kirjoita..." multiline variant="outlined" />
                     </Box>
-                    {/* <Input
-                  id="text"
-                  type='text'
-                  multiline={true}
-                  rows={5}
-                  placeholder={text}
-                  onChange={updateText}              
-              />*/}
                     <Divider variant="middle" />
                     {/*</FormControl>*/}
 
@@ -642,7 +628,7 @@ function Info(props) {
              Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) KORJAA DISABLED!*/}
                 <DialogActions>
                   <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
-                  <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={true}>Päivitä</Button>
+                  <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={false}>Päivitä</Button>
                 </DialogActions>
               </Box>
             </MuiThemeProvider>

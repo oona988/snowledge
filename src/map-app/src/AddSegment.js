@@ -123,8 +123,11 @@ function AddSegment(props) {
       
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
-          if(snow.ID === update.Lumilaatu){
-            update.Lumi = snow;
+          if (snow.ID === update.Lumilaatu_ID1) {
+            update.Lumi1 = snow;
+          }
+          else if (snow.ID === update.Lumilaatu_ID2) {
+            update.Lumi2 = snow;
           }
         });
       });
