@@ -54,7 +54,7 @@ function PallasMap(props) {
             "name": item.Nimi,
             "subsegment": item.On_Alasegmentti === null ? false : true,
             "segmentId": index+1,
-            "snowId1": item.update !== null ? item.update.Lumi1.ID : 0
+            //"snowId1": item.update !== null ? item.update.Lumi1.ID : 0
             // KORJATTAVA kun filteriä muokataan, tällä hetkellä valittaa että ID:tä ei voida lukea koska undefined
             //"snowId2": item.update !== null ? item.update.Lumi2.ID : 0
           },
@@ -93,7 +93,7 @@ function PallasMap(props) {
           layout: {},
           paint: {
             "fill-color": [
-              "match", ["get", "snowId1"],
+              "match", ["get", "1"/* KORVATTU VÄLIAIKAISESTI BUGIEN ESTÄMISEKSI MUUALLA": snowId1"*/],
               1, "#76c4d6",
               2, "#3f7089",
               3, "#3838a0",

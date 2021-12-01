@@ -166,6 +166,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
   },
   snowRecordETextFields: {
+    fontFamily: "Donau",
     borderRadius: "10px",
   },
 }));
@@ -198,19 +199,34 @@ function Info(props) {
   const openUpdate = () => {
     loadSnowTypes();
     setEntryVisible(true);
-    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
-    //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
+    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "");
+    const idArray = [];
+
+    idArray[0] = (props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu_ID1 : 0);
+    idArray[1] = (props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu_ID2 : 0);
+    idArray[2] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID1 : 0);
+    idArray[3] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID2 : 0);
+    console.log(idArray);
+
+    snowRecordStartUp(idArray);
     setLoginOpen(true);
+    setSearchVisible(false);
+    setSelectVisible(false);
+    setAddVisible(true);
   };
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
-    setLoginOpen(false);
-    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
-    //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
     setSearchVisible(false);
     setSelectVisible(false);
     setAddVisible(true);
+    setSelectDisabled([false, false]);
+    setSnowRecordContent([]);
+    setDisabledSnowTypes([]);
+    setLoginOpen(false);
+    setText("");
+    //setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
+    //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
   };
 
   // Lumitilanteen kuvaustekstin päivittäminen
@@ -258,7 +274,46 @@ function Info(props) {
     setSearchVisible(false);
   };
 
-  function addSnowRecordContent(id) {
+  const snowRecordStartUp = (array) => {
+    let newContent = [];
+    let newDisabled = [];
+    let primaryCount = 0;
+    let secondaryCount = 0;
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] !== null && array[i] > 0) {
+        if (i > 1) {
+          secondaryCount++;
+          newContent = newContent.concat({ id: array[i], secondary: true });
+          newDisabled = array[i];
+        }
+        else {
+          primaryCount++;
+          newContent = newContent.concat({ id: array[i], secondary: false });
+          newDisabled = array[i];
+        }
+      }
+    }
+
+    let newValues = selectDisabled;
+
+    if (primaryCount >= 1) {
+      // disables primary option
+      newValues[0] = true;
+    }
+    
+    if (secondaryCount >= 1) {
+      // disables secondary option
+      newValues[1] = true;
+    }
+
+    console.log(newContent);
+    setSelectDisabled(newValues);
+    setDisabledSnowTypes(newDisabled);
+    setSnowRecordContent(snowRecordContent.concat(newContent));
+  };
+
+  const addSnowRecordContent = (id) => {
     let primaryValues = 0;
     let secondaryValues = 0;
     // Determines amount of primary and secondary snow types
@@ -285,6 +340,7 @@ function Info(props) {
     else if (isSecondary) {
 
       let secondaryContent = { id: id, secondary: true };
+      console.log(secondaryContent);
       setSnowRecordContent(snowRecordContent.concat(secondaryContent));
 
       if (secondaryValues == 1) {
@@ -294,35 +350,35 @@ function Info(props) {
         setSelectDisabled(newValues);
       }
     }
-  }
+  };
   // Gets snowrecordcontent IDs inside an Array (Useful for updates)
   function getSnowRecordContentIDs() {
     let idArray = [];
     let secondaryArray = [];
     snowRecordContent.forEach(element => {
-      if(element.secondary === false){
+      if (element.secondary === false) {
         idArray.push(element.id);
       }
     });
 
-    if(idArray.length == 1){
+    if (idArray.length == 1) {
       idArray.push(null);
     }
-    else if(idArray.length == 0){
+    else if (idArray.length == 0) {
       idArray.push(null);
       idArray.push(null);
     }
 
     snowRecordContent.forEach(element => {
-      if(element.secondary === true){
+      if (element.secondary === true) {
         secondaryArray.push(element.id);
       }
     });
 
-    if(secondaryArray.length == 1){
+    if (secondaryArray.length == 1) {
       secondaryArray.push(null);
     }
-    else if(secondaryArray.length == 0){
+    else if (secondaryArray.length == 0) {
       secondaryArray.push(null);
       secondaryArray.push(null);
     }
@@ -332,13 +388,6 @@ function Info(props) {
     return idArray;
   }
 
-  /*
-  // Handles select of a snow type
-  const handleSelect = (event, item) => {
-    const newContent2 = usedSnowTypes.filter(function f2(usedSnowTypes) { return usedSnowTypes.ID != item.ID; });
-    newContent2.concat(event.target.value);
-    setUsedSnowTypes(newContent2);
-  };*/
   // Removes a snowtype in snow record entry view
   const removeSnowtype = (item) => {
     const newContent1 = snowRecordContent.filter(snowRecordContent => { return snowRecordContent.id != item.id; });
@@ -348,23 +397,23 @@ function Info(props) {
       setAddVisible(true);
     }
 
-    if (item.secondary === false){
+    if (item.secondary === false) {
       let newValues = selectDisabled;
       newValues[0] = false;
       setSelectDisabled(newValues);
     }
 
-    if (item.secondary === true){
+    if (item.secondary === true) {
       let newValues = selectDisabled;
       newValues[1] = false;
       setSelectDisabled(newValues);
     }
 
-    const newContent2 = disabledSnowTypes.filter(usedSnowTypes => { return usedSnowTypes != item.id; });
+    const newContent2 = disabledSnowTypes.filter(disabledSnowTypes => { return disabledSnowTypes != item.id; });
     setDisabledSnowTypes(newContent2);
-    
-  };
 
+  };
+  // Defines the default value of a snowtype box
   const getValue = (id) => {
     let index = snowTypeList.findIndex((snowTypeList => snowTypeList.ID === id));
     return snowTypeList[index];
@@ -374,14 +423,14 @@ function Info(props) {
     let returnValue = false;
 
     disabledSnowTypes.forEach(type => {
-      if(option.ID == type){
+      if (option.ID == type) {
         returnValue = true;
-      } 
+      }
     });
     return returnValue;
   };
 
-  // closes the select inside of snow type box and switches the value of the box
+  // closes the select inside snow type box and switches the value of the box
   const handleSelectClose = (e, value, item) => {
     let itemId = item.id;
     let valueId = value.ID;
@@ -400,7 +449,7 @@ function Info(props) {
   const loadSnowTypes = async () => {
     const snow = await fetch("api/lumilaadut");
     const snowdata = await snow.json();
-    console.log(snowdata);
+
     // Removes tree stumps from an array (a requirement from the client)
     const newData = snowdata.filter(function f2(snowdata) { return snowdata.ID != 27; });
     // Aakkosjärjestyssort, ei välttämättä tarvita
@@ -408,11 +457,12 @@ function Info(props) {
     // Pitäiskö tallettaa vain ID:t usedsnowtypesiin????
     //setUsedSnowTypes(newData);
     setSnowTypeList(newData);
-    console.log(newData);
   };
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
   const sendForm = () => {
+    setSelectDisabled([false, false]);
+    
     const idValues = getSnowRecordContentIDs();
     // Tallennushetken lumilaatujen id:t, kuvausteksti. Lisäksi päivitettävän (valitun) segmentin ID
     const data = {
@@ -491,6 +541,7 @@ function Info(props) {
     };
     fetchData();
     closeUpdate();
+    setSnowRecordContent([]);
   };
 
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
@@ -501,6 +552,7 @@ function Info(props) {
       // Nämä renderöidään, kun käyttäjä on kirjautunut (muokkaustoiminto lisänä)
       return (
         <div className="info">
+
           <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
           <IconButton
             className={classes.editButton}
@@ -537,12 +589,13 @@ function Info(props) {
                   <Box className={classes.snowRecordEPart}>
                     <Divider variant="middle" />
                     <Box className={classes.snowRecordEPart}>
-                      {/*Autofill search:*/}
+                      {/*Snowtype add button:*/}
                       {addVisible && (<Box className={classes.snowRecordEButtonsWrapper}>
                         <Button size="large" variant="contained" onClick={() => { setAddVisible(false); setSelectVisible(true); }} color="primary" endIcon={<SearchIcon fontSize="large" />}
                           className={classes.snowRecordEButtons}>Lisää
                         </Button>
                       </Box>)}
+                      {/*Select whether type is primary or secondary:*/}
                       {selectVisible && (<Select className={classes.snowRecordETextFields}
                         fullWidth={true}
                         displayEmpty
@@ -555,6 +608,7 @@ function Info(props) {
                         <MenuItem disabled={selectDisabled[0]} value={false}>Ensisijainen</MenuItem>
                         <MenuItem disabled={selectDisabled[1]} value={true}>Toissijainen</MenuItem>
                       </Select>)}
+                      {/*Autofill search:*/}
                       {searchVisible && (<Box>
                         <Autocomplete
                           className={classes.snowRecordETextFields}
@@ -568,17 +622,19 @@ function Info(props) {
                           size="small"
                           getOptionDisabled={(option) => checkDisabledValues(option)}
                           getOptionLabel={(option) => option.Nimi}
-                          renderInput={(params) => (<TextField {...params} className={classes.snowRecordETextFields} style={{
-                            backgroundColor: "white", border: "6px solid", color: "#000000B3"
-                          }}
-                          size="small" autoFocus={true} placeholder="Etsi" variant="outlined"
+                          renderInput={(params) => (<TextField {...params} className={classes.snowRecordETextFields}
+                            size="small"
+                            autoFocus={true}
+                            placeholder="Etsi"
+                            variant="outlined"
+                            style={{ backgroundColor: "white", border: "6px solid", color: "#000000B3" }}
                           />)}
                         />
                       </Box>)}
-                      {/*Snow data boxes*/}
+                      {/*Snowtype boxes*/}
                       {snowRecordContent.map(item => (<Box id={item.id} key={item.id}>
                         <Box className={classes.snowRecordEItem} boxShadow={2}>
-                          <Box display="flex" flexDirection= "row">
+                          <Box display="flex" flexDirection="row">
                             <Typography className={classes.snowRecordEHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
                             <IconButton onClick={() => removeSnowtype(item)} marginLeft="auto">
                               <DeleteIcon />
@@ -596,7 +652,6 @@ function Info(props) {
                             getOptionDisabled={(option) => checkDisabledValues(option)}
                             defaultValue={getValue(item.id)}
                             getOptionLabel={(option) => option.Nimi}
-
                             renderInput={(params) => (<TextField {...params} fullWidth={true} className={classes.snowRecordETextFields}
                               size="small" variant="outlined"
                             />)}
@@ -606,12 +661,10 @@ function Info(props) {
                     </Box>
 
                     <Divider variant="middle" />
-                    {/* Kuvausteksti 
-              <FormControl className={classes.inputs}>
-                <InputLabel htmlFor="text" >Kuvaus</InputLabel>*/}
+                    {/* Description text box*/}
                     <Box className={classes.snowRecordEPart}>
                       <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
-                      <TextField className={classes.snowRecordETextFields} onChange={updateText} id="standard-basic" placeholder="Kirjoita..." multiline variant="outlined" />
+                      <TextField className={classes.snowRecordETextFields} value={text} onChange={updateText} id="standard-basic" placeholder="Kirjoita..." multiline variant="outlined" />
                     </Box>
                     <Divider variant="middle" />
                     {/*</FormControl>*/}
