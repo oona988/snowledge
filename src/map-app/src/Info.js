@@ -212,7 +212,6 @@ function Info(props) {
     setLoginOpen(true);
     setSearchVisible(false);
     setSelectVisible(false);
-    setAddVisible(true);
   };
 
   // Segmentin päivitysdialogin sulkeminen
@@ -285,26 +284,36 @@ function Info(props) {
         if (i > 1) {
           secondaryCount++;
           newContent = newContent.concat({ id: array[i], secondary: true });
-          newDisabled = array[i];
+          newDisabled =  newDisabled.concat(array[i]);
         }
         else {
           primaryCount++;
           newContent = newContent.concat({ id: array[i], secondary: false });
-          newDisabled = array[i];
+          newDisabled = newDisabled.concat(array[i]);
         }
       }
     }
 
+    console.log(primaryCount);
+    console.log(secondaryCount);
+
     let newValues = selectDisabled;
 
-    if (primaryCount >= 1) {
+    if (primaryCount == 2) {
       // disables primary option
       newValues[0] = true;
     }
     
-    if (secondaryCount >= 1) {
+    if (secondaryCount == 2) {
       // disables secondary option
       newValues[1] = true;
+    }
+
+    if(primaryCount + secondaryCount === 4){
+      setAddVisible(false);
+    } 
+    else {
+      setAddVisible(true);
     }
 
     console.log(newContent);
@@ -449,6 +458,12 @@ function Info(props) {
   const loadSnowTypes = async () => {
     const snow = await fetch("api/lumilaadut");
     const snowdata = await snow.json();
+    /*
+    const update = await fetch("api/update/" + props.segmentdata.ID);
+    const updateData = await updates.json();
+    */
+
+    //await updateData.Lumilaatu_ID1
 
     // Removes tree stumps from an array (a requirement from the client)
     const newData = snowdata.filter(function f2(snowdata) { return snowdata.ID != 27; });
@@ -461,7 +476,6 @@ function Info(props) {
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
   const sendForm = () => {
-    setSelectDisabled([false, false]);
     
     const idValues = getSnowRecordContentIDs();
     // Tallennushetken lumilaatujen id:t, kuvausteksti. Lisäksi päivitettävän (valitun) segmentin ID
@@ -471,9 +485,7 @@ function Info(props) {
       Lumilaatu_ID2: idValues[1],
       Toissijainen_ID1: idValues[2],
       Toissijainen_ID2: idValues[3],
-
-      // Kuvauksen syöttökentän ollessa tyhjä (text === ""), päivitetään edellisen päivityksen tekstillä
-      Kuvaus: text === "" ? props.segmentdata.update.Kuvaus : text
+      Kuvaus: text
     };
     const fetchUpdate = async () => {
       //setLoading(true);
@@ -541,7 +553,6 @@ function Info(props) {
     };
     fetchData();
     closeUpdate();
-    setSnowRecordContent([]);
   };
 
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
