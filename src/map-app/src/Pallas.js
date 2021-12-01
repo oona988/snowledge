@@ -29,6 +29,7 @@ import TopBar from "./TopBar";
 import WeatherTab from "./weather/WeatherTab";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "./BottomNav";
+import WelcomeView from "./WelcomeView";
 
 var refreshInterval = setInterval(window.location.reload.bind(window.location), (30*60000));
 
@@ -183,83 +184,88 @@ function App() {
 
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
-    <div className="app">
-      {/* Sovelluksen yläpalkki */}
-      {/*<div className="top_bar">
-        <TopBar 
-          isMobile={isMobile} 
-          updateUser={updateUser}
-          user={user}
-          token={token} 
-          updateToken={updateToken} 
-          updateView={updateView}
-          viewManagement={viewManagement} 
-          manageOrMap={manageOrMap} 
-        />   
-      </div>*/}
-      {/* Weather tab - this is here temporarily so that component is rendered
-      and information fetched when application starts */}
-      {
-        showWeather 
-          ? 
-          <div className="weather_tab">
-            <WeatherTab/>
-          </div>
-          : 
-          <div></div> 
-      }   
-      <div className="map_container">
-        {/* Hallintanäkymä tai kartta tilanteen mukaan */}
-        { 
-          (
-            viewManagement 
-              ?
-              <Manage 
-                segments={segments}
-                role={user.Rooli}
-                token={token}
-                onUpdate={chooseSegment}
-                updateSegments={updateSegments}
-                shownSegment={shownSegment}
-                updateWoods={updateWoods}
-              />
-              :
-              <Map 
-                shownSegment={shownSegment}
-                segmentColors={segmentColors}
-                segments={segments} 
-                onClick={chooseSegment} 
-                isMobile={isMobile}
-                woodsSegment={woodsSegment}
-                viewManagement={viewManagement}
-                showMap={showMap}
-              />
-          )
-        }
-      </div>
-      {/* <div className="guide"></div> */}
-        
-      {/* Sovelluksen sivupalkki, jossa näytetään kartalta valitun segmentin tietoja
-          Näytetään, kun jokin segmentti valittuna, eikä olla hallintanäkymässä */}
-      <div className="segment_info">
-        {(shownSegment !== null && !viewManagement ? 
-          <Info
-            //segments={segments}
-            segmentdata={shownSegment} 
-            token={token}
-            updateSegments={updateSegments}
-            onUpdate={chooseSegment}
-            onClose={chooseSegment}
-            updateWoods={updateWoods}
+    <div className="root">
+      <div className="app">
+        {/* Sovelluksen yläpalkki */}
+        {/*<div className="top_bar">
+          <TopBar 
+            isMobile={isMobile} 
+            updateUser={updateUser}
+            user={user}
+            token={token} 
+            updateToken={updateToken} 
+            updateView={updateView}
+            viewManagement={viewManagement} 
+            manageOrMap={manageOrMap} 
+          />   
+        </div>*/}
+        {/* Weather tab - this is here temporarily so that component is rendered
+        and information fetched when application starts */}
+        {
+          showWeather 
+            ? 
+            <div className="weather_tab">
+              <WeatherTab/>
+            </div>
+            : 
+            <div></div> 
+        }   
+        <div className="map_container">
+          {/* Hallintanäkymä tai kartta tilanteen mukaan */}
+          { 
+            (
+              viewManagement 
+                ?
+                <Manage 
+                  segments={segments}
+                  role={user.Rooli}
+                  token={token}
+                  onUpdate={chooseSegment}
+                  updateSegments={updateSegments}
+                  shownSegment={shownSegment}
+                  updateWoods={updateWoods}
+                />
+                :
+                <Map 
+                  shownSegment={shownSegment}
+                  segmentColors={segmentColors}
+                  segments={segments} 
+                  onClick={chooseSegment} 
+                  isMobile={isMobile}
+                  woodsSegment={woodsSegment}
+                  viewManagement={viewManagement}
+                  showMap={showMap}
+                />
+            )
+          }
+        </div>
+        {/* <div className="guide"></div> */}
+          
+        {/* Sovelluksen sivupalkki, jossa näytetään kartalta valitun segmentin tietoja
+            Näytetään, kun jokin segmentti valittuna, eikä olla hallintanäkymässä */}
+        <div className="segment_info">
+          {(shownSegment !== null && !viewManagement ? 
+            <Info
+              //segments={segments}
+              segmentdata={shownSegment} 
+              token={token}
+              updateSegments={updateSegments}
+              onUpdate={chooseSegment}
+              onClose={chooseSegment}
+              updateWoods={updateWoods}
+            />
+            :
+            <div />
+          )} 
+        </div>
+        <div className="bottom_navigation">
+          <BottomNav
+            updateShown={updateShown}
           />
-          :
-          <div />
-        )} 
+        </div>
       </div>
-      <div className="bottom_navigation">
-        <BottomNav
-          updateShown={updateShown}
-        />
+      <div className="welcome_view">
+        <WelcomeView/>
       </div>
     </div>
   );

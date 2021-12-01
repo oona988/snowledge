@@ -35,6 +35,7 @@ body {
   display: flex;
   flex-flow: column;
   height: 100vh;
+  flex: 75%;
 }
 
 .app .top_bar {
@@ -43,9 +44,9 @@ body {
 
 .app .weather_tab {
   flex: 1 1 auto;
-  height: calc(100vh - 55px);
+  height: 100vh; /*calc(100vh - 55px);*/
   overflow-y: scroll;
-  width: 100vw;
+  width: 75vw;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -55,12 +56,12 @@ body {
 
 .app .map_container {
   flex: 1 1 auto;
-  height: calc(100vh - 55px);
+  height: 100vh /*calc(100vh - 55px);*/
 }
 
 .map {
   flex: 1 1 auto;
-  height: calc(100vh - 55px);
+  height: 100vh; /*calc(100vh - 55px);*/
 }
 
 .info {
@@ -73,6 +74,25 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
+}
+
+.maplibregl-ctrl-scale {
+  position: absolute;
+  bottom: 60px;
+  right: 5px;
+}
+
+.bottom_navigation {
+  z-index: 4;
+}
+
+.root {
+  display: flex;
+  width: 100vw;
+}
+
+.welcome_view {
+  flex: 25%;
 }
 
 /* .map {

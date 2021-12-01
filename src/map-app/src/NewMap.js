@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     padding: theme.spacing(1),
     position: "absolute",
-    bottom: "65px",
+    bottom: "60px",
     left: theme.spacing(1),
     zIndex: 1,
     width: "350px"
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginTop: "auto",
     marginBottom: theme.spacing(1),
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     borderRadius: 8,
     flex: 1,
     height: "40px",

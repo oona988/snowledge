@@ -2,6 +2,11 @@
 Bottom navigation bar of the application.
 Choose between map, snowtype information and weather information.
 
+Recent changes:
+
+29.11 Emil Calonius
+Created component
+
  **/
 
 import * as React from "react";
@@ -11,8 +16,6 @@ import MapIcon from "@material-ui/icons/Map";
 import InfoIcon from "@material-ui/icons/Info";
 import CloudIcon from "@material-ui/icons/Cloud";
 import { makeStyles } from "@material-ui/core/styles";
-// import IconButton from "@material-ui/core/IconButton";
-// import Box from "@material-ui/core/Box";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
 
@@ -21,10 +24,10 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     height: "55px",
     justifyContent: "center",
-    backgroundColor: "#212121",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     position: "absolute",
     bottom: 0,
-    width: "100vw"
+    width: "75vw"
   }
 }));
 
