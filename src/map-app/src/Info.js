@@ -466,12 +466,10 @@ function Info(props) {
     //await updateData.Lumilaatu_ID1
 
     // Removes tree stumps from an array (a requirement from the client)
-    const newData = snowdata.filter(function f2(snowdata) { return snowdata.ID != 27; });
+    //const newData = snowdata.filter(function f2(snowdata) { return snowdata.ID != TÄHÄN KANNON ID; });
     // Aakkosjärjestyssort, ei välttämättä tarvita
     //newData.sort((a, b) => (a.Nimi > b.Nimi) ? 1 : (a.Nimi === b.Nimi) ? ((a.Nimi > b.Nimi) ? 1 : -1) : -1);
-    // Pitäiskö tallettaa vain ID:t usedsnowtypesiin????
-    //setUsedSnowTypes(newData);
-    setSnowTypeList(newData);
+    setSnowTypeList(snowdata);
   };
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
