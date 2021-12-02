@@ -30,7 +30,8 @@ CREATE TABLE Lumilaadut (
     Nimi VARCHAR(50),
     Vari VARCHAR(15),
     Hiihdettavyys INT(10) DEFAULT NULL,
-    Kategoria_ID BIGINT(20) DEFAULT NULL
+    Kategoria_ID BIGINT(20) DEFAULT NULL,
+    Lumityyppi_selite TEXT
 );
 
 CREATE TABLE Paivitykset (
