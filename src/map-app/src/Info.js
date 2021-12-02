@@ -196,9 +196,14 @@ function Info(props) {
    */
 
   // Segmentin päivitysdialogin avaus
-  const openUpdate = () => {
-    loadSnowTypes();
+  const openUpdate = async () => {
+    // Loads snow types to hook arrays
+    const snow = await fetch("api/lumilaadut");
+    const snowdata = await snow.json();
+    setSnowTypeList(snowdata);
+    
     setEntryVisible(true);
+
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "");
     const idArray = [];
 
@@ -210,8 +215,6 @@ function Info(props) {
 
     snowRecordStartUp(idArray);
     setLoginOpen(true);
-    setSearchVisible(false);
-    setSelectVisible(false);
   };
 
   // Segmentin päivitysdialogin sulkeminen
@@ -224,8 +227,6 @@ function Info(props) {
     setDisabledSnowTypes([]);
     setLoginOpen(false);
     setText("");
-    //setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "Ei kuvausta");
-    //KORJAA NYKYISEEN MUOTOON! setSnowtype(props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu : 0);
   };
 
   // Lumitilanteen kuvaustekstin päivittäminen
@@ -250,8 +251,6 @@ function Info(props) {
 
   // opens search
   const handleSearchOpen = (e) => {
-    // Sorts types alphabetically
-    //snowTypeList.sort((a, b) => (a.Nimi > b.Nimi) ? 1 : (a.Nimi === b.Nimi) ? ((a.Nimi > b.Nimi) ? 1 : -1) : -1);
 
     setIsSecondary(e.target.value);
     setAddVisible(false);
@@ -425,6 +424,7 @@ function Info(props) {
   // Defines the default value of a snowtype box
   const getValue = (id) => {
     let index = snowTypeList.findIndex((snowTypeList => snowTypeList.ID === id));
+    console.log(snowTypeList[index]);
     return snowTypeList[index];
   };
   // Checks if an option should be disabled or not
@@ -452,24 +452,6 @@ function Info(props) {
     let newContent2 = disabledSnowTypes.filter(snowtype => snowtype != itemId);
     newContent2 = newContent2.concat(valueId);
     setDisabledSnowTypes(newContent2);
-  };
-
-  // Loads snow types and sub types to hook arrays
-  const loadSnowTypes = async () => {
-    const snow = await fetch("api/lumilaadut");
-    const snowdata = await snow.json();
-    /*
-    const update = await fetch("api/update/" + props.segmentdata.ID);
-    const updateData = await updates.json();
-    */
-
-    //await updateData.Lumilaatu_ID1
-
-    // Removes tree stumps from an array (a requirement from the client)
-    //const newData = snowdata.filter(function f2(snowdata) { return snowdata.ID != TÄHÄN KANNON ID; });
-    // Aakkosjärjestyssort, ei välttämättä tarvita
-    //newData.sort((a, b) => (a.Nimi > b.Nimi) ? 1 : (a.Nimi === b.Nimi) ? ((a.Nimi > b.Nimi) ? 1 : -1) : -1);
-    setSnowTypeList(snowdata);
   };
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
