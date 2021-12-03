@@ -39,201 +39,177 @@ Emil Calonius 4.11
 Stopped using react-maplibre-ui library because of limitations
 now creation of the map happens in PallasMap.js that is imported in this file
 
+Emil Calonius 26.11.2021
+Remove old infobox and checkbox
+Add a filter feature
+
 **/
 
 import * as React from "react";
-import clsx from "clsx";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
 import PallasMap from "./PallasMap";
+import Button from "@material-ui/core/Button";
+import Collapse from "@material-ui/core/Collapse";
+import List from "@material-ui/core/List";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
-  checkbox: {
-    backgroundColor: "white",
-    padding: theme.spacing(1)
-  },
-  checkboxContainer: {
+  menuContainer: {
     display: "flex",
     padding: theme.spacing(1),
-    position: "absolute",
-    bottom: "20px",
-    left: theme.spacing(1),
-    zIndex: 1
+    flexDirection: "column-reverse",
+    flex: 6,
   },
-  infoboxContainer: {
-    padding: theme.spacing(1),
-    width: "120px",
-    backgroundColor: "white",
-    position: "absolute",
-    top: "210px",
-    left: theme.spacing(1),
-    zIndex: 1,
-    display: "block"
-  },
-  infobox: {
+  menu: {
     display: "block",
-    padding: theme.spacing(0.2),
+    backgroundColor: "white",
+    borderRadius: 8
   },
-  infoboxHeader: {
+  buttonsCntainer: {
     display: "flex",
-  },
-  colorbox: {
-    height: "15px",
+    padding: theme.spacing(1),
+    position: "absolute",
+    bottom: "60px",
+    left: theme.spacing(1),
     zIndex: 1,
+    width: "350px"
   },
-  snowLogo: {
-    textAlign: "center"
+  eyeIcon: {
+    color: "white",
   },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
+  eyeIconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "auto",
+    marginBottom: theme.spacing(1),
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    borderRadius: 8,
+    flex: 1,
+    height: "40px",
+  }
 }));
 
 function Map(props) {
   
   // Use state hooks
-  const [ subsOnly, setSubsOnly ] = React.useState(false);
-  const [ expanded, setExpanded ] = React.useState(props.isMobile ? false : true);
-  // eslint-disable-next-line no-unused-vars
-  const [ highlighted, setHighlighted ] = React.useState(null);
-
-  // Coordinates that the map is centered on when it is refreshed
-  // eslint-disable-next-line no-unused-vars
-  const center = [24.05, 68.069];
+  // Snow type to be highlighted on the map, -1 means subsegments only, -2 everything and -3 nothing
+  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-3);
+  // An array of snow types that are currently applied to a segment on the map
+  const [ currentSnowTypes, setCurrentSnowTypes ] = React.useState([]);
+  const [ open, setOpen ] = React.useState(false);
+  const [ buttonText, setButtonText ] = React.useState("Näytä ainoastaan...");
 
   // Zoom depends on the size of the screen
   const zoom = (props.isMobile ? 11 : 11.35);
 
+  React.useEffect(() => {
+    // Get all of the snow types that are currently applied to a segment on the map
+    props.segments.forEach(segment => {
+      if(segment.update !== null) {
+        if(segment.update.Lumi !== undefined && !(currentSnowTypes.includes(segment.update.Lumi))) {
+          let newArray = currentSnowTypes;
+          newArray.push(segment.update.Lumi);
+          setCurrentSnowTypes(newArray);
+        }
+      }
+    });
+  }, [props.segments]);
+
   /*
    * Event handlers
    */
+
+  function handleClick() {
+    setOpen(!open);
+  }
+
+  function updateHighlightedSnowType(snow) {
+    if(highlightedSnowType === snow.ID) {
+      setHighlightedSnowType(-3);
+      setButtonText("Näytä ainoastaan...");
+    } else {
+      setHighlightedSnowType(snow.ID);
+      setButtonText(snow.Nimi);
+    }
+  }
   
-  // Päivittää tiedon kartalta valitusta segmentistä
+  // Updates the chosen segment
   function updateChosen(segment) {
     props.onClick(segment);
   }
-  
-  // Päivitetään tieto siitä, näytetäänkö vain alasegmentit vai ei
-  function updateSubsOnly() {
-    setSubsOnly(!subsOnly);
-  }
-
-  // Laajentaa/kutistaa segmenttien väritietoboksin
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  // Päivittää korostettavan lumityypin kursorin liikkuessa segmentti-infojen päällä
-  // Arvo on 0, jos kyseessä on päivittämätön segmentti (lumilaadun nimi "Ei tietoa", kts. Pallas.js)
-  // Arvo on index + 1, mikä vastaa lumityypin ID:tä (tämän avulla oikean lumityypin segmentit korostuvat kartassa)
-  // Arvo on null, jos funktio ei saa tietoa parametrina (hiiren poistuessa selitteen yläpuolelta)
-  const updateHighlighted = (item, index) => {
-    if (item) {
-      if (item.name === "Ei tietoa") {
-        setHighlighted(0);
-      } else {
-        setHighlighted(index+1);
-      }
-    } else {
-      setHighlighted(null);
-    }  
-  };
   
   // Use styles
   const styledClasses = useStyles();
 
   return (
-    /*
-     * Karttaan piirretään checkbox yläsegmenttien piilottamiselle,
-     * Infolaatikko selittämään kartan värejä
-     * Segmentit monikulmioina
-     * Custom markereita metsän ja mahdollisen lumivyöryvaaran merkkaamiseksi
-     * Kartta piirretään '@react-google-maps/api' -kirjaston komponenteilla
-     */
     <div className="map">
-      <Box className={styledClasses.checkboxContainer}>
-        <FormControlLabel
-          className={styledClasses.checkbox}
-          control={
-            <Checkbox            
-              checked={subsOnly}
-              onChange={updateSubsOnly}
-              name="Subsegments_only"
-              color="primary"
-            />
-          }
-          label="Vain laskualueet"
-        />
-      </Box>
-      <Box className={styledClasses.infoboxContainer}>
-        <Box className={styledClasses.infoboxHeader}>
-          <Typography>Selitteet</Typography>
-          <IconButton
-            className={clsx(styledClasses.expand, {
-              [styledClasses.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </Box>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {/* Selitteet renderöidään, jos tiedot segmenttien nimistä ovat saatavilla (props.segmentColors.name) */}
-          {
-            props.segmentColors !== null 
-              ?
-              props.segmentColors.map((item, index) => {
-              
-                return (
-                // Seliteboksi, sisältää lumilogot ja selitteet
-                  <Box key={index} className={styledClasses.infobox} onMouseOver={() => updateHighlighted(item, index)} onMouseOut={() => updateHighlighted(null)} onClick={() => updateHighlighted(item, index)}>
-                    {/* Lumityypin ikonin tiedostonimen tulee olla luku, joka vastaa lukua,
-                  joka on sama kuin lumityypin indeksi segmenttiväritaulukossa + 1 */}
-                    {
-                      index === props.segmentColors.length - 1 
-                        ? 
-                        <Typography className={styledClasses.snowLogo}>?</Typography> 
-                        : 
-                        <Box className={styledClasses.snowLogo}><img src={process.env.PUBLIC_URL + "/pienetlogot/" + (index + 1) + ".png"} alt="lumityypin logo" align="center"/></Box>      
-                    }
-                    {/* <Paper className={styledClasses.colorbox} style={{backgroundColor: item.color}} /> */}
-                    <Box className={styledClasses.snowLogo}>
-                      <Typography variant='caption' align='justify'>{item.name}</Typography>
-                    </Box>       
-                    <Divider />
-                  </Box>
-                );
-              })
-              :
-              <div />
-          }
-        </Collapse>
-      </Box>
+      {/* A menu where user can select which segments are highlighted on the map */}
       <PallasMap
         shownSegment={props.shownSegment}
         chosenSegment={segment => updateChosen(segment)}
         segmentColors={props.segmentColors}
         segments={props.segments}
+        isMobile={props.isMobile}
         zoom={zoom}
-        subsOnly={subsOnly}
+        viewManagement={props.viewManagement}
+        highlightedSnowType={highlightedSnowType}
+        showMap={props.showMap}
       ></PallasMap>
+      <Box className={styledClasses.buttonsCntainer}>
+        <Box className={styledClasses.menuContainer}>
+          <Button
+            onClick={handleClick}
+            variant="contained"
+            style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px"}}
+          >
+            {buttonText}
+          </Button>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List style={{maxHeight: "500px", overflow: "auto"}}>
+              <Box className={styledClasses.menu}>
+                {
+                  // Append a snow type to the list if it can be found on a segment
+                  currentSnowTypes.map(snowType => {
+                    return(
+                      currentSnowTypes.length > 0 ?
+                        <Box key={snowType.ID}>
+                          <Button
+                            fullWidth="true"
+                            onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                            style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                          >
+                            {snowType.Nimi}
+                          </Button>
+                        </Box>
+                        :
+                        <Box></Box>
+                    );
+                  })
+                }
+                <Button
+                  fullWidth="true"
+                  onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
+                  style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+                >
+                  Vain laskualueet
+                </Button>
+              </Box>
+            </List>
+          </Collapse>
+        </Box>
+        <Box className={styledClasses.eyeIconContainer}>
+          <IconButton
+            className={styledClasses.eyeIcon}
+            onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+          >
+            {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </IconButton>
+        </Box>
+      </Box>
     </div>
   );
 }
