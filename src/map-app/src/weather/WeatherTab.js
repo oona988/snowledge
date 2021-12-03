@@ -24,11 +24,12 @@ import {getThreeDayStatistics, getThreeDayWindStatistics, getThreeDaysHighest, g
  
 
 function WeatherTab() {
-  var initialState = { 
-    firstDay: "",
-    secondDay: "",
-    thirdDay: "",
-    temperature: 
+  var initialState = {
+    dates: {
+      firstDay: "",
+      secondDay: "",
+      thirdDay: "",
+    }, temperature: 
     { current: "",
       firstDayAverage: 0,
       secondDayAverage: 0,
@@ -85,18 +86,18 @@ function WeatherTab() {
 
     const currentDate = new Date();
 
-    weather.thirdDay = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.`;
+    weather.dates.thirdDay = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.`;
 
     var firstDayStart = new Date(currentDate.getTime());
     firstDayStart.setDate(firstDayStart.getDate() - 2);
     firstDayStart.setHours(0,0,0,0);
 
-    weather.firstDay = `${firstDayStart.getDate()}.${firstDayStart.getMonth() + 1}.`;
+    weather.dates.firstDay = `${firstDayStart.getDate()}.${firstDayStart.getMonth() + 1}.`;
 
     var secondDay = new Date(currentDate.getTime());
     secondDay.setDate(secondDay.getDate() - 1);
 
-    weather.secondDay = `${secondDay.getDate()}.${secondDay.getMonth() + 1}.`;
+    weather.dates.secondDay = `${secondDay.getDate()}.${secondDay.getMonth() + 1}.`;
 
     var snowDataStart = new Date(currentDate.getTime());
     snowDataStart.setDate(snowDataStart.getDate() - 6);
@@ -109,8 +110,7 @@ function WeatherTab() {
     const currentDay = currentDate.getDate();
     var winterSeason = false;
 
-    // Remember to change 11 to 5 after development
-    if (currentMonth < 11) {
+    if (currentMonth < 5) {
       winterSeason = true;
       weather.winter = { ...weather.winter, season: true };
       decemberStart.setFullYear(currentDate.getFullYear() - 1, 11, 1);
@@ -143,22 +143,26 @@ function WeatherTab() {
           // Current temperature
           case "obs-obs-1-1-t2m":
             weather.temperature = { ...weather.temperature, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            setWeatherState({...weatherState, ...weather.temperature});
             break;
 
           // Current wind speed
           case "obs-obs-1-1-ws_10min":
             weather.windspeed = { ...weather.windspeed, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            setWeatherState({...weatherState, ...weather.windspeed});
             break;
 
           // Current wind direction
           // Wind's income direction as degrees (360 = north)
           case "obs-obs-1-1-wd_10min":
             weather.winddirection = { ...weather.winddirection, current: result.firstElementChild.lastElementChild.lastElementChild.lastElementChild.innerHTML };
+            setWeatherState({...weatherState, ...weather.winddirection});
             break;
 
           // Air pressure as hPA / mBar
           case "obs-obs-1-1-p_sea":
             weather.airpressure = { ...weather.airpressure, ...getCurrentAirPressureInfo(result) };
+            setWeatherState({...weatherState, ...weather.airpressure});
             break;
 
           default:
@@ -183,37 +187,44 @@ function WeatherTab() {
           // Average temperatures
           case "obs-obs-1-1-TA_PT1H_AVG":
             weather.temperature = { ...weather.temperature, ...getThreeDayStatistics(result) };
+            setWeatherState({...weatherState, ...weather.temperature});
             break;
 
           // Highest temperature
           case "obs-obs-1-1-TA_PT1H_MAX":
             weather.temperature = { ...weather.temperature, ...getThreeDaysHighest(result) };
+            setWeatherState({...weatherState, ...weather.temperature});
             break;
 
           // Lowest temperature
           case "obs-obs-1-1-TA_PT1H_MIN":
             weather.temperature = { ...weather.temperature, ...getThreeDaysLowest(result) };
+            setWeatherState({...weatherState, ...weather.temperature});
             break;
 
           // Average wind speeds
           case "obs-obs-1-1-WS_PT1H_AVG":
             weather.windspeed = { ...weather.windspeed, ...getThreeDayStatistics(result) };
+            setWeatherState({...weatherState, ...weather.windspeed});
             break;
 
           // Greatest wind speed
           case "obs-obs-1-1-WS_PT1H_MAX":
             weather.windspeed = { ...weather.windspeed, ...getThreeDaysHighest(result) };
+            setWeatherState({...weatherState, ...weather.windspeed});
             break;
 
           // Average wind directions
           // Wind's income direction as degrees (360 = north)
           case "obs-obs-1-1-WD_PT1H_AVG":
             weather.winddirection = { ...weather.winddirection, ...getThreeDayWindStatistics(result) };
+            setWeatherState({...weatherState, ...weather.winddirection});
             break;
             
           // Air pressure as hPA / mBar
           case "obs-obs-1-1-PA_PT1H_AVG":
             weather.airpressure = { ...weather.airpressure, ...getThreeDayStatistics(result) };
+            setWeatherState({...weatherState, ...weather.airpressure});
             break;
 
           default:
@@ -251,6 +262,7 @@ function WeatherTab() {
         }*/
 
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
+        setWeatherState({...weatherState, ...weather.temperature});
       }).catch((error) => {
         console.log(error);
       });
@@ -269,6 +281,7 @@ function WeatherTab() {
           // Snow depth data from last seven days
           case "obs-obs-1-1-snow_aws":
             weather.snowdepth = { ...weather.snowdepth, ...getSnowDepthStatistics(result, currentDate)};
+            setWeatherState({...weatherState, ...weather.snowdepth});
             break;
 
           default:
@@ -297,6 +310,7 @@ function WeatherTab() {
             // Daily temperatures during winter
             case "obs-obs-1-1-tday":
               weather.winter = { ...weather.winter, ...getWinterTemperatures(result)};
+              setWeatherState({...weatherState, ...weather.winter});
               break;
 
             default:
@@ -335,12 +349,14 @@ function WeatherTab() {
             }
           }
           weather.december = { ...weather.december, ...getWinterWindStats(windspeeds, winddirections)};
+          setWeatherState({...weatherState, ...weather.december});
 
           let maxWind = weather.winter.maxWind;
           if (weather.december.maxWind > maxWind) {
             maxWind = weather.december.maxWind;
           }
           weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.december.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.december.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.december.strongWindDays, months: ++weather.winter.months };
+          setWeatherState({...weatherState, ...weather.winter});
         }).catch((error) => {
           console.log(error);
         });
@@ -381,12 +397,14 @@ function WeatherTab() {
               }
             }
             weather.january = { ...weather.january, ...getWinterWindStats(windspeeds, winddirections)};
+            setWeatherState({...weatherState, ...weather.january});
 
             let maxWind = weather.winter.maxWind;
             if (weather.january.maxWind > maxWind) {
               maxWind = weather.january.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.january.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.january.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.january.strongWindDays, months: ++weather.winter.months };
+            setWeatherState({...weatherState, ...weather.winter});
           }).catch((error) => {
             console.log(error);
           });
@@ -428,12 +446,14 @@ function WeatherTab() {
               }
             }
             weather.february = { ...weather.february, ...getWinterWindStats(windspeeds, winddirections)};
+            setWeatherState({...weatherState, ...weather.february});
 
             let maxWind = weather.winter.maxWind;
             if (weather.february.maxWind > maxWind) {
               maxWind = weather.february.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.february.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.february.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.february.strongWindDays, months: ++weather.winter.months };
+            setWeatherState({...weatherState, ...weather.winter});
           }).catch((error) => {
             console.log(error);
           });
@@ -475,12 +495,14 @@ function WeatherTab() {
               }
             }
             weather.march = { ...weather.march, ...getWinterWindStats(windspeeds, winddirections)};
+            setWeatherState({...weatherState, ...weather.march});
 
             let maxWind = weather.winter.maxWind;
             if (weather.march.maxWind > maxWind) {
               maxWind = weather.march.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.march.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.march.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.march.strongWindDays, months: ++weather.winter.months };
+            setWeatherState({...weatherState, ...weather.winter});
           }).catch((error) => {
             console.log(error);
           });
@@ -522,12 +544,14 @@ function WeatherTab() {
               }
             }
             weather.april = { ...weather.april, ...getWinterWindStats(windspeeds, winddirections)};
+            setWeatherState({...weatherState, ...weather.april});
 
             let maxWind = weather.winter.maxWind;
             if (weather.april.maxWind > maxWind) {
               maxWind = weather.april.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.april.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.april.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.april.strongWindDays, months: ++weather.winter.months };
+            setWeatherState({...weatherState, ...weather.winter});
           }).catch((error) => {
             console.log(error);
           });
@@ -569,25 +593,25 @@ function WeatherTab() {
               }
             }
             weather.may = { ...weather.may, ...getWinterWindStats(windspeeds, winddirections)};
+            setWeatherState({...weatherState, ...weather.may});
 
             let maxWind = weather.winter.maxWind;
             if (weather.may.maxWind > maxWind) {
               maxWind = weather.may.maxWind;
             }
             weather.winter = { ...weather.winter, maxWind: maxWind, strongWindDirectionX: weather.winter.strongWindDirectionX += weather.may.strongWindDirectionX, strongWindDirectionY: weather.winter.strongWindDirectionY += weather.may.strongWindDirectionY, strongWindDays: weather.winter.strongWindDays += weather.may.strongWindDays, months: ++weather.winter.months };
+            setWeatherState({...weatherState, ...weather.winter});
           }).catch((error) => {
             console.log(error);
           });
       }
     }
-
-    // If there is no weather data yet, it will be stored into React hook state
-    if (weatherState === null) {
-      setWeatherState(weather);
-    }
   };
 
-  fetchWeather();
+  React.useEffect(() => {
+    fetchWeather();
+  }, []);
+ 
 
   const handleReturnClick = () => {
     setDisplayWeatherStatistics(false);

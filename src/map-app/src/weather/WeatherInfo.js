@@ -417,9 +417,9 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               textColor="primary"
               centered
             >
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.firstDay}</Typography><Typography className={classes.tabsText}>Toissapäivänä</Typography></div>} />
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.secondDay}</Typography><Typography className={classes.tabsText}>Eilen</Typography></div>} />
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.thirdDay}</Typography><Typography className={classes.tabsText}>Nyt</Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography><Typography className={classes.tabsText}>Toissapäivänä</Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.secondDay}</Typography><Typography className={classes.tabsText}>Eilen</Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.thirdDay}</Typography><Typography className={classes.tabsText}>Nyt</Typography></div>} />
             </Tabs>
           </Paper>
           
@@ -476,15 +476,15 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
         <div>
           <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
             <Grid item xs={4} sm={4}>
-              <Typography className={classes.tabsText}>{weatherState.firstDay}</Typography>
+              <Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography>
               <Typography className={classes.tabsText}>Toissapäivänä</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
-              <Typography className={classes.tabsText}>{weatherState.secondDay}</Typography>
+              <Typography className={classes.tabsText}>{weatherState.dates.secondDay}</Typography>
               <Typography className={classes.tabsText}>Eilen</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
-              <Typography className={classes.tabsText}>{weatherState.thirdDay}</Typography>
+              <Typography className={classes.tabsText}>{weatherState.dates.thirdDay}</Typography>
               <Typography className={classes.tabsText}>Nyt</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
