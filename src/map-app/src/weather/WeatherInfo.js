@@ -95,7 +95,7 @@ const useStyles = makeStyles(() => ({
   text: {
     fontFamily: "Donau",
     letterSpacing: 2,
-    textTransform: "uppercase",
+    textTransform: "unset",
     fontWeight: 600,
     display: "block",
     fontSize: "3vh",
@@ -105,7 +105,7 @@ const useStyles = makeStyles(() => ({
   subText: {
     fontFamily: "Donau",
     letterSpacing: 2,
-    textTransform: "uppercase",
+    textTransform: "unset",
     fontWeight: 400,
     display: "block",
     fontSize: "3vh",
@@ -380,7 +380,7 @@ function CurrentWeatherPaper({weatherState}) {
           <Grid item xs={6} sm={6}>
             <Typography className={classes.text}>{`${weatherState.airpressure.current} mBar`}</Typography>
             
-            <Typography className={classes.subText} style={{verticalAlign: "middle", display: "flex", left: "1%"}}>Muutos
+            <Typography className={classes.subText} style={{verticalAlign: "middle", display: "flex", left: "1%"}}>muutos
               <CallMadeIcon className={classes.airpressureDirection} />
             </Typography>
           </Grid>

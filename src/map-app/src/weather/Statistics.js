@@ -58,6 +58,7 @@ const useStyles = makeStyles(() => ({
   cardHeader: {
     fontFamily: "Donau",
     letterSpacing: 2,
+    textTransform: "uppercase",
     fontWeight: 600,
     display: "block",
     fontSize: "large",
