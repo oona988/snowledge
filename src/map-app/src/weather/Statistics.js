@@ -6,7 +6,7 @@ Created: Oona Laitamaki
 
 Latest update
 
-28.10.2021 Oona Laitamaki
+28.11.2021 Oona Laitamaki
 Create user interface for showing weather statistics on mobile and laptop view
 
 31.10.2021 Oona Laitamaki
@@ -32,7 +32,6 @@ const useStyles = makeStyles(() => ({
   card: {
     paddingLeft: "5%",
     paddingRight: "5%",
-    margin: "5%",
     align: "center",
     backgroundColor: "rgba(255,255,255,0.9)",
     borderRadius: "10px",
@@ -40,10 +39,10 @@ const useStyles = makeStyles(() => ({
   paper: {
     borderRadius: "10px",
     paddingTop: "1%",
-    marginTop: "4%",
+    marginTop: "3%",
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
-    minHeight: "610px",
+    minHeight: "500px",
     marginLeft: "10%",
     marginRight: "10%",
   },
@@ -66,44 +65,48 @@ const useStyles = makeStyles(() => ({
   text: {
     fontFamily: "Donau",
     letterSpacing: 2,
-    fontWeight: 400,
+    fontWeight: 600,
     display: "block",
-    fontSize: "2.4vh",
+    fontSize: "2.2vh",
   },
   divider: {
     border: "thin solid transparent",
     background: "rgba(0, 0, 0, 0.1)",
     height: 0.4,
-    margin: 1,
   },
 }));
 
 
+// Text element for displaying weather statistics key and value
 function KeyValuePair({keyName, value}) {
   const classes = useStyles();
 
   return (
-    <p className={classes.text} style={{textAlign: "left", margin: "7px", paddingLeft: "3%"}}>{keyName}
+    <p className={classes.text} style={{textAlign: "left", margin: "5px", paddingLeft: "3%"}}>{keyName}
       <span className={classes.text} style={{float: "right", paddingRight: "3%", whiteSpace: "pre"}}>{value}</span>
     </p>
   );
 }
 
 
+// Paper for displaying 3 to 7 days weather statistics
 function ShortIntervalStatsPaper({weatherState}) {
   const classes = useStyles();
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
     <Paper className={classes.paper} align="center">
 
       <h2 className={classes.paperHeader}>Lähipäivien sää</h2>
 
-      <Card className={classes.card}>
+      {/* Snow depth growth during last seven days */}
+      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>Lumensyvyyden kasvu</p>
         <KeyValuePair keyName="7 vuorokauden aikana" value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
       </Card>
 
-      <Card className={classes.card}>
+      {/* Temperature statistics during last three days */}
+      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
         <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
         <Divider className={classes.divider}/>
@@ -117,7 +120,8 @@ function ShortIntervalStatsPaper({weatherState}) {
         </div>}
       </Card>
 
-      <Card className={classes.card}>
+      {/* Wind speed and direction statistics during last three days */}
+      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
         <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
         <Divider className={classes.divider}/>
@@ -131,8 +135,10 @@ function ShortIntervalStatsPaper({weatherState}) {
 }
 
 
+// Paper for displaying winter weather statistics
 function WinterStatsPaper({weatherState}) {
   const classes = useStyles();
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
     <Paper className={classes.paper} align="center">
@@ -142,14 +148,16 @@ function WinterStatsPaper({weatherState}) {
 
           <h2 className={classes.paperHeader}>Talven säähavainnot</h2>
 
-          <Card className={classes.card}>
+          {/* Temperature statistics during winter */}
+          <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
             <p className={classes.cardHeader}>Lämpötila</p>
             <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
             <Divider className={classes.divider}/>
             <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
           </Card>
           
-          <Card className={classes.card}>
+          {/* Wind direction and speed statistics during winter */}
+          <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
             <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
             <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
             <Divider className={classes.divider}/>
@@ -166,6 +174,7 @@ function WinterStatsPaper({weatherState}) {
 }
 
 
+// Element for displaying short interval and winter weather statistics
 function Statistics({weatherState, handleReturnClick}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
@@ -188,7 +197,9 @@ function Statistics({weatherState, handleReturnClick}) {
               style: {
                 backgroundColor: "rgba(255,255,255,0.2)",
                 padding: "5px",
-                borderRadius: 50
+                borderRadius: 50,
+                stroke: "blue",
+                strokeOpacity: ".2",
               }
             }}
           >
@@ -199,27 +210,24 @@ function Statistics({weatherState, handleReturnClick}) {
             onClick={handleReturnClick}
             variant="contained"
             style={{
-              backgroundColor: "rgba(255,255,255,0.9)",
-              fontFamily: "Donau",
-              textTransform: "unset",
-              fontSize: "3vh",
+              backgroundColor: "rgba(255,255,255,0.6)",
               position: "absolute",
-              right: "15px",
-              top: "90%",
+              right: 5,
+              top: 450,
               borderRadius: "100%",
-              padding: "20px"}}
+              padding: "15px"}}
           >
             <NavigateBeforeIcon style={{fontSize: "5vh"}}/>
           </Button>
         </div> : 
-        <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
+        <Grid item xs={12} sm={12} container style={{padding: "20px", position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}>
           <Grid item xs={6} sm={6}>
             <ShortIntervalStatsPaper weatherState={weatherState}/>
           </Grid>
           <Grid item xs={6} sm={6}>
             <WinterStatsPaper weatherState={weatherState}/>
           </Grid>
-          <Grid item xs={12} sm={12} container style={{justifyContent: "end", padding: "30px", paddingRight: "80px"}}>
+          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingTop: "15px", paddingRight: "80px"}}>
             <Button
               onClick={handleReturnClick}
               variant="contained"

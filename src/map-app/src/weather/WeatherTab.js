@@ -38,7 +38,7 @@ function WeatherTab() {
       threeDaysHighest: "",
       threeDaysLowest: "",
       thawDaysOutOfThree: 0,
-      thawDays: ["21.11.  3\xB0C", "22.11.  4\xB0C", "23.11.  2\xB0C"]
+      thawDays: []
     }, windspeed: { 
       current: "",
       firstDayAverage: 0,
@@ -247,19 +247,6 @@ function WeatherTab() {
           ++thawDays;
           weather.temperature.thawDays.push(`${currentDate.getDate()}.${currentDate.getMonth() + 1}.  ${weather.temperature.thirdDayAverage.toFixed()}\xB0C`);
         }
-        
-        /*if (weather.temperature.firstDayAverage >= 0) {
-          ++thawDays;
-          weather.temperature.thawDays.push(`${firstDayStart.getFullYear()}-${firstDayStart.getMonth() + 1}-${firstDayStart.getDate()}`);
-        }
-        if (weather.temperature.secondDayAverage >= 0) {
-          ++thawDays;
-          weather.temperature.thawDays.push(`${secondDay.getFullYear()}-${secondDay.getMonth() + 1}-${secondDay.getDate()}`);
-        }
-        if (weather.temperature.thirdDayAverage >= 0) {
-          ++thawDays;
-          weather.temperature.thawDays.push(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
-        }*/
 
         weather.temperature = { ...weather.temperature, thawDaysOutOfThree: thawDays };
         setWeatherState({...weatherState, ...weather.temperature});

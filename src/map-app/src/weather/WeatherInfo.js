@@ -6,7 +6,7 @@ Created: Oona Laitamaki
 
 Latest update
 
-28.10.2021 Oona Laitamaki
+28.11.2021 Oona Laitamaki
 Create user interface for showing weather information on mobile and laptop view
 
 31.10.2021 Oona Laitamaki
@@ -46,14 +46,6 @@ const useStyles = makeStyles(() => ({
     textTransform: "uppercase",
     textAlign: "center",
   },
-  card: {
-    paddingLeft: "5%",
-    paddingRight: "5%",
-    margin: "5%",
-    align: "center",
-    backgroundColor: "rgba(255,255,255,0.9)",
-    borderRadius: "10px",
-  },
   paper: {
     borderRadius: "10px",
     paddingTop: "1%",
@@ -62,16 +54,16 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgba(255,255,255,0.7)",
     marginLeft: "10%",
     marginRight: "10%",
-    minHeight: "600px",
+    minHeight: "460px",
     alignContent: "center",
   },
   upperGridContainer: {
     justifyContent: "center",
-    paddingTop: "30px",
+    paddingTop: "10px",
   },
   gridContainer: {
     justifyContent: "center",
-    paddingBottom: "30px",
+    paddingBottom: "20px",
     alignItems: "center",
   },
   paperHeader: {
@@ -88,7 +80,7 @@ const useStyles = makeStyles(() => ({
     letterSpacing: 2,
     fontWeight: 600,
     display: "block",
-    fontSize: "3vh",
+    fontSize: "2.5vh",
     textAlign: "left",
     paddingBottom: "10px",
   },
@@ -108,7 +100,7 @@ const useStyles = makeStyles(() => ({
     textTransform: "unset",
     fontWeight: 400,
     display: "block",
-    fontSize: "3vh",
+    fontSize: "2.3vh",
     textAlign: "left",
     paddingLeft: "20px",
   },
@@ -117,7 +109,7 @@ const useStyles = makeStyles(() => ({
   },
   airpressureDirection: {
     transform: props => "rotate(" + props.airpressureDirection + "deg)",
-    fontSize: "4vh"
+    fontSize: "3.4vh"
   }
 }));
 
@@ -393,6 +385,7 @@ function CurrentWeatherPaper({weatherState}) {
 }
 
 
+// Element for displaying three day weather info
 function WeatherInfo({weatherState, handleMoreInformationClick}) {
   const carouselRef = React.useRef(null);
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180});
@@ -442,7 +435,9 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               style: {
                 backgroundColor: "rgba(255,255,255,0.2)",
                 padding: "5px",
-                borderRadius: 50
+                borderRadius: 50,
+                stroke: "blue",
+                strokeOpacity: ".2",
               }
             }}
           >
@@ -460,21 +455,18 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
             onClick={handleMoreInformationClick}
             variant="contained"
             style={{
-              backgroundColor: "rgba(255,255,255,0.9)",
-              fontFamily: "Donau",
-              textTransform: "unset",
-              fontSize: "3vh",
+              backgroundColor: "rgba(255,255,255,0.6)",
               position: "absolute",
-              right: "15px",
-              top: "90%",
+              right: 5,
+              top: 450,
               borderRadius: "100%",
-              padding: "20px"}}
+              padding: "18px"}}
           >
-            <EqualizerIcon style={{fontSize: "5vh"}}/>
+            <EqualizerIcon style={{fontSize: "4vh"}}/>
           </Button>
         </div> : 
         <div>
-          <Grid item xs={12} sm={12} container style={{padding: "100px"}}>
+          <Grid item xs={12} sm={12} container style={{padding: "30px"}}>
             <Grid item xs={4} sm={4}>
               <Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography>
               <Typography className={classes.tabsText}>Toissapäivänä</Typography>
@@ -496,7 +488,7 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
             <Grid item xs={4} sm={4}>
               <CurrentWeatherPaper weatherState={weatherState}/>
             </Grid>
-            <Grid item xs={12} sm={12} container style={{justifyContent: "end", padding: "30px", paddingRight: "80px"}}>
+            <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingTop: "15px", paddingRight: "80px"}}>
               <Button
                 onClick={handleMoreInformationClick}
                 variant="contained"
