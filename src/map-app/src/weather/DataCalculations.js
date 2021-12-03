@@ -288,11 +288,13 @@ export function getWinterWindStats(speeds, directions) {
 
   for (let i = 0; i < [speedMeasurements.length < directionMeasurements.length ? speedMeasurements.length : directionMeasurements.length]; i++) {
     let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
-    let date = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
+
+    let apiDate = new Date(directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML);
+    apiDate.setHours(apiDate.getHours() + 2);
+    let date = apiDate.toISOString().split("T")[0];
 
     if (speed > 10) {
       let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
-      let day = directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML.split("T")[0];
 
       if (speed > maxWind) {
         maxWind = speed;
@@ -328,7 +330,7 @@ export function getWinterWindStats(speeds, directions) {
         }
       }
 
-      previouslySavedDay = day;
+      previouslySavedDay = date;
     }
   }
 
