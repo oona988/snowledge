@@ -52,14 +52,8 @@ import Divider from "@material-ui/core/Divider";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-// eslint-disable-next-line no-unused-vars
-import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-//import Input from "@material-ui/core/Input";
-//import InputLabel from "@material-ui/core/InputLabel";
-// eslint-disable-next-line no-unused-vars
 import MenuItem from "@material-ui/core/MenuItem";
-// eslint-disable-next-line no-unused-vars
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -68,13 +62,8 @@ import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-// eslint-disable-next-line no-unused-vars
 import SearchIcon from "@material-ui/icons/Search";
-// eslint-disable-next-line no-unused-vars
 import Autocomplete from "@material-ui/lab/Autocomplete";
-//import { DialogContent, Paper } from "@material-ui/core";
-//import { shadows } from '@material-ui/system';
-//import { borders } from '@material-ui/system';
 import SnowRecordView from "./SnowRecordView";
 
 // Changes button color palette. Muuttaa nappien väripalettia.
@@ -196,14 +185,11 @@ function Info(props) {
    */
 
   // Segmentin päivitysdialogin avaus
-  const openUpdate = async () => {
-    // Loads snow types to hook arrays
-    const snow = await fetch("api/lumilaadut");
-    const snowdata = await snow.json();
-    setSnowTypeList(snowdata);
-    
-    setEntryVisible(true);
+  const openUpdate = () => {
+    setSnowTypeList(props.snowtypes);
 
+    setEntryVisible(true);
+    console.log(props.snowtypes);
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "");
     const idArray = [];
 
@@ -211,11 +197,17 @@ function Info(props) {
     idArray[1] = (props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu_ID2 : 0);
     idArray[2] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID1 : 0);
     idArray[3] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID2 : 0);
-    console.log(idArray);
 
     snowRecordStartUp(idArray);
     setLoginOpen(true);
   };
+  /*
+  const loadSnowTypes = async () => {
+    // Loads snow types to hook arrays
+    const snow = await fetch("api/lumilaadut");
+    const snowdata = await snow.json();
+    return snowdata;
+  };*/
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
@@ -544,7 +536,7 @@ function Info(props) {
       return (
         <div className="info">
 
-          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
+          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} snowtypes={props.snowtypes}></SnowRecordView>
           <IconButton
             className={classes.editButton}
             onClick={openUpdate}
@@ -684,7 +676,7 @@ function Info(props) {
       // Kirjautumattoman käyttäjän näkymät (muokkaustoimintoa ei ole)
       return (
         <div className="info">
-          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
+          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} snowtypes={props.snowtypes}></SnowRecordView>
         </div>
       );
     }
