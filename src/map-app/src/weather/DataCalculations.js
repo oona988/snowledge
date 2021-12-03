@@ -250,7 +250,8 @@ export function getWinterTemperatures(data) {
 
   var thawDays = 0;
   var array = [];
-  for (let i = 0; i < measurements.length; i++) {
+
+  for (let i = 0; i < measurements.length - 1; i++) {
     var temp = Number(measurements[i].lastElementChild.innerHTML);
 
     var roundedTemp = Math.round(temp);
@@ -266,7 +267,11 @@ export function getWinterTemperatures(data) {
   const sortedArray = array.sort(function(a,b){return a-b;});
   const len = sortedArray.length;
   const mid = Math.ceil(len / 2);
-  const median = len % 2 === 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 2 : sortedArray[mid];
+  var median = len % 2 === 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 2 : sortedArray[mid];
+
+  if (len === 1) {
+    median = sortedArray[0];
+  }
 
   return { thawDays: thawDays, median: median };
 }
