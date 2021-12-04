@@ -1,9 +1,9 @@
 INSERT INTO Lumilaadut(ID, Nimi, Vari, Hiihdettavyys, Kategoria_ID, Lumityyppi_selite)
 VALUES  (1,'Korppu','#3838a0',3,NULL,'Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.'),
-        (2,'Sohjo','#919394',NULL,NULL,''),
+        (2,'Sohjo','#919394',2,NULL,'Vesipitoinen ja osittain sulanut lumi suojasäällä.'),
         (3,'Jää','#34929A',2,NULL,'Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.'),
         (4,'Uusi lumi','#5AABED',4,NULL,'Vastasatanut pehmeä lumi.'),
-        (5,'Tuulen pieksemä lumi','#7C759F',NULL,NULL,''),
+        (5,'Tuulen pieksemä lumi','#7C759F',3,NULL,'Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.'),
         (6,'Vähäinen lumi','#6D4F32',NULL,NULL,''),
         (7,'Haitat','#6D4F32',NULL,NULL,''),
         (8,'Lumeton maa',NULL,NULL,NULL,''),
