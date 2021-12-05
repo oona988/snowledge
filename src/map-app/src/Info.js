@@ -186,10 +186,15 @@ function Info(props) {
 
   // Segmentin päivitysdialogin avaus
   const openUpdate = () => {
+
+    console.log(props.segmentdata.update.Lumi1);
+    console.log(props.segmentdata.update.Lumi2);
+    console.log(props.segmentdata.update.Lumi3);
+    console.log(props.segmentdata.update.Lumi4);
+
     setSnowTypeList(props.snowtypes);
 
     setEntryVisible(true);
-    console.log(props.snowtypes);
     setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "");
     const idArray = [];
 
@@ -201,13 +206,6 @@ function Info(props) {
     snowRecordStartUp(idArray);
     setLoginOpen(true);
   };
-  /*
-  const loadSnowTypes = async () => {
-    // Loads snow types to hook arrays
-    const snow = await fetch("api/lumilaadut");
-    const snowdata = await snow.json();
-    return snowdata;
-  };*/
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
@@ -493,6 +491,12 @@ function Info(props) {
           else if (snow.ID === update.Lumilaatu_ID2) {
             update.Lumi2 = snow;
           }
+          else if (snow.ID === update.Toissijainen_ID1) {
+            update.Lumi3 = snow;
+          }
+          else if (snow.ID === update.Toissijainen_ID2) {
+            update.Lumi4 = snow;
+          }
         });
       });
 
@@ -676,7 +680,7 @@ function Info(props) {
       // Kirjautumattoman käyttäjän näkymät (muokkaustoimintoa ei ole)
       return (
         <div className="info">
-          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} snowtypes={props.snowtypes}></SnowRecordView>
+          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
         </div>
       );
     }

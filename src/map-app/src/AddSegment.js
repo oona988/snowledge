@@ -129,6 +129,12 @@ function AddSegment(props) {
           else if (snow.ID === update.Lumilaatu_ID2) {
             update.Lumi2 = snow;
           }
+          else if (snow.ID === update.Toissijainen_ID1) {
+            update.Lumi3 = snow;
+          }
+          else if (snow.ID === update.Toissijainen_ID2) {
+            update.Lumi4 = snow;
+          }
         });
       });
       
