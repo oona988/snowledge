@@ -25,7 +25,8 @@ const useStyles = makeStyles(() => ({
   textContainer: {
     overflowY: "scroll",
     marginRight: "50px",
-    marginLeft: "50px"
+    marginLeft: "50px",
+    flex: 4
   },
   text: {
     color: "white",
@@ -37,10 +38,23 @@ const useStyles = makeStyles(() => ({
   icon: {
     height: "81px",
     width: "98px",
-    marginRight: "auto",
-    marginLeft: "auto",
-    display: "block",
-    padding: "20px"
+  },
+  iconContainer: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  sponsorContainer: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap"
+  },
+  sponsor: {
+    width: "100px",
+    height: "100px",
+    padding: "10px"
   }
 }));
 
@@ -62,13 +76,23 @@ function WelcomeView() {
 
   return(
     <Box className={styledClasses.root}>
-      <img src="pollo.ico" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
+      <Box className={styledClasses.iconContainer}>
+        <img src="pollo.ico" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
+      </Box>
       <Box className={styledClasses.textContainer}>
         {
           text.map((paragraph, index) => {
             return <Typography key={index} className={styledClasses.text}>{paragraph}</Typography>;
           })
         }
+      </Box>
+      <Box className={styledClasses.sponsorContainer}>
+        <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+          <img src="sponsor.png" alt="Sponsor logo" className={styledClasses.sponsor} />
+        </a>
+        <a href="https://www.google.fi/maps/" target="_blank" rel="noopener noreferrer">
+          <img src="sponsor2.png" alt="Sponsor logo" className={styledClasses.sponsor} />
+        </a>
       </Box>
     </Box>
   );
