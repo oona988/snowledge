@@ -6,6 +6,9 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+5.12.2021 Juho Kumara
+Snow type names, icons and skiiability values are now shown correctly.
+
 7.11.2021 Oona Laitamaki
 Updated layout design
 

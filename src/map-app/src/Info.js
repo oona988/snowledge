@@ -176,6 +176,7 @@ function Info(props) {
   const [snowRecordContent, setSnowRecordContent] = React.useState([]);
   const [snowTypeList, setSnowTypeList] = React.useState([]);
   const [disabledSnowTypes, setDisabledSnowTypes] = React.useState([]);
+  const [updateEnabled, setUpdateEnabled] = React.useState(false);
   //
 
   const classes = useStyles();
@@ -186,12 +187,6 @@ function Info(props) {
 
   // Segmentin päivitysdialogin avaus
   const openUpdate = () => {
-
-    console.log(props.segmentdata.update.Lumi1);
-    console.log(props.segmentdata.update.Lumi2);
-    console.log(props.segmentdata.update.Lumi3);
-    console.log(props.segmentdata.update.Lumi4);
-
     setSnowTypeList(props.snowtypes);
 
     setEntryVisible(true);
@@ -209,6 +204,7 @@ function Info(props) {
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
+    setUpdateEnabled(false);
     setSearchVisible(false);
     setSelectVisible(false);
     setAddVisible(true);
@@ -222,6 +218,7 @@ function Info(props) {
   // Lumitilanteen kuvaustekstin päivittäminen
   const updateText = (e) => {
     setText(e.target.value);
+    setUpdateEnabled(true);
   };
 
   // Nollataan valittu segmentti sulkiessa
@@ -231,6 +228,8 @@ function Info(props) {
 
   // Hides unnecessary information on snow record entry view, if checkbox is checked.
   const updateEntryVisible = (e) => {
+    setUpdateEnabled(true);
+
     if (!e.target.checked) {
       setEntryVisible(true);
     }
@@ -260,6 +259,7 @@ function Info(props) {
     }
 
     setSearchVisible(false);
+    setUpdateEnabled(true);
   };
 
   const snowRecordStartUp = (array) => {
@@ -273,7 +273,7 @@ function Info(props) {
         if (i > 1) {
           secondaryCount++;
           newContent = newContent.concat({ id: array[i], secondary: true });
-          newDisabled =  newDisabled.concat(array[i]);
+          newDisabled = newDisabled.concat(array[i]);
         }
         else {
           primaryCount++;
@@ -292,15 +292,15 @@ function Info(props) {
       // disables primary option
       newValues[0] = true;
     }
-    
+
     if (secondaryCount == 2) {
       // disables secondary option
       newValues[1] = true;
     }
 
-    if(primaryCount + secondaryCount === 4){
+    if (primaryCount + secondaryCount === 4) {
       setAddVisible(false);
-    } 
+    }
     else {
       setAddVisible(true);
     }
@@ -388,6 +388,8 @@ function Info(props) {
 
   // Removes a snowtype in snow record entry view
   const removeSnowtype = (item) => {
+    setUpdateEnabled(true);
+
     const newContent1 = snowRecordContent.filter(snowRecordContent => { return snowRecordContent.id != item.id; });
     setSnowRecordContent(newContent1);
 
@@ -431,6 +433,8 @@ function Info(props) {
 
   // closes the select inside snow type box and switches the value of the box
   const handleSelectClose = (e, value, item) => {
+    setUpdateEnabled(true);
+
     let itemId = item.id;
     let valueId = value.ID;
     let index = snowRecordContent.findIndex((snowRecorditem => snowRecorditem.id === itemId));
@@ -446,17 +450,53 @@ function Info(props) {
 
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
   const sendForm = () => {
-    
+
     const idValues = getSnowRecordContentIDs();
+
+
+
+    let datavalues = [];
+
+    // When checkbox is not checked:
+    if (entryVisible) {
+
+      datavalues[0] = props.segmentdata.ID;
+      datavalues[1] = idValues[0];
+      datavalues[2] = idValues[1];
+      datavalues[3] = idValues[2];
+      datavalues[4] = idValues[3];
+      datavalues[5] = text;
+    }
+    // When checkbox is checked:
+    else {
+      if (props.segmentdata.update !== null && props.segmentdata.update !== undefined) {
+        datavalues[0] = props.segmentdata.ID;
+        datavalues[1] = props.segmentdata.update.Lumilaatu_ID1;
+        datavalues[2] = props.segmentdata.update.Lumilaatu_ID2;
+        datavalues[3] = props.segmentdata.update.Toissijainen_ID1;
+        datavalues[4] = props.segmentdata.update.Toissijainen_ID2;
+        datavalues[5] = props.segmentdata.update.Kuvaus;
+      }
+      else {
+        datavalues[0] = props.segmentdata.ID;
+        datavalues[1] = null;
+        datavalues[2] = null;
+        datavalues[3] = null;
+        datavalues[4] = null;
+        datavalues[5] = "";
+      }
+    }
+
     // Tallennushetken lumilaatujen id:t, kuvausteksti. Lisäksi päivitettävän (valitun) segmentin ID
     const data = {
-      Segmentti: props.segmentdata.ID,
-      Lumilaatu_ID1: idValues[0],
-      Lumilaatu_ID2: idValues[1],
-      Toissijainen_ID1: idValues[2],
-      Toissijainen_ID2: idValues[3],
-      Kuvaus: text
+      Segmentti: datavalues[0],
+      Lumilaatu_ID1: datavalues[1],
+      Lumilaatu_ID2: datavalues[2],
+      Toissijainen_ID1: datavalues[3],
+      Toissijainen_ID2: datavalues[4],
+      Kuvaus: datavalues[5]
     };
+
     const fetchUpdate = async () => {
       //setLoading(true);
       const response = await fetch("api/update/" + props.segmentdata.ID,
@@ -482,7 +522,6 @@ function Info(props) {
       const response = await fetch("api/segments");
       const data = await response.json();
 
-      // PÄIVITÄ VASTAAMAAN NYKYISTÄ TIETOKANTAA, TARKISTA VIRHEIDEN VARALTA !!!
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
           if (snow.ID === update.Lumilaatu_ID1) {
@@ -665,10 +704,10 @@ function Info(props) {
                     </Box>
                   </Box>)}
                 {/*</Box>
-             Dialogin toimintopainikkeet. Päivitys disabloitu, jos lumityyppi on Ei tietoa (snowtype === 0) KORJAA DISABLED!*/}
+             Dialogin toimintopainikkeet.*/}
                 <DialogActions>
                   <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
-                  <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm} disabled={false}>Päivitä</Button>
+                  <Button variant="contained" color="primary" id={"dialogOK"} disabled={!updateEnabled} onClick={sendForm}>Päivitä</Button>
                 </DialogActions>
               </Box>
             </MuiThemeProvider>
