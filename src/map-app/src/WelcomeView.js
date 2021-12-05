@@ -36,8 +36,8 @@ const useStyles = makeStyles(() => ({
     fontFamily: "Donau"
   },
   icon: {
-    height: "81px",
-    width: "98px",
+    height: "89px",
+    width: "144px",
   },
   iconContainer: {
     flex: 1,
@@ -77,7 +77,7 @@ function WelcomeView() {
   return(
     <Box className={styledClasses.root}>
       <Box className={styledClasses.iconContainer}>
-        <img src="pollo.ico" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
+        <img src="pallaksen_pollot_logo_white.png" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
       </Box>
       <Box className={styledClasses.textContainer}>
         {
@@ -87,12 +87,12 @@ function WelcomeView() {
         }
       </Box>
       <Box className={styledClasses.sponsorContainer}>
-        <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+        {/* <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
           <img src="sponsor.png" alt="Sponsor logo" className={styledClasses.sponsor} />
         </a>
         <a href="https://www.google.fi/maps/" target="_blank" rel="noopener noreferrer">
           <img src="sponsor2.png" alt="Sponsor logo" className={styledClasses.sponsor} />
-        </a>
+        </a> */}
       </Box>
     </Box>
   );
