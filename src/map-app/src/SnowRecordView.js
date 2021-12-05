@@ -86,6 +86,12 @@ const useStyles = makeStyles(() => ({
     width: "90px",
     display: "block",
   },
+  expandOpen: {
+    transform: "rotate(-180deg)"
+  },
+  expandClosed: {
+    transform: "rotate(0)"
+  }
 }));
 
 function getRelativeTimestamp(current, previous) {
@@ -293,7 +299,7 @@ function SnowRecordView({ segmentdata, close }) {
               </Grid>}
             </Grid>
           </Grid>}
-
+        
         {/* Main snowtype info 2 */}
         {isEnabled(2) &&
           <Grid item xs={12} sm={5} container className={classes.snowInfo}>
@@ -331,7 +337,7 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid>
           </Grid >
         }
-
+        {(isEnabled(3) || isEnabled(4) || description !== "") &&
         <Grid item xs={12} sm={7}>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
 
@@ -355,8 +361,7 @@ function SnowRecordView({ segmentdata, close }) {
               {/* <Typography className={classes.normalText} variant="subtitle2"></Typography> segmentdata.update === null || segmentdata.update === undefined ? "Ei kuvausta" : segmentdata.update.Teksti*/}
 
             </Grid>}
-
-            <Grid item xs={12} sm={12} container>
+            {(isEnabled(3) || isEnabled(4)) && <Grid item xs={12} sm={12} container>
               <Grid item xs={12} sm={12}>
                 <Typography className={classes.smallHeaders} style={{ paddingLeft: "5px" }} variant="body1" component="p" display="inline">Alueen toissijaiset lumityypit</Typography>
               </Grid>
@@ -417,10 +422,10 @@ function SnowRecordView({ segmentdata, close }) {
                   </Grid>}
                 </Grid>
               </Grid>}
-            </Grid>
+            </Grid>}
 
           </Collapse>
-        </Grid>
+        </Grid>}
 
         {/* Info about latest update time */}
         {!isXS &&
@@ -433,9 +438,10 @@ function SnowRecordView({ segmentdata, close }) {
           </Grid >
         }
 
-        {isXS &&
+        {(isXS && (isEnabled(3) || isEnabled(4) || description !== ""))  &&
           <Grid item xs={12} align="center">
             <IconButton
+              className = {expanded ? classes.expandOpen : classes.expandClosed}
               style={{ padding: 0 }}
               onClick={handleExpandClick}
               aria-expanded={expanded}
