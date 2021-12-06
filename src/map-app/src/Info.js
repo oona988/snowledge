@@ -64,7 +64,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
@@ -87,9 +86,6 @@ const theme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
-  close: {
-    color: "black"
-  },
   editButton: {
     color: "black",
     display: "flex",
@@ -327,10 +323,7 @@ function Info(props) {
       // Nämä renderöidään, kun käyttäjä on kirjautunut (muokkaustoiminto lisänä)
       return (
         <div className="info">
-          <IconButton aria-label="close" className={classes.close} onClick={() => closeShownSegment()}>
-            <CloseIcon />
-          </IconButton>
-          <SnowRecordView segmentdata={props.segmentdata}></SnowRecordView>
+          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
           <IconButton 
             className={classes.editButton}
             onClick={openUpdate}
@@ -475,10 +468,7 @@ function Info(props) {
       // Kirjautumattoman käyttäjän näkymät (muokkaustoimintoa ei ole)
       return (
         <div className="info">
-          <IconButton aria-label="close" className={classes.close} onClick={() => closeShownSegment()}>
-            <CloseIcon />
-          </IconButton>
-          <SnowRecordView segmentdata={props.segmentdata}></SnowRecordView>
+          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment}></SnowRecordView>
         </div>
       );
     }

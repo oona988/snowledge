@@ -107,7 +107,7 @@ router.get("/segments", function(req, res) {
 //segmentin tuoreimman päivityksen haku
 router.get("/segments/update/:id", function(req, res) {
   database.query(
-    `SELECT Tekija, Segmentti, Lumilaatu, Teksti, Aika 
+    `SELECT Tekija, Segmentti, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Lumilaatu_ID1,Alalumilaatu_ID ,Alalumilaatu_ID1
   FROM Paivitykset
   WHERE (Segmentti, Aika)
   IN
@@ -131,7 +131,7 @@ router.get("/segments/update/:id", function(req, res) {
 //päivitysten haku
 router.get("/segments/update", function(req, res) {
   database.query(
-    `SELECT Tekija, Segmentti, Lumilaatu, Teksti, Aika 
+    `SELECT Tekija, Segmentti, Kuvaus, Aika ,Lumen_kuva ,Lumilaatu_ID, Lumilaatu_ID1,Alalumilaatu_ID ,Alalumilaatu_ID1
   FROM Paivitykset
   WHERE (Segmentti, Aika)
   IN
@@ -152,6 +152,18 @@ router.get("/segments/update", function(req, res) {
 //lumilaatujen haku
 router.get("/lumilaadut", function(req, res) {
   database.query("Select * FROM Lumilaadut", 
+    function(err, result, fields) {
+      if (err) throw err;
+      res.json(result);
+      res.status(200);
+    });
+});
+
+
+
+/// search for sub snow in new table
+router.get("/alalumilaadut", function(req, res) {
+  database.query("Select * FROM Alalumilaadut", 
     function(err, result, fields) {
       if (err) throw err;
       res.json(result);
