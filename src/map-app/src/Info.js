@@ -61,10 +61,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SnowRecordView from "./SnowRecordView";
+// eslint-disable-next-line no-unused-vars
+import CardMedia from "@material-ui/core/CardMedia";
+// eslint-disable-next-line no-unused-vars
+import Paper from "@material-ui/core/Paper";
+import { useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
+import { Card } from "@material-ui/core";
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({
@@ -146,7 +154,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     borderRadius: "10px",
-    width: 350,
+    width: 325,
   },
   snowRecordEItemContents: {
     marginBottom: "5px",
@@ -157,6 +165,16 @@ const useStyles = makeStyles((theme) => ({
   snowRecordETextFields: {
     fontFamily: "Donau",
     borderRadius: "10px",
+  },
+  image: {
+    width: "100%"
+  },
+  imageWrapper: {
+    maxHeight: "213px",
+    marginTop: "7px",
+    marginBottom: "3px",
+    borderRadius: "10px",
+    width: 325,
   },
 }));
 
@@ -177,7 +195,11 @@ function Info(props) {
   const [snowTypeList, setSnowTypeList] = React.useState([]);
   const [disabledSnowTypes, setDisabledSnowTypes] = React.useState([]);
   const [updateEnabled, setUpdateEnabled] = React.useState(false);
-  //
+
+  const [selectedFile, setSelectedFile] = React.useState();
+  const [image, setImage] = React.useState();
+  const [hasImage, setHasImage] = React.useState(false);
+  //const [imageBlob, setImageBlob] = React.useState(null);
 
   const classes = useStyles();
 
@@ -204,6 +226,8 @@ function Info(props) {
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
+    setHasImage(false);
+    setSelectedFile(undefined);
     setUpdateEnabled(false);
     setSearchVisible(false);
     setSelectVisible(false);
@@ -466,6 +490,9 @@ function Info(props) {
       datavalues[3] = idValues[2];
       datavalues[4] = idValues[3];
       datavalues[5] = text;
+      //datavalues[6] = imageBlob.toString("base64");
+      //console.log(imageBlob);
+      //console.log(imageBlob.toString("base64"));
     }
     // When checkbox is checked:
     else {
@@ -476,6 +503,7 @@ function Info(props) {
         datavalues[3] = props.segmentdata.update.Toissijainen_ID1;
         datavalues[4] = props.segmentdata.update.Toissijainen_ID2;
         datavalues[5] = props.segmentdata.update.Kuvaus;
+        //datavalues[6] = props.segmentdata.update.Lumen_kuva;
       }
       else {
         datavalues[0] = props.segmentdata.ID;
@@ -484,6 +512,7 @@ function Info(props) {
         datavalues[3] = null;
         datavalues[4] = null;
         datavalues[5] = "";
+        //datavalues[6] = null;
       }
     }
 
@@ -494,7 +523,8 @@ function Info(props) {
       Lumilaatu_ID2: datavalues[2],
       Toissijainen_ID1: datavalues[3],
       Toissijainen_ID2: datavalues[4],
-      Kuvaus: datavalues[5]
+      Kuvaus: datavalues[5],
+      //Lumen_kuva: datavalues[6]
     };
 
     const fetchUpdate = async () => {
@@ -537,6 +567,12 @@ function Info(props) {
             update.Lumi4 = snow;
           }
         });
+
+        /*if(update.Lumen_kuva !== null){
+          console.log(update.Lumen_kuva);
+          update.Kuva = new Buffer.from(update.Lumen_kuva).toString("base64");
+          console.log(update.Kuva);
+        }*/
       });
 
       data.forEach(segment => {
@@ -569,6 +605,101 @@ function Info(props) {
     fetchData();
     closeUpdate();
   };
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setImage(undefined);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setImage(objectUrl);
+
+    console.log(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  // Handles select of an image file 
+  const selectFile = e => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      setHasImage(false);
+      return;
+    }
+
+    setUpdateEnabled(true);
+    setHasImage(true);
+    setSelectedFile(e.target.files[0]);
+    /*console.log(e.target.files[0]);
+    console.log();
+    */
+    /*
+    let file = e.target.files[0];
+
+    getBase64(file)
+      .then(() => {
+        setImageBlob(file);
+        console.log(file);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+      */
+    //setImageBlob(file);
+    /*file.arrayBuffer().then((arrayBuffer) => {
+      let blob = new Blob([new Uint8Array(arrayBuffer)], { type: file.type });
+      setImageBlob(blob);
+    });*/
+
+    //readBlob(e.target.files[0]);
+  };
+
+  const deleteFile = () => {
+    setSelectedFile(undefined);
+    setHasImage(false);
+  };
+  /*
+  const getBase64 = file => {
+    return new Promise(resolve => {
+      let fileInfo;
+      let baseURL = "";
+      // Make new FileReader
+      let reader = new FileReader();
+
+      // Convert the file to base64 text
+      reader.readAsDataURL(file);
+
+      // on reader load somthing...
+      reader.onload = () => {
+        // Make a fileInfo Object
+        console.log("Called", reader);
+        baseURL = reader.result;
+        console.log(baseURL);
+        resolve(baseURL);
+      };
+      console.log(fileInfo);
+    });
+  };
+
+  /*
+  const readBlob = file => {
+    var promise = new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = e => {
+        resolve(e.target.result);
+      };
+      reader.onerror = reject;
+
+      reader.readAsText(file);
+    });
+    promise.then(result => setImageBlob(result));
+  };*/
+
+  /*readBlob.then(result => {
+    console.log(result);
+  });*/
 
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
   if (props.segmentdata !== undefined) {
@@ -699,12 +830,28 @@ function Info(props) {
                     <Box className={classes.snowRecordEPart}>
                       <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
                       <Box className={classes.snowRecordEButtonsWrapper}>
-                        <Button size="large" variant="contained" color="primary" endIcon={<AddIcon fontSize="large" />} className={classes.snowRecordEButtons}>Lisää</Button>
+                        {!hasImage && (
+                          <Button size="large" variant="contained" component="label" color="primary" endIcon={<AddIcon fontSize="large" />} className={classes.snowRecordEButtons}>
+                            Lisää
+                            <input type="file" onChange={selectFile} hidden accept="image/*" />
+                          </Button>)}
+                        {hasImage && (<Box>
+                          <Button variant="contained" color="#D61043" onClick={deleteFile} endIcon={<DeleteIcon fontSize="large" />} className={classes.snowRecordEButtons}>Poista</Button>
+                          <Button size="large" variant="contained" component="label" color="primary" endIcon={<SwapHorizIcon fontSize="large" />} className={classes.snowRecordEButtons}>
+                            Vaihda
+                            <input type="file" onChange={selectFile} hidden accept="image/*" />
+                          </Button>
+                        </Box>)}
                       </Box>
+                      {selectedFile &&
+                        <Card className={classes.imageWrapper} >
+                          <CardMedia component="img" src={image} className={classes.image} />
+                        </Card>}
+                    </Box>
+                    <Box>
                     </Box>
                   </Box>)}
-                {/*</Box>
-             Dialogin toimintopainikkeet.*/}
+                {/* Dialogin toimintopainikkeet.*/}
                 <DialogActions>
                   <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
                   <Button variant="contained" color="primary" id={"dialogOK"} disabled={!updateEnabled} onClick={sendForm}>Päivitä</Button>

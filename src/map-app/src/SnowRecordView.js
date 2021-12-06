@@ -282,6 +282,7 @@ function SnowRecordView({ segmentdata, close }) {
                   alt="lumityypin logo"
                 />
               }
+              {/*segmentdata.update.Kuva !== null && <img src={`data:image/jpeg;base64,${segmentdata.update.Kuva}`} alt=""></img>*/}
             </Grid>
             <Grid item container xs={8} sm={9} className={classes.snowInfo}>
               <Grid item xs={12} sm={12}>

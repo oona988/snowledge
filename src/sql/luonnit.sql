@@ -39,7 +39,7 @@ CREATE TABLE Paivitykset (
     Segmentti BIGINT UNSIGNED,
     Aika DATETIME,
     Kuvaus TEXT,
-    Lumen_kuva BLOB,
+    Lumen_kuva MEDIUMBLOB,
     Lumilaatu_ID1 BIGINT(20) UNSIGNED DEFAULT NULL,
     Lumilaatu_ID2 BIGINT(20) UNSIGNED DEFAULT NULL,
     Toissijainen_ID1 BIGINT(20) UNSIGNED DEFAULT NULL,
