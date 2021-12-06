@@ -42,7 +42,6 @@ const useStyles = makeStyles(() => ({
     marginTop: "3%",
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
-    minHeight: "500px",
     marginLeft: "10%",
     marginRight: "10%",
   },
@@ -95,7 +94,7 @@ function ShortIntervalStatsPaper({weatherState}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} align="center">
+    <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
 
       <h2 className={classes.paperHeader}>Lähipäivien sää</h2>
 
@@ -114,7 +113,7 @@ function ShortIntervalStatsPaper({weatherState}) {
         <Divider className={classes.divider}/>
         <KeyValuePair keyName="suojapäivien määrä" value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
         {weatherState.temperature.thawDays.length !== 0 &&
-        <div style={{paddingBottom: "40px"}}>
+        <div style={{paddingBottom: "50px"}}>
           <Divider className={classes.divider}/>
           <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/>
         </div>}
@@ -141,7 +140,7 @@ function WinterStatsPaper({weatherState}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} align="center">
+    <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
 
       {weatherState.winter.season === true ?
         <div>
@@ -198,8 +197,7 @@ function Statistics({weatherState, handleReturnClick}) {
                 backgroundColor: "rgba(255,255,255,0.2)",
                 padding: "5px",
                 borderRadius: 50,
-                stroke: "blue",
-                strokeOpacity: ".2",
+                color: "black",
               }
             }}
           >
@@ -227,7 +225,7 @@ function Statistics({weatherState, handleReturnClick}) {
           <Grid item xs={6} sm={6}>
             <WinterStatsPaper weatherState={weatherState}/>
           </Grid>
-          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingTop: "15px", paddingRight: "80px"}}>
+          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingTop: "2%", paddingBottom: "5%", paddingRight: "8%"}}>
             <Button
               onClick={handleReturnClick}
               variant="contained"
