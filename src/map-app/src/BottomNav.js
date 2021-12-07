@@ -70,7 +70,7 @@ function BottomNav(props) {
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Info"
+            label="Selitteet"
             icon={<InfoIcon />}
           />
           <BottomNavigationAction

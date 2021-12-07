@@ -36,6 +36,7 @@ import SnowIcon from "@material-ui/icons/AcUnit";
 // eslint-disable-next-line no-unused-vars
 import IconButton from "@material-ui/core/IconButton";
 import Logout from "./Logout";
+import SnowTypes from "./SnowTypes";
 
 var refreshInterval = setInterval(window.location.reload.bind(window.location), (30*60000));
 
@@ -211,6 +212,16 @@ function App() {
             ? 
             <div className="weather_tab">
               <WeatherTab/>
+            </div>
+            : 
+            <div></div> 
+        }
+        {/* Information about snow types */}
+        {
+          showSnow
+            ? 
+            <div className="snow_tab">
+              <SnowTypes/>
             </div>
             : 
             <div></div> 

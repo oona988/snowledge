@@ -76,6 +76,16 @@ body {
   left: 0px;
 }
 
+.app .snow_tab {
+  flex: 1 1 auto;
+  height: 100vh;
+  z-index: 4;
+  position: absolute;
+  overflow-y: scroll;
+  width: 75vw;
+  background-color: white;
+}
+
 .maplibregl-ctrl-scale {
   position: absolute;
   bottom: 60px;
