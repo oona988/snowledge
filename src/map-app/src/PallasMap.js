@@ -249,7 +249,13 @@ function PallasMap(props) {
           map.addControl(scaleControl, "bottom-right");
           scaleAdded = true;
         }
-
+        //Geolocation control
+        map.addControl(new maplibregl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        }));
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
         map.on("mousemove", "segments-fills", function (e) {
