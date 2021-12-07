@@ -90,6 +90,7 @@ function Manage(props) {
           : 
           <UserManage token={props.token} role={props.role} />
       }
+      <div style={{height: "60px"}}></div>
     </div>
   );
 }

@@ -15,6 +15,7 @@ Pieniä muotoiluseikkoja säädetty
 
 import * as React from "react";
 import IconButton from "@material-ui/core/IconButton";
+// eslint-disable-next-line no-unused-vars
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
@@ -27,10 +28,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
+// eslint-disable-next-line no-unused-vars
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
+// eslint-disable-next-line no-unused-vars
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
+import SnowIcon from "@material-ui/icons/AcUnit";
 
 // Tyylejä sisäänkirjautumislomakkeen osille
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +44,11 @@ const useStyles = makeStyles((theme) => ({
   email: {
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
+  },
+  snowIcon: {
+    position: "absolute",
+    top: "5px",
+    right: "5px"
   }
 }));
 
@@ -47,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 function Login(props) {
 
   // Hooks
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
@@ -119,20 +129,21 @@ function Login(props) {
   return (
     <div className="login">
       {/* Kirjautumisen avaava ikonipainike */}
-      <IconButton 
-        edge="start" 
-        color="inherit" 
-        onClick={openLogin}
-      >
-        <Typography variant="button">{(loading ? "Kirjaudutaan" : "Kirjaudu")}</Typography>
-        {(loading ? <CircularProgress color="secondary" size={20} /> : <VpnKeyIcon />)}
-      </IconButton>
+      <div className={styledClasses.snowIcon} >
+        {loading ? <CircularProgress color="secondary" size={20} /> : 
+          <IconButton 
+            onClick={openLogin}
+          >
+            {/* <Typography variant="button">{(loading ? "Kirjaudutaan" : "Kirjaudu")}</Typography>
+            {(loading ? <CircularProgress color="secondary" size={20} /> : <VpnKeyIcon />)} */}
+            <SnowIcon style={{color: "#4d4d4d"}} />
+          </IconButton>}
+      </div>
       
       {/* Kirjautumisdialogi */}
       <Dialog 
         onClose={closeLogin} 
         open={loginOpen}
-        className={styledClasses.input}
       >
         <DialogTitle id="login-dialog">Kirjaudu sisään</DialogTitle>
         <TextField id="email" label="email" value={email} onChange={updateEmail} className={styledClasses.email}/>
@@ -161,7 +172,6 @@ function Login(props) {
           <Button id={"dialogClose"} onClick={closeLogin}>Sulje</Button>
           <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm}>Kirjaudu</Button>
         </DialogActions>
-      
       </Dialog>
     </div>
   );

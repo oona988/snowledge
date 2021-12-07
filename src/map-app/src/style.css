@@ -50,7 +50,7 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
-  z-index: 3;
+  z-index: 4;
   background: linear-gradient(135deg, #1C4777, #B8C1E0, #539BD5);
 }
 
@@ -76,6 +76,16 @@ body {
   left: 0px;
 }
 
+.app .snow_tab {
+  flex: 1 1 auto;
+  height: 100vh;
+  z-index: 4;
+  position: absolute;
+  overflow-y: scroll;
+  width: 75vw;
+  background-color: white;
+}
+
 .maplibregl-ctrl-scale {
   position: absolute;
   bottom: 60px;
@@ -83,7 +93,7 @@ body {
 }
 
 .bottom_navigation {
-  z-index: 4;
+  z-index: 5;
 }
 
 .root {
@@ -93,6 +103,21 @@ body {
 
 .welcome_view {
   flex: 25%;
+}
+
+.app .login_icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.app .management_view {
+  flex: 1 1 auto;
+  height: 100vh;
+  z-index: 3;
+  overflow-y: scroll;
+  width: 75vw;
+  position: absolute;
+  background-color: white;
 }
 
 /*

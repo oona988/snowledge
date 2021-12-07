@@ -17,6 +17,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import CloudIcon from "@material-ui/icons/Cloud";
 import { makeStyles } from "@material-ui/core/styles";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 
 const useStyles = makeStyles(() => ({
@@ -49,36 +50,75 @@ function BottomNav(props) {
   // Use styles
   const styledClasses = useStyles();
 
-  return (
-    <ThemeProvider theme={navBarTheme}>
-      <BottomNavigation
-        className={styledClasses.navbar}
-        showLabels
-        value={value}
-        // eslint-disable-next-line no-unused-vars
-        onChange={(event, newValue) => {
-          setValue(newValue);
-          props.updateShown(newValue);
-        }}
-      >
-        <BottomNavigationAction
-          className={styledClasses.button}
-          label="Kartta"
-          icon={<MapIcon />}
-        />
-        <BottomNavigationAction
-          className={styledClasses.button}
-          label="Info"
-          icon={<InfoIcon />}
-        />
-        <BottomNavigationAction
-          className={styledClasses.button}
-          label="Sää"
-          icon={<CloudIcon />}
-        />
-      </BottomNavigation>
-    </ThemeProvider>
-  );
+  if(props.user === null) {
+    return(
+      <ThemeProvider theme={navBarTheme}>
+        <BottomNavigation
+          className={styledClasses.navbar}
+          showLabels
+          value={value}
+          // eslint-disable-next-line no-unused-vars
+          onChange={(event, newValue) => {
+            setValue(newValue);
+            props.updateShown(newValue);
+          }}
+        >
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Kartta"
+            icon={<MapIcon />}
+          />
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Selitteet"
+            icon={<InfoIcon />}
+          />
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Sää"
+            icon={<CloudIcon />}
+          />
+        </BottomNavigation>
+      </ThemeProvider>
+    );
+  }
+  else {
+    return (
+      <ThemeProvider theme={navBarTheme}>
+        <BottomNavigation
+          className={styledClasses.navbar}
+          showLabels
+          value={value}
+          // eslint-disable-next-line no-unused-vars
+          onChange={(event, newValue) => {
+            setValue(newValue);
+            props.updateShown(newValue);
+          }}
+        >
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Kartta"
+            icon={<MapIcon />}
+          />
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Info"
+            icon={<InfoIcon />}
+          />
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Sää"
+            icon={<CloudIcon />}
+          />
+          <BottomNavigationAction
+            className={styledClasses.button}
+            label="Hallitse"
+            icon={<SettingsIcon />}
+          />
+        </BottomNavigation>
+      </ThemeProvider>
+    );
+  }
 }
 
 export default BottomNav;
