@@ -120,6 +120,31 @@ body {
   background-color: white;
 }
 
+
+/* Styling for mobile devices */
+@media (max-width: 760px) {
+  .app .management_view {
+    width: 100vw;
+  }
+
+  .app .snow_tab {
+    width: 100vw;
+  }
+
+  .app .map_container {
+    width: 100vw;
+  }
+
+  .welcome_view {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 6;
+  }
+}
+
 /*
 * Style for scrollbars
 */

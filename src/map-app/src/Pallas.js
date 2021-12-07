@@ -50,13 +50,9 @@ function App() {
   const [woodsSegment, setWoodsSegment] = React.useState(null);
   const [shownSegment, setShownSegment] = React.useState(null);
   const [showManagement, setShowManagement] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showMap, setShowMap] = React.useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [showSnow, setShowSnow] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showWeather, setShowWeather] = React.useState(false);
-  console.log("map: "+showMap+", snow: "+showSnow+", weather: "+showWeather);
 
   //imported hook. Kysely näyttöportin koosta
   const isMobile = useMediaQuery({query: "(max-width:760px)"});
@@ -281,7 +277,7 @@ function App() {
         </div>
       </div>
       <div className="welcome_view">
-        <WelcomeView/>
+        <WelcomeView isMobile={isMobile}/>
       </div>
       {(
         token === null || token === undefined 
@@ -289,12 +285,6 @@ function App() {
           <Login updateToken={updateToken} updateUser={updateUser}/> 
           :
           <Logout updateToken={updateToken} updateUser={updateUser} showManagement={showManagement} updateShown={updateShown}/>
-          // <IconButton 
-          //   onClick={updateViewManagement}
-          //   style={{position: "absolute", top:"5px", right: "5px"}}
-          // >
-          //   <SnowIcon style={{color: "#4d4d4d"}} />
-          // </IconButton>
       )}
     </div>
   );
