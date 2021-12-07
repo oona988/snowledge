@@ -6,11 +6,7 @@ Created: Oona Laitamaki
 
 Latest update
 
-<<<<<<< HEAD
 28.11.2021 Oona Laitamaki
-=======
-28.10.2021 Oona Laitamaki
->>>>>>> cced859c0d0adc6faebd3e1c2492bc611c7497fc
 Create user interface for showing weather information on mobile and laptop view
 
 31.10.2021 Oona Laitamaki
