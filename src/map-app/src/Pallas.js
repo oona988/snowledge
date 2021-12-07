@@ -50,24 +50,14 @@ function App() {
   const [woodsSegment, setWoodsSegment] = React.useState(null);
   const [shownSegment, setShownSegment] = React.useState(null);
   const [showManagement, setShowManagement] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showMap, setShowMap] = React.useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [showSnow, setShowSnow] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showWeather, setShowWeather] = React.useState(false);
-  console.log("map: "+showMap+", snow: "+showSnow+", weather: "+showWeather);
+  const [showWelcomeView, setShowWelcomeView] = React.useState(true); 
 
   //imported hook. Kysely näyttöportin koosta
   const isMobile = useMediaQuery({query: "(max-width:760px)"});
-  
-  // Valikoissa näkyvä teksti riippuu näytettävästä tilasta
-  // eslint-disable-next-line no-unused-vars
-  // const manageOrMap = (viewManagement ? "Kartta" : "Hallitse");
 
-  // const styledClasses = useStyles();
-  
-  //timeout for refreshing every 5 min
   /*
    * Haetaan renderöinnin jälkeen aina tiedot lumilaaduista, päivityksistä ja segmenteistä
    * Tallennetaan ne hookkeihin
@@ -129,6 +119,11 @@ function App() {
   /*
    * Event handlerit
    */
+
+  // Removes welcome view on mobile
+  function updateShowWelcomeView() {
+    setShowWelcomeView(false);
+  } 
 
   // Segmentin valinta
   function chooseSegment(choice) {
@@ -280,21 +275,18 @@ function App() {
           />
         </div>
       </div>
-      <div className="welcome_view">
-        <WelcomeView/>
-      </div>
+      {!showWelcomeView && isMobile ?
+        <div></div>
+        :
+        <div className="welcome_view">
+          <WelcomeView isMobile={isMobile} updateShowWelcomeView={updateShowWelcomeView}/>
+        </div>}
       {(
         token === null || token === undefined 
           ? 
           <Login updateToken={updateToken} updateUser={updateUser}/> 
           :
           <Logout updateToken={updateToken} updateUser={updateUser} showManagement={showManagement} updateShown={updateShown}/>
-          // <IconButton 
-          //   onClick={updateViewManagement}
-          //   style={{position: "absolute", top:"5px", right: "5px"}}
-          // >
-          //   <SnowIcon style={{color: "#4d4d4d"}} />
-          // </IconButton>
       )}
     </div>
   );
