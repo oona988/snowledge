@@ -35,20 +35,33 @@ body {
   display: flex;
   flex-flow: column;
   height: 100vh;
+  flex: 75%;
 }
 
 .app .top_bar {
   flex: 0 1 auto;
 }
 
+.app .weather_tab {
+  flex: 1 1 auto;
+  height: 100vh; /*calc(100vh - 55px);*/
+  overflow-y: scroll;
+  width: 75vw;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 4;
+  background: linear-gradient(135deg, #1C4777, #B8C1E0, #539BD5);
+}
+
 .app .map_container {
   flex: 1 1 auto;
-  height: calc(100vh - 120px);
+  height: 100vh /*calc(100vh - 55px);*/
 }
 
 .map {
   flex: 1 1 auto;
-  height: calc(100vh - 120px);
+  height: 100vh; /*calc(100vh - 55px);*/
 }
 
 .info {
@@ -59,8 +72,71 @@ body {
   z-index: 1;
   margin: auto;
   position: absolute;
-  top: 120px;
+  top: 0px;
   left: 0px;
+}
+
+.app .snow_tab {
+  flex: 1 1 auto;
+  height: 100vh;
+  z-index: 4;
+  position: absolute;
+  overflow-y: scroll;
+  width: 75vw;
+  background-color: white;
+}
+
+.maplibregl-ctrl-scale {
+  position: absolute;
+  bottom: 60px;
+  right: 5px;
+}
+
+.bottom_navigation {
+  z-index: 5;
+}
+
+.root {
+  display: flex;
+  width: 100vw;
+}
+
+.welcome_view {
+  flex: 25%;
+}
+
+.app .login_icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.app .management_view {
+  flex: 1 1 auto;
+  height: 100vh;
+  z-index: 3;
+  overflow-y: scroll;
+  width: 75vw;
+  position: absolute;
+  background-color: white;
+}
+
+/*
+* Style for scrollbars
+*/
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background:rgba(255, 255, 255, 0); 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 /* .map {
