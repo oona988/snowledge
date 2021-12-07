@@ -147,7 +147,6 @@ function Map(props) {
 
   return (
     <div className="map">
-      {/* A menu where user can select which segments are highlighted on the map */}
       <PallasMap
         shownSegment={props.shownSegment}
         chosenSegment={segment => updateChosen(segment)}
