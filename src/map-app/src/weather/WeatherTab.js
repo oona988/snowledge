@@ -598,7 +598,6 @@ function WeatherTab() {
   React.useEffect(() => {
     fetchWeather();
   }, []);
- 
 
   const handleReturnClick = () => {
     setDisplayWeatherStatistics(false);

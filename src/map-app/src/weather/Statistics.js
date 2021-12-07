@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
   paper: {
     borderRadius: "10px",
     paddingTop: "1%",
-    marginTop: "3%",
+    marginTop: "2%",
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
     marginLeft: "10%",
@@ -81,7 +81,7 @@ function KeyValuePair({keyName, value}) {
   const classes = useStyles();
 
   return (
-    <p className={classes.text} style={{textAlign: "left", margin: "5px", paddingLeft: "3%"}}>{keyName}
+    <p className={classes.text} style={{textAlign: "left", margin: "3px", paddingLeft: "3%"}}>{keyName}
       <span className={classes.text} style={{float: "right", paddingRight: "3%", whiteSpace: "pre"}}>{value}</span>
     </p>
   );
