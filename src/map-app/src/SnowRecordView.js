@@ -77,6 +77,12 @@ const useStyles = makeStyles(() => ({
     fontWeight: 300,
     fontSize: "medium",
   },
+  timeStamp: {
+    fontFamily: "Donau",
+    letterSpacing: 2,
+    fontWeight: 600,
+    fontSize: "medium",
+  },
   dangerIcon: {
     verticalAlign: "middle",
     maxWidth: "8%",
@@ -247,22 +253,6 @@ function SnowRecordView({ segmentdata, close }) {
         {segmentdata === null ? null : dangerimage}
       </Grid>
 
-      {/* Description of segment, this might be changed later */}
-      {!isXS && <Grid item xs={12} sm={12} align="center">
-        {description !== "" && <InputBase
-          className={classes.normalText}
-          value={description}
-          fullWidth={true}
-          multiline
-          maxRows={6}
-        />
-          /*<Typography className={classes.normalText} variant="subtitle1">
-            {segmentdata.update === null || segmentdata.update === undefined ? "Ei kuvausta" : segmentdata.update.Teksti}
-            {description}
-          </Typography>*/
-        }
-      </Grid>}
-
       {/* Pohjamaasto, kommentoi näkyviin jos halutaan näyttää */}
       {/* <Typography variant="subtitle1" align="center" component="p">
           {segmentdata === null ? "Ei tietoa pohjamaastosta" : segmentdata.Maasto}
@@ -332,7 +322,7 @@ function SnowRecordView({ segmentdata, close }) {
         {isXS &&
           <Grid item xs={12} sm={12} container>
             <Grid item xs={12} sm={5}>
-              <Typography className={classes.normalText} align="left" variant="body2" component="p">
+              <Typography className={classes.timeStamp} align="left" variant="body2" component="p">
                 {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
               </Typography>
             </Grid>
@@ -428,11 +418,23 @@ function SnowRecordView({ segmentdata, close }) {
           </Collapse>
         </Grid>}
 
+        {/* Description of segment, this might be changed later */}
+        {!isXS && <Grid item xs={12} sm={12} align="center">
+          {description !== "" && <InputBase
+            className={classes.normalText}
+            value={description}
+            fullWidth={true}
+            multiline
+            maxRows={6}
+          />
+          }
+
+        </Grid>}
         {/* Info about latest update time */}
         {!isXS &&
           <Grid item sm={12} container>
             <Grid item sm={5}>
-              <Typography className={classes.normalText} align="center" variant="body2" component="p">
+              <Typography className={classes.timeStamp} align="center" variant="body2" component="p">
                 {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
               </Typography>
             </Grid>
