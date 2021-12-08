@@ -56,7 +56,7 @@ function App() {
   const [showWelcomeView, setShowWelcomeView] = React.useState(true); 
 
   //imported hook. Kysely näyttöportin koosta
-  const isMobile = useMediaQuery({query: "(max-width:760px)"});
+  const isMobile = useMediaQuery({query: "(max-width:900px)"});
 
   /*
    * Haetaan renderöinnin jälkeen aina tiedot lumilaaduista, päivityksistä ja segmenteistä
@@ -285,6 +285,7 @@ function App() {
           <BottomNav
             updateShown={updateShown}
             user={user}
+            isMobile={isMobile}
           />
         </div>
       </div>

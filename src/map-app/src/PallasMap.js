@@ -257,7 +257,7 @@ function PallasMap(props) {
             enableHighAccuracy: true
           },
           trackUserLocation: true
-        }));
+        }), "bottom-right");
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
         map.on("mousemove", "segments-fills", function (e) {

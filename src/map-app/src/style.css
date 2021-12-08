@@ -86,7 +86,7 @@ body {
   background-color: white;
 }
 
-.maplibregl-ctrl-scale {
+.maplibregl-ctrl-bottom-right {
   position: absolute;
   bottom: 60px;
   right: 5px;
@@ -121,7 +121,7 @@ body {
 }
 
 /* Styling for mobile devices */
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .app .management_view {
     width: 100vw;
   }

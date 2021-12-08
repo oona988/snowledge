@@ -57,6 +57,7 @@ function BottomNav(props) {
           className={styledClasses.navbar}
           showLabels
           value={value}
+          style={props.isMobile ? {width: "100vw"} : {}}
           // eslint-disable-next-line no-unused-vars
           onChange={(event, newValue) => {
             setValue(newValue);
@@ -89,6 +90,7 @@ function BottomNav(props) {
           className={styledClasses.navbar}
           showLabels
           value={value}
+          style={props.isMobile ? {width: "100vw"} : {}}
           // eslint-disable-next-line no-unused-vars
           onChange={(event, newValue) => {
             setValue(newValue);
