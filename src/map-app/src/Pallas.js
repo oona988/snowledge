@@ -5,6 +5,8 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+Juho Kumara 3.12.2021 Lisätty lumityyppien talletus hookiin, ja välitetään se propsina infolle
+
 29.12.2020 Lisätty kirjautuneen käyttäjän tietojen tallentamiseen liittyviä toimintoja
 
 11.12. Lisättiin lumilaadun ja alasegmentin tiedot hakujen parsimiseen
@@ -49,6 +51,7 @@ function App() {
   const [segmentColors, setSegmentColors] = React.useState(null);
   const [woodsSegment, setWoodsSegment] = React.useState(null);
   const [shownSegment, setShownSegment] = React.useState(null);
+  const [snowtypes, setSnowtypes] = React.useState([]);
   const [showManagement, setShowManagement] = React.useState(false);
   const [showMap, setShowMap] = React.useState(true);
   const [showSnow, setShowSnow] = React.useState(false);
@@ -71,6 +74,8 @@ function App() {
       const updateData = await updates.json();
       const response = await fetch("api/segments");
       const data = await response.json();
+      
+      setSnowtypes(snowdata);
 
       // Taulukko käytettäville väreille kartassa. Musta väri oletuksena, jos tietoa ei ole
       // Muut värit suoraan kannasta. Taulukko on olennainen NewMap.js:n toiminnan kannalta (kartan värit)
@@ -85,8 +90,17 @@ function App() {
       
       await updateData.forEach(update => {
         snowdata.forEach(snow => {
-          if(snow.ID === update.Lumilaatu_ID){
-            update.Lumi = snow;
+          if (snow.ID === update.Lumilaatu_ID1) {
+            update.Lumi1 = snow;
+          }
+          else if (snow.ID === update.Lumilaatu_ID2) {
+            update.Lumi2 = snow;
+          }
+          else if (snow.ID === update.Toissijainen_ID1) {
+            update.Lumi3 = snow;
+          }
+          else if (snow.ID === update.Toissijainen_ID2) {
+            update.Lumi4 = snow;
           }
         });
       });
@@ -211,6 +225,7 @@ function App() {
             : 
             <div></div> 
         }
+
         {/* Information about snow types */}
         {
           showSnow
@@ -263,6 +278,7 @@ function App() {
               onUpdate={chooseSegment}
               onClose={chooseSegment}
               updateWoods={updateWoods}
+              snowtypes={snowtypes}
             />
             :
             <div />

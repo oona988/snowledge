@@ -138,7 +138,8 @@ function PallasMap(props) {
             "name": item.Nimi,
             "subsegment": item.On_Alasegmentti === null ? false : true,
             "segmentId": item.ID,
-            "snowId": item.update !== null ? (item.update.Lumi !== undefined ? item.update.Lumi.ID : 0) : 0
+            "snowId1": item.update !== null ? (item.update.Lumi1 !== undefined ? item.update.Lumi1.ID : 0) : 0,
+            "snowId2": item.update !== null ? (item.update.Lumi2 !== undefined ? item.update.Lumi2.ID : 0) : 0
           },
           "id": item.ID
         };
@@ -171,7 +172,7 @@ function PallasMap(props) {
         }
 
         // An array that specifies which color layers paint property needs to paint a certain segment
-        const fillColor = ["match", ["get", "snowId"]];
+        const fillColor = ["match", ["get", "snowId1"]];
         for(let i = 1; i <= props.segmentColors.length-3; i++) {
           fillColor.push(i);
           fillColor.push(props.segmentColors[i].color);
@@ -195,6 +196,7 @@ function PallasMap(props) {
         }
 
         // Layer for segment fills
+
         if(map.getLayer("segments-fills") === undefined) {
           map.addLayer({
             id: "segments-fills",
@@ -318,7 +320,7 @@ function PallasMap(props) {
 
         // Add a filter so that only a certain snowtype gets highlighted
         if(props.highlightedSnowType > -1) {
-          map.setFilter("segments-highlights", ["==", ["get", "snowId"], props.highlightedSnowType]);
+          map.setFilter("segments-highlights", ["any", ["==", ["get", "snowId1"], props.highlightedSnowType], ["==", ["get", "snowId2"], props.highlightedSnowType]]);
         }
 
         // Make highligt layer completely visible
