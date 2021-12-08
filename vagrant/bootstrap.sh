@@ -33,4 +33,3 @@ mysql $DBNAME< ../../vagrant/src/sql/luonnit.sql -uroot -p$DBPASSWD
 mysql $DBNAME< ../../vagrant/src/sql/Lumilaadut.sql -uroot -p$DBPASSWD
 mysql $DBNAME< ../../vagrant/src/sql/Segmentit.sql -uroot -p$DBPASSWD
 mysql $DBNAME< ../../vagrant/src/sql/Koordinaatit.sql -uroot -p$DBPASSWD
-mysql $DBNAME< ../../vagrant/src/sql/Alalumilaadut.sql -uroot -p$DBPASSWD
