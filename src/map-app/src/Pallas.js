@@ -25,9 +25,6 @@ import "./style.css";
 import Map from "./NewMap";
 import Manage from "./Manage";
 import Info from "./Info";
-// eslint-disable-next-line no-unused-vars
-import TopBar from "./TopBar";
-// eslint-disable-next-line no-unused-vars
 import WeatherTab from "./weather/WeatherTab";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "./BottomNav";
