@@ -109,13 +109,18 @@ function Map(props) {
   React.useEffect(() => {
     // Get all of the snow types that are currently applied to a segment on the map
     props.segments.forEach(segment => {
+      let newArray = currentSnowTypes;
       if(segment.update !== null) {
-        if(segment.update.Lumi !== undefined && !(currentSnowTypes.includes(segment.update.Lumi))) {
-          let newArray = currentSnowTypes;
-          newArray.push(segment.update.Lumi);
-          setCurrentSnowTypes(newArray);
+        if(segment.update.Lumi1 !== undefined && !(currentSnowTypes.includes(segment.update.Lumi1))) {
+          console.log(segment.update.Lumi1);
+          newArray.push(segment.update.Lumi1);
+        }
+        if(segment.update.Lumi2 !== undefined && !(currentSnowTypes.includes(segment.update.Lumi2))) {
+          console.log(segment.update.Lumi2);
+          newArray.push(segment.update.Lumi2);
         }
       }
+      setCurrentSnowTypes(newArray);
     });
   }, [props.segments]);
 

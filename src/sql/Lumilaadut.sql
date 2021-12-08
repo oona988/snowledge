@@ -6,7 +6,7 @@ VALUES  (1,'Korppu','#3838a0',3,NULL,'Kova hangen pinnalla oleva kansi. Korppu v
         (5,'Tuulen pieksemä lumi','#7C759F',3,NULL,'Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.'),
         (6,'Vähäinen lumi','#6D4F32',NULL,NULL,''),
         (7,'Haitat','#6D4F32',NULL,NULL,''),
-        (8,'Lumeton maa',NULL,NULL,NULL,''),
+        (8,'Lumeton maa',"#000000",NULL,NULL,''),
         (9,'Vitilumi','#5AABED',5,4,'Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.'),
         (10,'Puuterilumi','#5AABED',5,4,'Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.'),
         (11,'Märkä uusi lumi','#5AABED',4,4,'Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.'),
