@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
     width: "75vw"
   },
   content: {
-    paddingTop: "15vh",
+    paddingTop: "50px",
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-evenly"
@@ -53,26 +53,38 @@ const useStyles = makeStyles(() => ({
     paddingTop: "15vh",
     paddingLeft: "50px",
     paddingRight: "50px"
+  },
+  snowHeader: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "15vh",
+    paddingLeft: "50px",
+    paddingRight: "50px"
   }
 }));
 
-function SnowTypes() {
+function SnowTypes(props) {
 
   const styledClasses = useStyles();
   return(
     <div className={styledClasses.root}>
-      <Box className={styledClasses.header}>
+      <Box className={styledClasses.header} style={props.isMobile ? {width: "100vw"} : {}}>
         <Typography variant="h3">SELITTEET</Typography>
       </Box>
       <Box className={styledClasses.avalanche}>
         <img src="/icons/avalanche.svg" style={{height: "100px", width: "100px"}}></img>
         <Typography variant="h4">Lumivyöryvaroitus</Typography>
-        <Typography>
+        <Typography style={{paddingTop: "25px"}}>
           Pallaksen lumivyörymaastoja ovat useat kurut kuten Pyhäkuru, Palkaskuru, 
           Rihmakuru sekä yli 25 asteiset jyrkät rinteet Lommoltunturissa, Keimiötunturissa ja Lehmäkerolla. 
           Yksittäisiä pienempiä vyöryjä voi tapahtua myös muualla jyrkkien maastonmuotojen läheisyydessä. 
           Todennäköisyys lumivyöryyn kasvaa säänmuutosten yhteydessä.
         </Typography>
+      </Box>
+      <Box className={styledClasses.snowHeader}>
+        <Typography variant="h4">Lumityypit</Typography>
       </Box>
       <Box className={styledClasses.content}>
         <Box className={styledClasses.snowType}>

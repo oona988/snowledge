@@ -228,7 +228,7 @@ function App() {
           showSnow
             ? 
             <div className="snow_tab">
-              <SnowTypes/>
+              <SnowTypes isMobile={isMobile}/>
             </div>
             : 
             <div></div> 

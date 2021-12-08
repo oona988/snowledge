@@ -134,6 +134,10 @@ body {
     width: 100vw;
   }
 
+  .app .weather_tab {
+    width: 100vw;
+  }
+
   .welcome_view {
     position: absolute;
     top: 0px;
