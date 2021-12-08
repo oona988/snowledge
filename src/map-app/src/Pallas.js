@@ -283,6 +283,7 @@ function App() {
               onUpdate={chooseSegment}
               onClose={chooseSegment}
               updateWoods={updateWoods}
+              snowtypes={snowtypes}
             />
             :
             <div />
