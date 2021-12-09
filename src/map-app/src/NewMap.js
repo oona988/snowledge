@@ -59,7 +59,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
-import FilterIcon from "@material-ui/icons/Filter";
+import FilterIcon from "@material-ui/icons/FilterList";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -104,6 +104,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 8,
     flex: 1,
     height: "40px",
+  },
+  logo: {
+    position: "absolute",
+    left: "42vw",
+    top: "15px",
+    width: "72px",
+    height: "44px",
+    zIndex: 1
   }
 }));
 
@@ -174,6 +182,10 @@ function Map(props) {
 
   return (
     <div className="map">
+      {props.isMobile ?
+        <img className={styledClasses.logo} src="pallaksen_pollot_logo.png"></img>
+        :
+        <div></div>}
       <PallasMap
         shownSegment={props.shownSegment}
         chosenSegment={segment => updateChosen(segment)}
