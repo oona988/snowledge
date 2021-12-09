@@ -43,6 +43,9 @@ Emil Calonius 26.11.2021
 Remove old infobox and checkbox
 Add a filter feature
 
+Emil Calonius 9.12
+Edited layout of filter feature for mobile
+
 **/
 
 import * as React from "react";
@@ -55,6 +58,8 @@ import List from "@material-ui/core/List";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import FilterIcon from "@material-ui/icons/Filter";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +82,15 @@ const useStyles = makeStyles((theme) => ({
     left: theme.spacing(1),
     zIndex: 1,
     width: "350px"
+  },
+  buttonsCntainerMobile: {
+    display: "flex",
+    padding: theme.spacing(1),
+    position: "absolute",
+    bottom: "60px",
+    left: theme.spacing(1),
+    zIndex: 1,
+    width: "100px"
   },
   eyeIcon: {
     color: "white",
@@ -146,6 +160,14 @@ function Map(props) {
   function updateChosen(segment) {
     props.onClick(segment);
   }
+
+  function handleClose() {
+    setOpen(false);
+  }
+
+  function handleClickOpen() {
+    setOpen(!open);
+  }
   
   // Use styles
   const styledClasses = useStyles();
@@ -163,16 +185,17 @@ function Map(props) {
         highlightedSnowType={highlightedSnowType}
         showMap={props.showMap}
       ></PallasMap>
-      <Box className={styledClasses.buttonsCntainer}>
-        <Box className={styledClasses.menuContainer}>
-          <Button
-            onClick={handleClick}
-            variant="contained"
-            style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px"}}
-          >
-            {buttonText}
-          </Button>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+      {props.isMobile ? 
+        <Box className={styledClasses.buttonsCntainerMobile}>
+          <Box style={{paddingRight: "10px"}}>
+            <IconButton
+              onClick={handleClickOpen}
+              style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px", borderRadius: 8}}
+            >
+              <FilterIcon></FilterIcon>
+            </IconButton>
+          </Box>
+          <Dialog onClose={handleClose} open={open}>
             <List style={{maxHeight: "500px", overflow: "auto"}}>
               <Box className={styledClasses.menu}>
                 {
@@ -183,7 +206,7 @@ function Map(props) {
                         <Box key={snowType.ID}>
                           <Button
                             fullWidth="true"
-                            onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                            onClick={() => {updateHighlightedSnowType(snowType); handleClickOpen();}}
                             style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
                           >
                             {snowType.Nimi}
@@ -196,24 +219,76 @@ function Map(props) {
                 }
                 <Button
                   fullWidth="true"
-                  onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
+                  onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClickOpen();}}
                   style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
                 >
                   Vain laskualueet
                 </Button>
               </Box>
             </List>
-          </Collapse>
+          </Dialog>
+          <Box className={styledClasses.eyeIconContainer}>
+            <IconButton
+              className={styledClasses.eyeIcon}
+              onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+            >
+              {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </Box>
         </Box>
-        <Box className={styledClasses.eyeIconContainer}>
-          <IconButton
-            className={styledClasses.eyeIcon}
-            onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
-          >
-            {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          </IconButton>
+        :
+        <Box className={styledClasses.buttonsCntainer}>
+          <Box className={styledClasses.menuContainer}>
+            <Button
+              onClick={handleClick}
+              variant="contained"
+              style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px"}}
+            >
+              {buttonText}
+            </Button>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List style={{maxHeight: "500px", overflow: "auto"}}>
+                <Box className={styledClasses.menu}>
+                  {
+                    // Append a snow type to the list if it can be found on a segment
+                    currentSnowTypes.map(snowType => {
+                      return(
+                        currentSnowTypes.length > 0 ?
+                          <Box key={snowType.ID}>
+                            <Button
+                              fullWidth="true"
+                              onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                              style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                            >
+                              {snowType.Nimi}
+                            </Button>
+                          </Box>
+                          :
+                          <Box></Box>
+                      );
+                    })
+                  }
+                  <Button
+                    fullWidth="true"
+                    onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
+                    style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+                  >
+                    Vain laskualueet
+                  </Button>
+                </Box>
+              </List>
+            </Collapse>
+          </Box>
+          <Box className={styledClasses.eyeIconContainer}>
+            <IconButton
+              className={styledClasses.eyeIcon}
+              onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+            >
+              {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </Box>
         </Box>
-      </Box>
+      }
     </div>
   );
 }
