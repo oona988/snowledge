@@ -190,7 +190,7 @@ function SnowTypes(props) {
           <Box className={styledClasses.snow}>
             <img src="/lumilogot/icon_tuulenPieksema_sasturgi.svg" style={{height: "100px", width: "100px"}}></img>
             <Box>  
-              <Typography variant="h5">Sasturgi</Typography>
+              <Typography variant="h5">Sastrugi</Typography>
               <Typography>Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista. </Typography>
               <img src="/icons/skiability/1.svg" style={{height: "20px", width: "100px"}}></img>
             </Box>
