@@ -136,8 +136,6 @@ function Map(props) {
   // Zoom depends on the size of the screen
   const zoom = (props.isMobile ? 11 : 11.35);
 
-  console.log(currentSnowTypes);
-
   React.useEffect(() => {
     // Get all of the snow types that are currently applied to a segment on the map
     props.segments.forEach(segment => {
