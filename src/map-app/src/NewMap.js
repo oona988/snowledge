@@ -43,7 +43,7 @@ Emil Calonius 26.11.2021
 Remove old infobox and checkbox
 Add a filter feature
 
-Emil Calonius 9.12
+Emil Calonius 9.12.2021
 Edited layout of filter feature for mobile
 
 **/
@@ -136,17 +136,17 @@ function Map(props) {
   // Zoom depends on the size of the screen
   const zoom = (props.isMobile ? 11 : 11.35);
 
+  console.log(currentSnowTypes);
+
   React.useEffect(() => {
     // Get all of the snow types that are currently applied to a segment on the map
     props.segments.forEach(segment => {
       let newArray = currentSnowTypes;
       if(segment.update !== null) {
-        if(segment.update.Lumi1 !== undefined && !(currentSnowTypes.includes(segment.update.Lumi1))) {
-          console.log(segment.update.Lumi1);
+        if(segment.update.Lumi1 !== undefined && !(currentSnowTypes.filter(e => e.ID === segment.update.Lumi1.ID).length > 0)) {
           newArray.push(segment.update.Lumi1);
         }
-        if(segment.update.Lumi2 !== undefined && !(currentSnowTypes.includes(segment.update.Lumi2))) {
-          console.log(segment.update.Lumi2);
+        if(segment.update.Lumi2 !== undefined && !(currentSnowTypes.filter(e => e.ID === segment.update.Lumi2.ID).length > 0)) {
           newArray.push(segment.update.Lumi2);
         }
       }
@@ -224,18 +224,15 @@ function Map(props) {
                   // Append a snow type to the list if it can be found on a segment
                   currentSnowTypes.map(snowType => {
                     return(
-                      currentSnowTypes.length > 0 ?
-                        <Box key={snowType.ID}>
-                          <Button
-                            fullWidth="true"
-                            onClick={() => {updateHighlightedSnowType(snowType); handleClickOpen();}}
-                            style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
-                          >
-                            {snowType.Nimi}
-                          </Button>
-                        </Box>
-                        :
-                        <Box></Box>
+                      <Box key={snowType.ID}>
+                        <Button
+                          fullWidth="true"
+                          onClick={() => {updateHighlightedSnowType(snowType); handleClickOpen();}}
+                          style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                        >
+                          {snowType.Nimi}
+                        </Button>
+                      </Box>
                     );
                   })
                 }
@@ -275,18 +272,15 @@ function Map(props) {
                     // Append a snow type to the list if it can be found on a segment
                     currentSnowTypes.map(snowType => {
                       return(
-                        currentSnowTypes.length > 0 ?
-                          <Box key={snowType.ID}>
-                            <Button
-                              fullWidth="true"
-                              onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
-                              style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
-                            >
-                              {snowType.Nimi}
-                            </Button>
-                          </Box>
-                          :
-                          <Box></Box>
+                        <Box key={snowType.ID}>
+                          <Button
+                            fullWidth="true"
+                            onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
+                            style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                          >
+                            {snowType.Nimi}
+                          </Button>
+                        </Box>
                       );
                     })
                   }
