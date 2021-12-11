@@ -5,6 +5,9 @@ Luonut: Markku Nirkkonen
 
 Viimeisin päivitys
 
+Emil Calonius 11.12
+Lisätty Snackbar ilmoitus kirjautumisen epäonnistuessa
+
 Markku Nirkkonen 26.11.2020
 Suomennoksia, ei siis käytännön muutoksia
 
@@ -15,8 +18,6 @@ Pieniä muotoiluseikkoja säädetty
 
 import * as React from "react";
 import IconButton from "@material-ui/core/IconButton";
-// eslint-disable-next-line no-unused-vars
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Dialog from "@material-ui/core/Dialog";
@@ -28,13 +29,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
-// eslint-disable-next-line no-unused-vars
-import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
-// eslint-disable-next-line no-unused-vars
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import SnowIcon from "@material-ui/icons/AcUnit";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import CloseIcon from "@material-ui/icons/Close";
 
 // Tyylejä sisäänkirjautumislomakkeen osille
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: "5px",
     right: "5px"
+  },
+  snackbar: {
+    position: "absolute",
+    bottom: "130px"
   }
 }));
 
@@ -56,16 +61,26 @@ const useStyles = makeStyles((theme) => ({
 function Login(props) {
 
   // Hooks
-  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loginOpen, setLoginOpen] = React.useState(false);
+  // State of snackbar
+  const [open, setOpen] = React.useState(false);
 
   /*
    * Event handlers
    */
+
+  // eslint-disable-next-line no-unused-vars
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
   
   //Avaa kirjautumisdialogin
   const openLogin = () => {
@@ -118,6 +133,7 @@ function Login(props) {
       props.updateToken(res.token);
       console.log(res.user);
       props.updateUser(res.user);
+      if(res.user === undefined) setOpen(true);
       setLoading(false);
     };
     fetchLogin();
@@ -173,6 +189,28 @@ function Login(props) {
           <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm}>Kirjaudu</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        className={styledClasses.snackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <SnackbarContent
+          style={{backgroundColor: "#ed7a72", color: "black"}}
+          message="Virheellinen sähköposti tai salasana!" 
+          action={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
+      </Snackbar>
     </div>
   );
 
