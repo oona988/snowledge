@@ -50,7 +50,7 @@ function BottomNav(props) {
   // Use styles
   const styledClasses = useStyles();
 
-  if(props.user === null) {
+  if(props.user === null || props.user === undefined) {
     return(
       <ThemeProvider theme={navBarTheme}>
         <BottomNavigation
