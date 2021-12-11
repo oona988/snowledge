@@ -103,6 +103,7 @@ body {
 
 .welcome_view {
   flex: 25%;
+  height: 100vh;
 }
 
 .app .login_icon {
@@ -123,19 +124,19 @@ body {
 /* Styling for mobile devices */
 @media (max-width: 900px) {
   .app .management_view {
-    width: 100%;
+    width: 100vw;
   }
 
   .app .snow_tab {
-    width: 100%;
+    width: 100vw;
   }
 
   .app .map_container {
-    width: 100%;
+    width: 100vw;
   }
 
   .app .weather_tab {
-    width: 100%;
+    width: 100vw;
   }
 
   .welcome_view {
@@ -143,7 +144,7 @@ body {
     top: 0px;
     left: 0px;
     width: 100vw;
-    height: 100%vh;
+    min-height: -webkit-fill-available;
     z-index: 6;
   }
 }

@@ -105,13 +105,21 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     height: "40px",
   },
-  logo: {
+  logoContainer: {
     position: "absolute",
-    left: "42vw",
-    top: "15px",
+    top: "0px",
+    left: "0px",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+    pointerEvents: "none",
+    paddingTop: "10px"
+  },
+  logo: {
     width: "72px",
     height: "44px",
-    zIndex: 1
   }
 }));
 
@@ -183,7 +191,9 @@ function Map(props) {
   return (
     <div className="map">
       {props.isMobile ?
-        <img className={styledClasses.logo} src="pallaksen_pollot_logo.png"></img>
+        <div className={styledClasses.logoContainer}>
+          <img className={styledClasses.logo} src="pallaksen_pollot_logo.png"></img>
+        </div>
         :
         <div></div>}
       <PallasMap
