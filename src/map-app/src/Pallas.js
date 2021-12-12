@@ -78,12 +78,12 @@ function App() {
       // Muut värit suoraan kannasta. Taulukko on olennainen NewMap.js:n toiminnan kannalta (kartan värit)
       // emptyColor.name kirjoitusmuoto on olennainen myös NewMap.js:n updateHighlighted -funktiossa
       // Mikäli muutetaan, muutettava myös siellä.
-      const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
+      // const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
       const snowcolors = snowdata.map((item) => {
         return {color: item.Vari, name: item.Nimi};
       });
       // Yhdistetään olemassa olevat värit ja "ei tietoa" (viimeiseksi)
-      setSegmentColors(snowcolors.concat(emptyColor));
+      setSegmentColors(snowcolors);
       
       await updateData.forEach(update => {
         snowdata.forEach(snow => {

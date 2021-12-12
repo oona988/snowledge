@@ -173,8 +173,8 @@ function PallasMap(props) {
 
         // An array that specifies which color layers paint property needs to paint a certain segment
         const fillColor = ["match", ["get", "snowId1"]];
-        for(let i = 1; i <= props.segmentColors.length-3; i++) {
-          fillColor.push(i);
+        for(let i = 0; i <= props.segmentColors.length-1; i++) {
+          fillColor.push(i+1);
           fillColor.push(props.segmentColors[i].color);
         }
         fillColor.push("#000000");
