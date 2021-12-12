@@ -151,9 +151,9 @@ body {
   }
 
   .welcome_view {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    position: fixed;
+    bottom: 0;
+    height: 100%;
     width: 100vw;
     z-index: 6;
   }
