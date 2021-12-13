@@ -7,7 +7,7 @@ Luonut: Markku Nirkkonen
 Päivityshistoria
 
 13.12.2021 Juho Kumara
-Finished styling
+Updated styling
 
 5.12.2021 Juho Kumara
 Snow type names, icons and skiiability values are now shown correctly.
@@ -37,6 +37,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import InputBase from "@material-ui/core/InputBase";
 // eslint-disable-next-line no-unused-vars
 import { getThemeProps } from "@material-ui/styles";
+// eslint-disable-next-line no-unused-vars
+import Link from "@material-ui/core/Link";
 
 
 const useStyles = makeStyles(() => ({
@@ -88,7 +90,6 @@ const useStyles = makeStyles(() => ({
   },
   dangerIcon: {
     verticalAlign: "middle",
-    maxWidth: "8%",
   },
   skiabilityIcon: {
     height: "16px",
@@ -147,17 +148,41 @@ function getRelativeTimestamp(current, previous) {
 
 function SnowRecordView({ segmentdata, close }) {
   const classes = useStyles();
-
+  // Avalanche warning LINK
+  const url = "https://www.pallaksenpollot.com/";
   // 0px  XS  600px  SM  900px  MD
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
   //const isSM = useMediaQuery({ query: "(min-width: 600px) and (max-width: 900px)" });
-
-  const isEmpty = (segmentdata.update !== null && segmentdata.update !== undefined ? false : true);
+  const description = (segmentdata.update === null || segmentdata.update === undefined ? "" : segmentdata.update.Kuvaus);
+  const isEmpty = (segmentdata.update === null || segmentdata.update === undefined ? true : checkIfEmpty());
   // eslint-disable-next-line no-unused-vars
   const [expanded, setExpanded] = React.useState(isXS ? false : true);
+  
 
-  const description = (segmentdata.update === null || segmentdata.update === undefined ? "" : segmentdata.update.Kuvaus);
+  function checkIfEmpty() {
+    let returnvalue = true;
 
+    if (segmentdata.update.Lumi1 !== undefined) {
+      returnvalue = false;
+    }
+    else if (segmentdata.update.Lumi2 !== undefined) {
+      returnvalue = false;
+    }
+    else if (segmentdata.update.Lumi3 !== undefined) {
+      returnvalue = false;
+    }
+    else if (segmentdata.update.Lumi4 !== undefined) {
+      returnvalue = false;
+    }
+    else if (description !== "") {
+      returnvalue = false;
+    }
+    else {
+      returnvalue = true;
+    }
+
+    return returnvalue;
+  }
   // Gets boolean value of snowtype visibility, by given index (indices 1&2 are primary types, 3&4 are secondary types)
   const isEnabled = (index) => {
     if (segmentdata.update !== null && segmentdata.update !== undefined) {
@@ -225,8 +250,14 @@ function SnowRecordView({ segmentdata, close }) {
   if (segmentdata !== null) {
     if (segmentdata.Lumivyöryvaara) {
       // Lumivyöryvaaran merkin tiedostonimi on !.png
-      dangerimage = <img className={classes.dangerIcon} src={process.env.PUBLIC_URL + "/icons/avalanche.svg"} alt="lumivyöryvaaran logo" />;
-      dangertext = <Typography className={classes.normalText} variant="subtitle1" color="error" display="inline">Lumivyöryherkkä alue, tarkista lumivyörytilanne!</Typography>;
+      dangerimage = <Grid item xs={12} sm={12} style={{ backgroundColor: "orange", margin: 0, paddingBottom: "1%" }}>
+        <img className={classes.dangerIcon} style={isXS ? { maxWidth: "15%" } : { maxWidth: "8%" }} src={process.env.PUBLIC_URL + "/icons/avalanche.svg"} alt="lumivyöryvaaran logo" />
+      </Grid>;
+      dangertext = <div>
+        <Typography className={classes.normalText} variant="subtitle1" color="error" display="inline">Tarkista lumivyörytilanne nettisivuiltamme: </Typography>
+        <Link className={classes.normalText} href={url} variant="subtitle1" display="inline">{url}</Link>
+        <Grid item xs={12} sm={12} style={{ backgroundColor: "orange", margin: 0, paddingBottom: "1%" }}></Grid>
+      </div>;
     } else {
       dangerimage = <div />;
       dangertext = null;
@@ -254,8 +285,8 @@ function SnowRecordView({ segmentdata, close }) {
       {/* Avalanche warning and icon if needed */}
       {segmentdata.Nimi !== "Metsä" &&
         <Grid item xs={12} sm={12} align="center">
-          {segmentdata === null ? null : dangertext}
           {segmentdata === null ? null : dangerimage}
+          {segmentdata === null ? null : dangertext}
         </Grid>
       }
 
@@ -355,7 +386,7 @@ function SnowRecordView({ segmentdata, close }) {
                 </Grid>}
                 {(isEnabled(3) || isEnabled(4)) && <Grid item xs={12} sm={12} container>
                   <Grid item xs={12} sm={12}>
-                    <Typography className={classes.smallHeaders} style={{ paddingLeft: "5px", paddingTop: (isXS ? "0px" : "5px")}} variant="body1" component="p" display="inline">Alueen toissijaiset lumityypit</Typography>
+                    <Typography className={classes.smallHeaders} style={{ paddingLeft: "5px", paddingTop: (isXS ? "0px" : "5px") }} variant="body1" component="p" display="inline">Alueen toissijaiset lumityypit</Typography>
                   </Grid>
 
                   <Grid item xs={12} sm={12}>
@@ -363,7 +394,7 @@ function SnowRecordView({ segmentdata, close }) {
                   </Grid>
 
                   {/* Secondary snowtypes */}
-                  {isEnabled(3) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px")}} container>
+                  {isEnabled(3) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px") }} container>
                     <Grid item xs={3} sm={3}>
                       {
                         <CardMedia
@@ -389,7 +420,7 @@ function SnowRecordView({ segmentdata, close }) {
                     </Grid>
                   </Grid>}
 
-                  {isEnabled(4) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px")}} container>
+                  {isEnabled(4) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px") }} container>
                     <Grid item xs={3} sm={3}>
                       {
                         <CardMedia
@@ -433,9 +464,9 @@ function SnowRecordView({ segmentdata, close }) {
           </Grid>}
           {/* Info about latest update time */}
           {!isXS &&
-            <Grid item sm={12} container className={classes.addPadding}>
+            <Grid item sm={12} container>
               <Grid item sm={5}>
-                <Typography className={classes.timeStamp} align="center" variant="body2" component="p">
+                <Typography className={classes.timeStamp} variant="body2" component="p">
                   {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}
                 </Typography>
               </Grid>
@@ -460,7 +491,7 @@ function SnowRecordView({ segmentdata, close }) {
       {(isEmpty && segmentdata.Nimi !== "Metsä") &&
         <Grid item xs={12} sm={12} container className={classes.addPadding}>
           <Typography className={classes.timeStamp} align="center">
-            Ei päivitystietoa segmentistä.
+            Ei havaintoja alueelta.
           </Typography>
         </Grid>
       }

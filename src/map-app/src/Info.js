@@ -6,6 +6,12 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+13.12.2021 Juho Kumara
+Updated styling, minor fixes.
+
+19.10-5.12.2021 (changes done between given dates) Juho Kumara
+Created a new version of snow record entry view, following the new plan. 
+
 18.10.2021 Juho Kumara
 Muokattu segmenttien päivitysikkunaa vastaamaan uutta UI-suunnitelmaa (Keskeneräinen versio ilman kaikkia tyylimuutoksia)
 Edited snow record entry view to look similar to new UI design (Work-in-progress version without proper styling)
@@ -597,7 +603,7 @@ function Info(props) {
             maxWidth="xl"
           >
             <ThemeProvider theme={theme}>
-              <Box className={classes.box}>
+              <Box className={classes.box} style={isXS ? {} : {minWidth: "300px"}}>
                 {/*Main header */}
                 <Typography className={classes.largeHeaders}>PÄIVITÄ SEGMENTTIÄ</Typography>
                 {/*Segment name */}
@@ -661,7 +667,7 @@ function Info(props) {
                         <Box className={classes.item} boxShadow={2}>
                           <Box display="flex" flexDirection="row">
                             <Typography className={classes.smallHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
-                            <IconButton onClick={() => removeSnowtype(item)} style={{left: "15%"}} >
+                            <IconButton onClick={() => removeSnowtype(item)} style={isXS ? {left: "30%"} : {left: "35%"}} >
                               <DeleteIcon />
                             </IconButton>
                           </Box>
