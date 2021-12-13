@@ -287,9 +287,6 @@ function Info(props) {
       }
     }
 
-    console.log(primaryCount);
-    console.log(secondaryCount);
-
     let newValues = selectDisabled;
 
     if (primaryCount == 2) {
@@ -309,7 +306,6 @@ function Info(props) {
       setAddVisible(true);
     }
 
-    console.log(newContent);
     setSelectDisabled(newValues);
     setDisabledSnowTypes(newDisabled);
     setSnowRecordContent(snowRecordContent.concat(newContent));
@@ -342,7 +338,6 @@ function Info(props) {
     else if (isSecondary) {
 
       let secondaryContent = { id: id, secondary: true };
-      console.log(secondaryContent);
       setSnowRecordContent(snowRecordContent.concat(secondaryContent));
 
       if (secondaryValues == 1) {
@@ -420,7 +415,6 @@ function Info(props) {
   // Defines the default value of a snowtype box
   const getValue = (id) => {
     let index = snowTypeList.findIndex((snowTypeList => snowTypeList.ID === id));
-    console.log(snowTypeList[index]);
     return snowTypeList[index];
   };
   // Checks if an option should be disabled or not
@@ -603,7 +597,7 @@ function Info(props) {
             maxWidth="xl"
           >
             <ThemeProvider theme={theme}>
-              <Box className={classes.box} style={isXS ? {} : {minWidth: "300px"}}>
+              <Box className={classes.box} style={isXS ? {} : { minWidth: "300px" }}>
                 {/*Main header */}
                 <Typography className={classes.largeHeaders}>PÄIVITÄ SEGMENTTIÄ</Typography>
                 {/*Segment name */}
@@ -667,7 +661,7 @@ function Info(props) {
                         <Box className={classes.item} boxShadow={2}>
                           <Box display="flex" flexDirection="row">
                             <Typography className={classes.smallHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
-                            <IconButton onClick={() => removeSnowtype(item)} style={isXS ? {left: "30%"} : {left: "35%"}} >
+                            <IconButton onClick={() => removeSnowtype(item)} style={isXS ? { left: "30%" } : { left: "35%" }} >
                               <DeleteIcon />
                             </IconButton>
                           </Box>
