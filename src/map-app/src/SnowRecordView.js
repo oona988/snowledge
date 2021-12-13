@@ -235,7 +235,7 @@ function SnowRecordView({ segmentdata, close }) {
       <Grid container item xs={12} sm={12} style={{ backgroundColor: "#000000B3", margin: 0, paddingBottom: "1%" }}>
         {/* Button for closing snow record view */}
         <Grid item xs={12} sm={12}>
-          <IconButton aria-label="close" style={isXS ? { color: "white", left: "85%" } : { color: "white", left: "92%", paddingTop: "1%", paddingBottom: 0 }} onClick={() => close()}>
+          <IconButton aria-label="close" style={isXS ? { color: "white", left: "85%" } : { color: "white", left: "90%", paddingTop: "1%", paddingBottom: 0 }} onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Grid>
@@ -277,7 +277,6 @@ function SnowRecordView({ segmentdata, close }) {
               <Grid item container xs={8} sm={9} className={classes.snowInfo}>
                 <Grid item xs={12} sm={12}>
                   <Typography className={classes.smallHeaders} variant="body1" component="p">
-                    {/*segmentdata.update === null || segmentdata.update === undefined ? "Ei tietoa" : segmentdata.update.Lumi.Nimi*/}
                     {segmentdata.update.Lumi1.Nimi}
                   </Typography>
                 </Grid>
@@ -329,7 +328,7 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid >
           }
           {(isEnabled(3) || isEnabled(4) || description !== "") &&
-            <Grid item xs={12} sm={7}>
+            <Grid item xs={12} sm={12}>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
 
                 {isXS &&
@@ -341,7 +340,7 @@ function SnowRecordView({ segmentdata, close }) {
                 }
 
                 {/* Description of segment, this might be changed later */}
-                {isXS && <Grid item xs={12} style={{ paddingTop: "5px", paddingBottom: "5px" }}>
+                {isXS && <Grid item xs={12} style={{ paddingTop: "10px", paddingBottom: "10px" }}>
                   {description !== "" && <InputBase
                     className={classes.normalText}
                     value={description}
@@ -349,12 +348,11 @@ function SnowRecordView({ segmentdata, close }) {
                     fullWidth={true}
                     maxRows={6}
                   />}
-                  {/* <Typography className={classes.normalText} variant="subtitle2"></Typography> segmentdata.update === null || segmentdata.update === undefined ? "Ei kuvausta" : segmentdata.update.Teksti*/}
 
                 </Grid>}
                 {(isEnabled(3) || isEnabled(4)) && <Grid item xs={12} sm={12} container>
                   <Grid item xs={12} sm={12}>
-                    <Typography className={classes.smallHeaders} style={{ paddingLeft: "5px" }} variant="body1" component="p" display="inline">Alueen toissijaiset lumityypit</Typography>
+                    <Typography className={classes.smallHeaders} style={{ paddingLeft: "5px", paddingTop: (isXS ? "0px" : "5px")}} variant="body1" component="p" display="inline">Alueen toissijaiset lumityypit</Typography>
                   </Grid>
 
                   <Grid item xs={12} sm={12}>
@@ -362,7 +360,7 @@ function SnowRecordView({ segmentdata, close }) {
                   </Grid>
 
                   {/* Secondary snowtypes */}
-                  {isEnabled(3) && <Grid item xs={12} sm={6} container>
+                  {isEnabled(3) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px")}} container>
                     <Grid item xs={3} sm={3}>
                       {
                         <CardMedia
@@ -388,7 +386,7 @@ function SnowRecordView({ segmentdata, close }) {
                     </Grid>
                   </Grid>}
 
-                  {isEnabled(4) && <Grid item xs={12} sm={6} container>
+                  {isEnabled(4) && <Grid item xs={12} sm={4} style={{ paddingTop: (isXS ? "0px" : "10px")}} container>
                     <Grid item xs={3} sm={3}>
                       {
                         <CardMedia
@@ -419,7 +417,7 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid>}
 
           {/* Description of segment, this might be changed later */}
-          {!isXS && <Grid item xs={12} sm={12} align="center">
+          {!isXS && <Grid item xs={12} sm={12} align="center" style={{ paddingTop: "15px", paddingBottom: "15px" }}>
             {description !== "" && <InputBase
               className={classes.normalText}
               value={description}
@@ -432,7 +430,7 @@ function SnowRecordView({ segmentdata, close }) {
           </Grid>}
           {/* Info about latest update time */}
           {!isXS &&
-            <Grid item sm={12} container>
+            <Grid item sm={12} container className={classes.addPadding}>
               <Grid item sm={5}>
                 <Typography className={classes.timeStamp} align="center" variant="body2" component="p">
                   {segmentdata.update === null || segmentdata.update === undefined ? "" : updateInfo}

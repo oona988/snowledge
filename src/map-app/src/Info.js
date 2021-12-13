@@ -157,16 +157,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Donau",
     borderRadius: "10px",
   },
-  image: {
-    width: "100%"
-  },
-  imageWrapper: {
-    maxHeight: "213px",
-    marginTop: "7px",
-    marginBottom: "3px",
-    borderRadius: "10px",
-    width: 325,
-  },
 }));
 
 
