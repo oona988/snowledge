@@ -6,6 +6,12 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+13.12.2021 Juho Kumara
+Updated styling, minor fixes.
+
+19.10-5.12.2021 (changes done between given dates) Juho Kumara
+Created a new version of snow record entry view, following the new plan. 
+
 18.10.2021 Juho Kumara
 Muokattu segmenttien päivitysikkunaa vastaamaan uutta UI-suunnitelmaa (Keskeneräinen versio ilman kaikkia tyylimuutoksia)
 Edited snow record entry view to look similar to new UI design (Work-in-progress version without proper styling)
@@ -51,28 +57,20 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Divider from "@material-ui/core/Divider";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
+//import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SnowRecordView from "./SnowRecordView";
-// eslint-disable-next-line no-unused-vars
-import CardMedia from "@material-ui/core/CardMedia";
-// eslint-disable-next-line no-unused-vars
-import Paper from "@material-ui/core/Paper";
-import { useEffect } from "react";
-// eslint-disable-next-line no-unused-vars
-import { Card } from "@material-ui/core";
+import { useMediaQuery } from "react-responsive";
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({
@@ -83,43 +81,47 @@ const theme = createTheme({
     secondary: {
       main: "#EEEEEE"
     }
-  }
+  },
+  overrides: {
+    MuiCheckbox: {
+      colorSecondary: {
+        color: "#000000B3",
+        "&$checked": {
+          color: "#000000B3",
+        },
+      },
+    },
+  },
 });
 
+//const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   editButton: {
+    fontFamily: "Donau",
     color: "black",
     display: "flex",
   },
-  inputs: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  },
-  helpers: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  },
-  snowRecordEBox: {
+  box: {
     padding: "7px",
     margin: "10px",
   },
-  snowRecordEPart: {
+  part: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     marginBottom: "15px",
     marginTop: "15px",
   },
-  snowRecordEHeader: {
+  largeHeaders: {
     fontFamily: "Donau",
+    fontSize: "medium",
     letterSpacing: 4,
     textTransform: "uppercase",
-    fontWeight: 600,
+    fontWeight: 1000,
     display: "block",
   },
-  snowRecordEHeaders: {
+  smallHeaders: {
     fontFamily: "Donau",
     padding: "3px",
     marginTop: "5px",
@@ -130,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
     fontSize: "medium",
   },
-  snowRecordEButtons: {
+  buttons: {
     paddingLeft: 66,
     paddingRight: 56,
     position: "relative",
@@ -141,12 +143,12 @@ const useStyles = makeStyles((theme) => ({
       right: 16
     }
   },
-  snowRecordEButtonsWrapper: {
+  buttonsWrapper: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
   },
-  snowRecordEItem: {
+  item: {
     padding: "10px",
     marginTop: "3px",
     marginBottom: "3px",
@@ -154,27 +156,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     borderRadius: "10px",
-    width: 325,
   },
-  snowRecordEItemContents: {
-    marginBottom: "5px",
-    marginTop: "2px",
-    display: "flex",
-    flexDirection: "row",
-  },
-  snowRecordETextFields: {
+  textFields: {
     fontFamily: "Donau",
     borderRadius: "10px",
-  },
-  image: {
-    width: "100%"
-  },
-  imageWrapper: {
-    maxHeight: "213px",
-    marginTop: "7px",
-    marginBottom: "3px",
-    borderRadius: "10px",
-    width: 325,
   },
 }));
 
@@ -196,12 +181,9 @@ function Info(props) {
   const [disabledSnowTypes, setDisabledSnowTypes] = React.useState([]);
   const [updateEnabled, setUpdateEnabled] = React.useState(false);
 
-  const [selectedFile, setSelectedFile] = React.useState();
-  const [image, setImage] = React.useState();
-  const [hasImage, setHasImage] = React.useState(false);
-  //const [imageBlob, setImageBlob] = React.useState(null);
-
   const classes = useStyles();
+
+  const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   /*
    * Event handlers
@@ -226,8 +208,6 @@ function Info(props) {
 
   // Segmentin päivitysdialogin sulkeminen
   const closeUpdate = () => {
-    setHasImage(false);
-    setSelectedFile(undefined);
     setUpdateEnabled(false);
     setSearchVisible(false);
     setSelectVisible(false);
@@ -307,9 +287,6 @@ function Info(props) {
       }
     }
 
-    console.log(primaryCount);
-    console.log(secondaryCount);
-
     let newValues = selectDisabled;
 
     if (primaryCount == 2) {
@@ -329,7 +306,6 @@ function Info(props) {
       setAddVisible(true);
     }
 
-    console.log(newContent);
     setSelectDisabled(newValues);
     setDisabledSnowTypes(newDisabled);
     setSnowRecordContent(snowRecordContent.concat(newContent));
@@ -362,7 +338,6 @@ function Info(props) {
     else if (isSecondary) {
 
       let secondaryContent = { id: id, secondary: true };
-      console.log(secondaryContent);
       setSnowRecordContent(snowRecordContent.concat(secondaryContent));
 
       if (secondaryValues == 1) {
@@ -440,7 +415,6 @@ function Info(props) {
   // Defines the default value of a snowtype box
   const getValue = (id) => {
     let index = snowTypeList.findIndex((snowTypeList => snowTypeList.ID === id));
-    console.log(snowTypeList[index]);
     return snowTypeList[index];
   };
   // Checks if an option should be disabled or not
@@ -490,9 +464,6 @@ function Info(props) {
       datavalues[3] = idValues[2];
       datavalues[4] = idValues[3];
       datavalues[5] = text;
-      //datavalues[6] = imageBlob.toString("base64");
-      //console.log(imageBlob);
-      //console.log(imageBlob.toString("base64"));
     }
     // When checkbox is checked:
     else {
@@ -503,7 +474,6 @@ function Info(props) {
         datavalues[3] = props.segmentdata.update.Toissijainen_ID1;
         datavalues[4] = props.segmentdata.update.Toissijainen_ID2;
         datavalues[5] = props.segmentdata.update.Kuvaus;
-        //datavalues[6] = props.segmentdata.update.Lumen_kuva;
       }
       else {
         datavalues[0] = props.segmentdata.ID;
@@ -512,7 +482,6 @@ function Info(props) {
         datavalues[3] = null;
         datavalues[4] = null;
         datavalues[5] = "";
-        //datavalues[6] = null;
       }
     }
 
@@ -524,7 +493,6 @@ function Info(props) {
       Toissijainen_ID1: datavalues[3],
       Toissijainen_ID2: datavalues[4],
       Kuvaus: datavalues[5],
-      //Lumen_kuva: datavalues[6]
     };
 
     const fetchUpdate = async () => {
@@ -567,12 +535,6 @@ function Info(props) {
             update.Lumi4 = snow;
           }
         });
-
-        /*if(update.Lumen_kuva !== null){
-          console.log(update.Lumen_kuva);
-          update.Kuva = new Buffer.from(update.Lumen_kuva).toString("base64");
-          console.log(update.Kuva);
-        }*/
       });
 
       data.forEach(segment => {
@@ -606,101 +568,6 @@ function Info(props) {
     closeUpdate();
   };
 
-  useEffect(() => {
-    if (!selectedFile) {
-      setImage(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setImage(objectUrl);
-
-    console.log(objectUrl);
-
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  // Handles select of an image file 
-  const selectFile = e => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      setHasImage(false);
-      return;
-    }
-
-    setUpdateEnabled(true);
-    setHasImage(true);
-    setSelectedFile(e.target.files[0]);
-    /*console.log(e.target.files[0]);
-    console.log();
-    */
-    /*
-    let file = e.target.files[0];
-
-    getBase64(file)
-      .then(() => {
-        setImageBlob(file);
-        console.log(file);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-      */
-    //setImageBlob(file);
-    /*file.arrayBuffer().then((arrayBuffer) => {
-      let blob = new Blob([new Uint8Array(arrayBuffer)], { type: file.type });
-      setImageBlob(blob);
-    });*/
-
-    //readBlob(e.target.files[0]);
-  };
-
-  const deleteFile = () => {
-    setSelectedFile(undefined);
-    setHasImage(false);
-  };
-  /*
-  const getBase64 = file => {
-    return new Promise(resolve => {
-      let fileInfo;
-      let baseURL = "";
-      // Make new FileReader
-      let reader = new FileReader();
-
-      // Convert the file to base64 text
-      reader.readAsDataURL(file);
-
-      // on reader load somthing...
-      reader.onload = () => {
-        // Make a fileInfo Object
-        console.log("Called", reader);
-        baseURL = reader.result;
-        console.log(baseURL);
-        resolve(baseURL);
-      };
-      console.log(fileInfo);
-    });
-  };
-
-  /*
-  const readBlob = file => {
-    var promise = new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = e => {
-        resolve(e.target.result);
-      };
-      reader.onerror = reject;
-
-      reader.readAsText(file);
-    });
-    promise.then(result => setImageBlob(result));
-  };*/
-
-  /*readBlob.then(result => {
-    console.log(result);
-  });*/
-
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
   if (props.segmentdata !== undefined) {
 
@@ -711,49 +578,50 @@ function Info(props) {
         <div className="info">
 
           <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} snowtypes={props.snowtypes}></SnowRecordView>
-          <IconButton
-            className={classes.editButton}
-            onClick={openUpdate}
-          >
-            <EditIcon />
-            <Typography variant="button">Päivitä</Typography>
-          </IconButton>
+          {props.segmentdata.Nimi !== "Metsä" &&
+            <IconButton
+              className={classes.editButton}
+              onClick={openUpdate}
+            >
+              <EditIcon />
+              <Typography className={classes.smallHeaders} variant="button">Päivitä</Typography>
+            </IconButton>
+          }
 
           {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
 
           <Dialog
+            fullScreen={(isXS && entryVisible)}
             onClose={closeUpdate}
             open={loginOpen}
+            maxWidth="xl"
           >
-            <MuiThemeProvider theme={theme}>
-              <DialogTitle id="update-segment">
-                {/*Otsikko */}
-                <Typography className={classes.snowRecordEHeader}>PÄIVITÄ SEGMENTTIÄ</Typography>
-                {/*Avustetekstit, esim segmentin nimi */}
-                <Typography variant="h5" className={classes.snowRecordEHeaders}>{props.segmentdata.Nimi}</Typography>
-              </DialogTitle>
-
-              <Box className={classes.snowRecordEBox}>
-                <Box className={classes.snowRecordEPart}>
-                  {/* Checkboxi pelkän aikaleiman päivitykselle*/}
-                  <Box>
-                    <FormControlLabel color="#42628B" control={<Checkbox onChange={updateEntryVisible} />} label="Päivitä vain aikaleima" />
-                  </Box>
+            <ThemeProvider theme={theme}>
+              <Box className={classes.box} style={isXS ? {} : { minWidth: "300px" }}>
+                {/*Main header */}
+                <Typography className={classes.largeHeaders}>PÄIVITÄ SEGMENTTIÄ</Typography>
+                {/*Segment name */}
+                <Typography className={classes.smallHeaders}>{props.segmentdata.Nimi}</Typography>
+                <Box className={classes.part}>
+                  {/* Timestamp update checkbox*/}
+                  <FormControlLabel control={
+                    <Checkbox onChange={updateEntryVisible} />
+                  } label="Päivitä vain aikaleima" />
                 </Box>
 
                 {/*THIS BOX CONTAINS ELEMENTS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
                 {entryVisible && (
-                  <Box className={classes.snowRecordEPart}>
+                  <Box className={classes.part}>
                     <Divider variant="middle" />
-                    <Box className={classes.snowRecordEPart}>
+                    <Box className={classes.part}>
                       {/*Snowtype add button:*/}
-                      {addVisible && (<Box className={classes.snowRecordEButtonsWrapper}>
+                      {addVisible && (<Box className={classes.buttonsWrapper}>
                         <Button size="large" variant="contained" onClick={() => { setAddVisible(false); setSelectVisible(true); }} color="primary" endIcon={<SearchIcon fontSize="large" />}
-                          className={classes.snowRecordEButtons}>Lisää
+                          className={classes.buttons}>Lisää
                         </Button>
                       </Box>)}
                       {/*Select whether type is primary or secondary:*/}
-                      {selectVisible && (<Select className={classes.snowRecordETextFields}
+                      {selectVisible && (<Select className={classes.textFields}
                         fullWidth={true}
                         displayEmpty
                         open={true}
@@ -768,7 +636,7 @@ function Info(props) {
                       {/*Autofill search:*/}
                       {searchVisible && (<Box>
                         <Autocomplete
-                          className={classes.snowRecordETextFields}
+                          className={classes.textFields}
                           id="snowRecordSearch"
                           onChange={(event, value) => { handleSearchClose(event, value); }}
                           open={searchVisible}
@@ -779,7 +647,7 @@ function Info(props) {
                           size="small"
                           getOptionDisabled={(option) => checkDisabledValues(option)}
                           getOptionLabel={(option) => option.Nimi}
-                          renderInput={(params) => (<TextField {...params} className={classes.snowRecordETextFields}
+                          renderInput={(params) => (<TextField {...params} className={classes.textFields}
                             size="small"
                             autoFocus={true}
                             placeholder="Etsi"
@@ -790,15 +658,15 @@ function Info(props) {
                       </Box>)}
                       {/*Snowtype boxes*/}
                       {snowRecordContent.map(item => (<Box id={item.id} key={item.id}>
-                        <Box className={classes.snowRecordEItem} boxShadow={2}>
+                        <Box className={classes.item} boxShadow={2}>
                           <Box display="flex" flexDirection="row">
-                            <Typography className={classes.snowRecordEHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
-                            <IconButton onClick={() => removeSnowtype(item)} marginLeft="auto">
+                            <Typography className={classes.smallHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
+                            <IconButton onClick={() => removeSnowtype(item)} style={isXS ? { left: "30%" } : { left: "35%" }} >
                               <DeleteIcon />
                             </IconButton>
                           </Box>
                           <Autocomplete
-                            className={classes.snowRecordETextFields}
+                            className={classes.textFields}
                             disableClearable
                             id="snowRecordSearch"
                             autoComplete={true}
@@ -809,7 +677,7 @@ function Info(props) {
                             getOptionDisabled={(option) => checkDisabledValues(option)}
                             defaultValue={getValue(item.id)}
                             getOptionLabel={(option) => option.Nimi}
-                            renderInput={(params) => (<TextField {...params} fullWidth={true} className={classes.snowRecordETextFields}
+                            renderInput={(params) => (<TextField {...params} fullWidth={true} className={classes.textFields}
                               size="small" variant="outlined"
                             />)}
                           />
@@ -819,36 +687,9 @@ function Info(props) {
 
                     <Divider variant="middle" />
                     {/* Description text box*/}
-                    <Box className={classes.snowRecordEPart}>
-                      <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuvaus</Typography>
-                      <TextField className={classes.snowRecordETextFields} value={text} onChange={updateText} id="standard-basic" placeholder="Kirjoita..." multiline variant="outlined" />
-                    </Box>
-                    <Divider variant="middle" />
-                    {/*</FormControl>*/}
-
-                    {/* Kuvan lisäys. Vain ulkoasu, EI TOIMI*/}
-                    <Box className={classes.snowRecordEPart}>
-                      <Typography variant="h5" className={classes.snowRecordEHeaders}>Kuva</Typography>
-                      <Box className={classes.snowRecordEButtonsWrapper}>
-                        {!hasImage && (
-                          <Button size="large" variant="contained" component="label" color="primary" endIcon={<AddIcon fontSize="large" />} className={classes.snowRecordEButtons}>
-                            Lisää
-                            <input type="file" onChange={selectFile} hidden accept="image/*" />
-                          </Button>)}
-                        {hasImage && (<Box>
-                          <Button variant="contained" color="#D61043" onClick={deleteFile} endIcon={<DeleteIcon fontSize="large" />} className={classes.snowRecordEButtons}>Poista</Button>
-                          <Button size="large" variant="contained" component="label" color="primary" endIcon={<SwapHorizIcon fontSize="large" />} className={classes.snowRecordEButtons}>
-                            Vaihda
-                            <input type="file" onChange={selectFile} hidden accept="image/*" />
-                          </Button>
-                        </Box>)}
-                      </Box>
-                      {selectedFile &&
-                        <Card className={classes.imageWrapper} >
-                          <CardMedia component="img" src={image} className={classes.image} />
-                        </Card>}
-                    </Box>
-                    <Box>
+                    <Box className={classes.part}>
+                      <Typography variant="h5" className={classes.smallHeaders}>Kuvaus</Typography>
+                      <TextField className={classes.textFields} value={text} maxRows={6} onChange={updateText} placeholder="Kirjoita..." multiline variant="outlined" />
                     </Box>
                   </Box>)}
                 {/* Dialogin toimintopainikkeet.*/}
@@ -857,7 +698,7 @@ function Info(props) {
                   <Button variant="contained" color="primary" id={"dialogOK"} disabled={!updateEnabled} onClick={sendForm}>Päivitä</Button>
                 </DialogActions>
               </Box>
-            </MuiThemeProvider>
+            </ThemeProvider>
           </Dialog>
         </div>
       );
