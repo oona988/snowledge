@@ -151,9 +151,6 @@ body {
   }
 
   .welcome_view {
-    position: fixed;
-    bottom: 0;
-    height: 100%;
     width: 100vw;
     z-index: 6;
   }
