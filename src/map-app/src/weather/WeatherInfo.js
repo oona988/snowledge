@@ -49,7 +49,6 @@ const useStyles = makeStyles(() => ({
   paper: {
     borderRadius: "10px",
     paddingTop: "1%",
-    marginTop: "4%",
     paddingBottom: "1%",
     backgroundColor: "rgba(255,255,255,0.7)",
     marginLeft: "10%",
@@ -117,9 +116,10 @@ const useStyles = makeStyles(() => ({
 // Paper for displaying weather info on day before yesterday
 function FirstDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.firstDayAverage - 180});
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} align="center">
+    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
@@ -206,9 +206,10 @@ function FirstDayWeatherPaper({weatherState}) {
 // Paper for displaying weather info on yesterday
 function SecondDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.secondDayAverage - 180});
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} align="center">
+    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
@@ -295,9 +296,10 @@ function SecondDayWeatherPaper({weatherState}) {
 // Paper for displaying current weather info
 function CurrentWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180, airpressureDirection: weatherState.airpressure.direction - 45});
+  const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} align="center">
+    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
