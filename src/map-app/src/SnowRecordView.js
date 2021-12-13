@@ -199,40 +199,40 @@ function SnowRecordView({ segmentdata, close }) {
       let returnvalue = false;
 
       switch (index) {
-        case 1:
-          if (segmentdata.update.Lumi1 !== undefined) {
-            returnvalue = true;
-          }
-          else {
-            returnvalue = false;
-          }
-          break;
-        case 2:
-          if (segmentdata.update.Lumi2 !== undefined) {
-            returnvalue = true;
-          }
-          else {
-            returnvalue = false;
-          }
-          break;
-        case 3:
-          if (segmentdata.update.Lumi3 !== undefined) {
-            returnvalue = true;
-          }
-          else {
-            returnvalue = false;
-          }
-          break;
-        case 4:
-          if (segmentdata.update.Lumi4 !== undefined) {
-            returnvalue = true;
-          }
-          else {
-            returnvalue = false;
-          }
-          break;
-        default:
-          break;
+      case 1:
+        if (segmentdata.update.Lumi1 !== undefined) {
+          returnvalue = true;
+        }
+        else {
+          returnvalue = false;
+        }
+        break;
+      case 2:
+        if (segmentdata.update.Lumi2 !== undefined) {
+          returnvalue = true;
+        }
+        else {
+          returnvalue = false;
+        }
+        break;
+      case 3:
+        if (segmentdata.update.Lumi3 !== undefined) {
+          returnvalue = true;
+        }
+        else {
+          returnvalue = false;
+        }
+        break;
+      case 4:
+        if (segmentdata.update.Lumi4 !== undefined) {
+          returnvalue = true;
+        }
+        else {
+          returnvalue = false;
+        }
+        break;
+      default:
+        break;
       }
 
       return returnvalue;
