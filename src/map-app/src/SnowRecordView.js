@@ -167,7 +167,7 @@ function SnowRecordView({ segmentdata, close }) {
   const isEmpty = (segmentdata.update === null || segmentdata.update === undefined ? true : checkIfEmpty());
   // eslint-disable-next-line no-unused-vars
   const [expanded, setExpanded] = React.useState(isXS ? false : true);
-  
+
 
   function checkIfEmpty() {
     let returnvalue = true;
@@ -199,40 +199,40 @@ function SnowRecordView({ segmentdata, close }) {
       let returnvalue = false;
 
       switch (index) {
-      case 1:
-        if (segmentdata.update.Lumi1 !== undefined) {
-          returnvalue = true;
-        }
-        else {
-          returnvalue = false;
-        }
-        break;
-      case 2:
-        if (segmentdata.update.Lumi2 !== undefined) {
-          returnvalue = true;
-        }
-        else {
-          returnvalue = false;
-        }
-        break;
-      case 3:
-        if (segmentdata.update.Lumi3 !== undefined) {
-          returnvalue = true;
-        }
-        else {
-          returnvalue = false;
-        }
-        break;
-      case 4:
-        if (segmentdata.update.Lumi4 !== undefined) {
-          returnvalue = true;
-        }
-        else {
-          returnvalue = false;
-        }
-        break;
-      default:
-        break;
+        case 1:
+          if (segmentdata.update.Lumi1 !== undefined) {
+            returnvalue = true;
+          }
+          else {
+            returnvalue = false;
+          }
+          break;
+        case 2:
+          if (segmentdata.update.Lumi2 !== undefined) {
+            returnvalue = true;
+          }
+          else {
+            returnvalue = false;
+          }
+          break;
+        case 3:
+          if (segmentdata.update.Lumi3 !== undefined) {
+            returnvalue = true;
+          }
+          else {
+            returnvalue = false;
+          }
+          break;
+        case 4:
+          if (segmentdata.update.Lumi4 !== undefined) {
+            returnvalue = true;
+          }
+          else {
+            returnvalue = false;
+          }
+          break;
+        default:
+          break;
       }
 
       return returnvalue;
@@ -458,7 +458,7 @@ function SnowRecordView({ segmentdata, close }) {
                 </Grid>}
 
                 {/* Sponsor logos */}
-                {isXS && <Grid container xs={12} className={classes.sponsorContainer}>
+                {(isXS && segmentdata.Nimi !== "Metsä") && <Grid container xs={12} className={classes.sponsorContainer} >
                   {/*<Grid item xs={6}>
                     <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
                       <img src="sponsor.png" alt="Sponsor logo" className={classes.sponsor} />
@@ -470,7 +470,7 @@ function SnowRecordView({ segmentdata, close }) {
                     </a>
                   </Grid>*/}
                 </Grid>}
-              
+
               </Collapse>
             </Grid>}
 
@@ -497,27 +497,6 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid >
           }
 
-          {/* Forest segment view */}
-          {segmentdata.Nimi === "Metsä" &&
-            <Grid item xs={12} sm={12} container className={classes.addPadding}>
-              <Grid item xs={12} sm={5} container className={classes.snowInfo}>
-                <Grid item xs={4} sm={3}>
-                  <CardMedia
-                    component={"img"}
-                    src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
-                    alt="lumityypin logo"
-                  />
-                </Grid>
-                <Grid item container xs={8} sm={9} className={classes.snowInfo}>
-                  <Grid item xs={12} sm={12}>
-                    <Typography className={classes.smallHeaders} variant="body1" component="p">
-                      Metsäalue
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>}
-
           {(isXS && (isEnabled(3) || isEnabled(4) || description !== "")) &&
             <Grid item xs={12} align="center">
               <IconButton
@@ -531,7 +510,26 @@ function SnowRecordView({ segmentdata, close }) {
               </IconButton>
             </Grid>
           }
-
+        </Grid>}
+      {/* Forest segment view */}
+      {segmentdata.Nimi === "Metsä" &&
+        <Grid item xs={12} sm={12} container className={classes.addPadding}>
+          <Grid item xs={12} sm={5} container className={classes.snowInfo}>
+            <Grid item xs={4} sm={3}>
+              <CardMedia
+                component={"img"}
+                src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
+                alt="lumityypin logo"
+              />
+            </Grid>
+            <Grid item container xs={8} sm={9} className={classes.snowInfo}>
+              <Grid item xs={12} sm={12}>
+                <Typography className={classes.smallHeaders} variant="body1" component="p">
+                  Metsäalue
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>}
       {(isEmpty && segmentdata.Nimi !== "Metsä") &&
         <Grid item xs={12} sm={12} container className={classes.addPadding}>
