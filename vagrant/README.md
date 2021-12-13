@@ -13,6 +13,6 @@ Web application for showing snow information. The application is produced in Sof
 
 7. Navigate to the src/map-app path in project folder on local machine or to /vagrant/src/map-app inside virtual machine 
 8. Run "npm install" and "npm run watch" 
-9. Start the server with the command "node app.js" in path /vagrant/src on virtual machine
+9. Start the server with the command "sudo node app.js" in path /vagrant/src on virtual machine
 
-If the screen shows "listening to port 3000" you can connect to the server with a browser (http://localhost:3000/) 
+If the screen shows "Listening to port 3000" and "Listening to port 443" you can connect to the server with a browser (http://localhost:3000/) 
