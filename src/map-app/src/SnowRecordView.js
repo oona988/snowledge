@@ -35,9 +35,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import InputBase from "@material-ui/core/InputBase";
-// eslint-disable-next-line no-unused-vars
-import { getThemeProps } from "@material-ui/styles";
-// eslint-disable-next-line no-unused-vars
 import Link from "@material-ui/core/Link";
 
 
@@ -101,7 +98,20 @@ const useStyles = makeStyles(() => ({
   },
   expandClosed: {
     transform: "rotate(0)"
-  }
+  },
+  sponsorContainer: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    paddingTop: "10px",
+    paddingBottom: "5px"
+  },
+  sponsor: {
+    width: "100px",
+    height: "100px",
+    padding: "10px"
+  },
 }));
 
 function getRelativeTimestamp(current, previous) {
@@ -255,7 +265,7 @@ function SnowRecordView({ segmentdata, close }) {
       </Grid>;
       dangertext = <div>
         <Typography className={classes.normalText} variant="subtitle1" color="error" display="inline">Tarkista lumivyörytilanne nettisivuiltamme: </Typography>
-        <Link className={classes.normalText} href={url} variant="subtitle1" display="inline">{url}</Link>
+        <Link className={classes.normalText} href={url} rel="noopener noreferrer" variant="subtitle1" display="inline">{url}</Link>
         <Grid item xs={12} sm={12} style={{ backgroundColor: "orange", margin: 0, paddingBottom: "1%" }}></Grid>
       </div>;
     } else {
@@ -447,6 +457,20 @@ function SnowRecordView({ segmentdata, close }) {
                   </Grid>}
                 </Grid>}
 
+                {/* Sponsor logos */}
+                {isXS && <Grid container xs={12} className={classes.sponsorContainer}>
+                  {/*<Grid item xs={6}>
+                    <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+                      <img src="sponsor.png" alt="Sponsor logo" className={classes.sponsor} />
+                    </a>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <a href="https://www.google.fi/maps/" target="_blank" rel="noopener noreferrer">
+                      <img src="" alt="sponsor2.png" className={classes.sponsor} />
+                    </a>
+                  </Grid>*/}
+                </Grid>}
+              
               </Collapse>
             </Grid>}
 
@@ -473,6 +497,27 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid >
           }
 
+          {/* Forest segment view */}
+          {segmentdata.Nimi === "Metsä" &&
+            <Grid item xs={12} sm={12} container className={classes.addPadding}>
+              <Grid item xs={12} sm={5} container className={classes.snowInfo}>
+                <Grid item xs={4} sm={3}>
+                  <CardMedia
+                    component={"img"}
+                    src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
+                    alt="lumityypin logo"
+                  />
+                </Grid>
+                <Grid item container xs={8} sm={9} className={classes.snowInfo}>
+                  <Grid item xs={12} sm={12}>
+                    <Typography className={classes.smallHeaders} variant="body1" component="p">
+                      Metsäalue
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>}
+
           {(isXS && (isEnabled(3) || isEnabled(4) || description !== "")) &&
             <Grid item xs={12} align="center">
               <IconButton
@@ -495,26 +540,6 @@ function SnowRecordView({ segmentdata, close }) {
           </Typography>
         </Grid>
       }
-      {/* Forest segment view */}
-      {segmentdata.Nimi === "Metsä" &&
-        <Grid item xs={12} sm={12} container className={classes.addPadding}>
-          <Grid item xs={12} sm={5} container className={classes.snowInfo}>
-            <Grid item xs={4} sm={3}>
-              <CardMedia
-                component={"img"}
-                src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
-                alt="lumityypin logo"
-              />
-            </Grid>
-            <Grid item container xs={8} sm={9} className={classes.snowInfo}>
-              <Grid item xs={12} sm={12}>
-                <Typography className={classes.smallHeaders} variant="body1" component="p">
-                  Metsäalue
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>}
     </Grid>
   );
 }
