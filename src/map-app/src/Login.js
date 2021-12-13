@@ -40,7 +40,7 @@ import SnowIcon from "@material-ui/icons/AcUnit";
 const useStyles = makeStyles((theme) => ({
   password: {
     padding: theme.spacing(2),
-  }, 
+  },
   email: {
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -66,7 +66,7 @@ function Login(props) {
   /*
    * Event handlers
    */
-  
+
   //Avaa kirjautumisdialogin
   const openLogin = () => {
     setLoginOpen(true);
@@ -114,9 +114,8 @@ function Login(props) {
           body: JSON.stringify(data),
         });
       const res = await response.json();
-      
+
       props.updateToken(res.token);
-      console.log(res.user);
       props.updateUser(res.user);
       setLoading(false);
     };
@@ -130,23 +129,23 @@ function Login(props) {
     <div className="login">
       {/* Kirjautumisen avaava ikonipainike */}
       <div className={styledClasses.snowIcon} >
-        {loading ? <CircularProgress color="secondary" size={20} /> : 
-          <IconButton 
+        {loading ? <CircularProgress color="secondary" size={20} /> :
+          <IconButton
             onClick={openLogin}
           >
             {/* <Typography variant="button">{(loading ? "Kirjaudutaan" : "Kirjaudu")}</Typography>
             {(loading ? <CircularProgress color="secondary" size={20} /> : <VpnKeyIcon />)} */}
-            <SnowIcon style={{color: "#4d4d4d"}} />
+            <SnowIcon style={{ color: "#4d4d4d" }} />
           </IconButton>}
       </div>
-      
+
       {/* Kirjautumisdialogi */}
-      <Dialog 
-        onClose={closeLogin} 
+      <Dialog
+        onClose={closeLogin}
         open={loginOpen}
       >
         <DialogTitle id="login-dialog">Kirjaudu sisään</DialogTitle>
-        <TextField id="email" label="email" value={email} onChange={updateEmail} className={styledClasses.email}/>
+        <TextField id="email" label="email" value={email} onChange={updateEmail} className={styledClasses.email} />
         <FormControl className={styledClasses.password}>
           <InputLabel htmlFor="standard-adornment-password" className={styledClasses.password}>Salasana</InputLabel>
           <Input
@@ -177,5 +176,5 @@ function Login(props) {
   );
 
 }
- 
+
 export default Login;
