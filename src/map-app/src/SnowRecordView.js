@@ -6,6 +6,9 @@ Luonut: Markku Nirkkonen
 
 Päivityshistoria
 
+13.12.2021 Juho Kumara
+Finished styling
+
 5.12.2021 Juho Kumara
 Snow type names, icons and skiiability values are now shown correctly.
 
