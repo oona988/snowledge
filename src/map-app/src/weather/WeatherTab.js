@@ -130,7 +130,7 @@ function WeatherTab() {
     //console.log(decemberStart.toISOString());
 
     // Fetch latest weather from Muonio Laukukero station
-    fetch("http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
+    fetch("https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&")
       .then((response) => response.text())
       .then((response) => {
         const parser = new DOMParser();
@@ -174,7 +174,7 @@ function WeatherTab() {
       });
    
     // Fetch info from Muonio Laukukero station during past three days
-    fetch(`http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStart.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
+    fetch(`https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&starttime=${firstDayStart.toISOString()}&storedquery_id=fmi::observations::weather::hourly::timevaluepair&fmisid=101982&`)
       .then((response) => response.text())
       .then((response) => {
         const parser = new DOMParser();
