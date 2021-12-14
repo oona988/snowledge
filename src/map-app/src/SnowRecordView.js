@@ -293,18 +293,37 @@ function SnowRecordView({ segmentdata, close }) {
       </Grid>
 
       {/* Avalanche warning and icon if needed */}
-      {segmentdata.Nimi !== "Metsä" &&
-        <Grid item xs={12} sm={12} align="center">
-          {segmentdata === null ? null : dangerimage}
-          {segmentdata === null ? null : dangertext}
-        </Grid>
-      }
+      <Grid item xs={12} sm={12} align="center">
+        {segmentdata === null ? null : dangerimage}
+        {segmentdata === null ? null : dangertext}
+      </Grid>
+
+      {/* Forest segment view */}
+      {segmentdata.Nimi === "Metsä" &&
+        <Grid item xs={12} sm={12} container className={classes.addPadding}>
+          <Grid item xs={12} sm={5} container className={classes.snowInfo}>
+            <Grid item xs={4} sm={3}>
+              <CardMedia
+                component={"img"}
+                src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
+                alt="lumityypin logo"
+              />
+            </Grid>
+            <Grid item container xs={8} sm={9} className={classes.snowInfo}>
+              <Grid item xs={12} sm={12}>
+                <Typography className={classes.smallHeaders} variant="body1" component="p">
+                  Metsäalue
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>}
 
       {/* Pohjamaasto, kommentoi näkyviin jos halutaan näyttää */}
       {/* <Typography variant="subtitle1" align="center" component="p">
           {segmentdata === null ? "Ei tietoa pohjamaastosta" : segmentdata.Maasto}
       </Typography> */}
-      {(!isEmpty && segmentdata.Nimi !== "Metsä") &&
+      {(!isEmpty) &&
         <Grid item xs={12} sm={12} container className={classes.addPadding}>
 
           {/* Main snowtype info */}
@@ -511,27 +530,7 @@ function SnowRecordView({ segmentdata, close }) {
             </Grid>
           }
         </Grid>}
-      {/* Forest segment view */}
-      {segmentdata.Nimi === "Metsä" &&
-        <Grid item xs={12} sm={12} container className={classes.addPadding}>
-          <Grid item xs={12} sm={5} container className={classes.snowInfo}>
-            <Grid item xs={4} sm={3}>
-              <CardMedia
-                component={"img"}
-                src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/icon_forest.svg"}
-                alt="lumityypin logo"
-              />
-            </Grid>
-            <Grid item container xs={8} sm={9} className={classes.snowInfo}>
-              <Grid item xs={12} sm={12}>
-                <Typography className={classes.smallHeaders} variant="body1" component="p">
-                  Metsäalue
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>}
-      {(isEmpty && segmentdata.Nimi !== "Metsä") &&
+      {(isEmpty) &&
         <Grid item xs={12} sm={12} container className={classes.addPadding}>
           <Typography className={classes.timeStamp} align="center">
             Ei havaintoja alueelta.
