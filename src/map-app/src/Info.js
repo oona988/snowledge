@@ -57,7 +57,6 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Divider from "@material-ui/core/Divider";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-//import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -94,7 +93,6 @@ const theme = createTheme({
   },
 });
 
-//const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme) => ({
   editButton: {
@@ -578,15 +576,13 @@ function Info(props) {
         <div className="info">
 
           <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} snowtypes={props.snowtypes}></SnowRecordView>
-          {props.segmentdata.Nimi !== "Metsä" &&
-            <IconButton
-              className={classes.editButton}
-              onClick={openUpdate}
-            >
-              <EditIcon />
-              <Typography className={classes.smallHeaders} variant="button">Päivitä</Typography>
-            </IconButton>
-          }
+          <IconButton
+            className={classes.editButton}
+            onClick={openUpdate}
+          >
+            <EditIcon />
+            <Typography className={classes.smallHeaders} variant="button">Päivitä</Typography>
+          </IconButton>
 
           {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
 
