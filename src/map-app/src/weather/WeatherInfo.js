@@ -119,7 +119,7 @@ function FirstDayWeatherPaper({weatherState}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
+    <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
@@ -209,7 +209,7 @@ function SecondDayWeatherPaper({weatherState}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
+    <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
@@ -299,7 +299,7 @@ function CurrentWeatherPaper({weatherState}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
 
   return (
-    <Paper className={classes.paper} style={isXS && {marginTop: "30px"}} align="center">
+    <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
 
       <Grid item xs={12} sm={12} container className={classes.upperGridContainer} >
 
