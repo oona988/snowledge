@@ -3,9 +3,11 @@ Creation of map with maplibre-gl-library
 
 Latest updates:
 
+Emil Calonius 15.12
+Disable map rotation
+
 Emil Calonius 18.11
 Forest segment covers the whole visible map except other segments
-Fixed bug where scale bar was being added twice after leaving management view
 
 Emil Calonius 13.11
 Bugfixes and improvements to segment coloring
@@ -39,14 +41,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 let map;
-let scaleAdded = false;
 
 function PallasMap(props) {
   const mapContainerRef = useRef(null); 
   const styledClasses = useStyles();
 
   const [data, setData] = useState({type: "FeatureCollection", features: []});
-  const [refreshMap, setRefreshMap] = useState(false);
   const [segmentArray, setSegmentArray] = useState([]);
 
   const center = [24.05, 68.069];
@@ -148,7 +148,7 @@ function PallasMap(props) {
   }, [props.segments]);
 
   useEffect(() => {
-    if((data.features.length > 0 && map === undefined) || refreshMap) {
+    if((data.features.length > 0 && map === undefined)) {
       map = new maplibregl.Map({
         container: mapContainerRef.current,
         style: mapStyle,
@@ -158,6 +158,7 @@ function PallasMap(props) {
         maxZoom: 15,
         minZoom: 11,
         maxPitch: 0,
+        dragRotate: false,
       });
     }
 
@@ -245,12 +246,12 @@ function PallasMap(props) {
           });
         }
 
+        // Disable map rotation using touch rotation gesture
+        map.touchZoomRotate.disableRotation();
+
         // Add a scale bar to the bottom right of the map
-        const scaleControl = new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric"});
-        if(!scaleAdded) {
-          map.addControl(scaleControl, "bottom-right");
-          scaleAdded = true;
-        }
+        map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric"}), "bottom-right");
+
         //Geolocation control
         map.addControl(new maplibregl.GeolocateControl({
           positionOptions: {
@@ -258,6 +259,7 @@ function PallasMap(props) {
           },
           trackUserLocation: true
         }), "bottom-right");
+
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
         map.on("mousemove", "segments-fills", function (e) {
@@ -337,17 +339,8 @@ function PallasMap(props) {
           if(!props.subsOnly) map.setFilter("segments-fills", null);
         }
       }
-      setRefreshMap(false);
     }
-  }, [data, props.subsOnly, props.shownSegment, refreshMap, props.highlightedSnowType]);
-
-  // Ensure that map refreshes when user leaves management view
-  useEffect(() => {
-    if(data.features.length > 0) {
-      scaleAdded = false;
-      setRefreshMap(true);
-    }
-  }, []);
+  }, [data, props.subsOnly, props.shownSegment, props.highlightedSnowType]);
 
   return (
     <div className={styledClasses.mapContainer} ref={mapContainerRef} />
