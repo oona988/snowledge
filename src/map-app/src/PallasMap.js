@@ -3,9 +3,11 @@ Creation of map with maplibre-gl-library
 
 Latest updates:
 
+Emil Calonius 15.12
+Disable map rotation
+
 Emil Calonius 18.11
 Forest segment covers the whole visible map except other segments
-Fixed bug where scale bar was being added twice after leaving management view
 
 Emil Calonius 13.11
 Bugfixes and improvements to segment coloring
