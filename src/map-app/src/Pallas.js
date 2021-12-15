@@ -266,7 +266,7 @@ function App() {
         {/* Sovelluksen sivupalkki, jossa näytetään kartalta valitun segmentin tietoja
             Näytetään, kun jokin segmentti valittuna, eikä olla hallintanäkymässä */}
         <div className="segment_info">
-          {(shownSegment !== null && !showManagement ? 
+          {(shownSegment !== null && !showManagement && !showWeather && !showSnow ? 
             <Info
               //segments={segments}
               segmentdata={shownSegment} 
