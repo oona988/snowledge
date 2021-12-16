@@ -179,8 +179,6 @@ function PallasMap(props) {
           fillColor.push(item.color);
         });
         fillColor.push("#000000");
-        console.log(props.segmentColors);
-        console.log(fillColor);
 
         // Layer for segment highlights
         if(map.getLayer("segments-highlights") === undefined) {
